@@ -20,10 +20,10 @@
   - **짚고 갈 개념:** next-token prediction, causal chain, shared head, speculative decoding.
   - **함께 읽을 자료와 범위:** [MTP v1](https://arxiv.org/pdf/2404.19737v1) §2 “Method”와 [Speculative Decoding v2](https://arxiv.org/pdf/2211.17192v2) §2.1–§2.3.
   - **원문에서 읽을 부분:** [DeepSeek-V3 v2](https://arxiv.org/pdf/2412.19437v2) §2.2 “Multi-Token Prediction”–§2.2.2 “MTP Module”.
-- [ ] V3의 FP8 mixed-precision 설계가 정확도와 안정성을 관리하는 범위를 설명할 수 있다.
+- [ ] V3의 FP8 mixed-precision 설계가 tile/block scaling과 FP32 accumulation으로 정확도와 안정성을 관리하는 범위를 설명할 수 있다.
   - **짚고 갈 개념:** FP8 format, tile/block scaling, outlier, FP32 accumulation.
-  - **함께 읽을 자료와 범위:** [FP8 Formats v2](https://arxiv.org/pdf/2209.05433v2) §2–§3.2와 [Mixed Precision v3](https://arxiv.org/pdf/1710.03740v3) §3.1–§3.3.
-  - **원문에서 읽을 부분:** [DeepSeek-V3 v2](https://arxiv.org/pdf/2412.19437v2) §3.3.1–§3.3.3 “FP8 Training”.
+  - **함께 읽을 자료와 범위:** [FP8 Formats v2](https://arxiv.org/pdf/2209.05433v2) §2–§3.2로 format/range를 확인한 뒤, V3가 직접 인용한 [FP8-LM v2 §2.1–§2.2, Appendix A.2](https://arxiv.org/pdf/2310.18313v2)와 V3 §3.3.1–§3.3.3을 읽는다.
+  - **원문에서 읽을 부분:** [DeepSeek-V3 v2 §3.3.1–§3.3.3, Fig. 6–7, Appendix B.1 — FP8 Training](https://arxiv.org/pdf/2412.19437v2)
 
 ## 팀별 분석
 
@@ -45,3 +45,4 @@
 - [Auxiliary-Loss-Free Load Balancing v1](https://arxiv.org/abs/2408.15664v1)
 - [Multi-token Prediction v1](https://arxiv.org/abs/2404.19737v1)
 - [FP8 Formats for Deep Learning v2](https://arxiv.org/abs/2209.05433v2)
+- [FP8-LM v2](https://arxiv.org/abs/2310.18313v2)

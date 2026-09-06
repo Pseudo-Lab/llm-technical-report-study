@@ -14,17 +14,17 @@
 
 - [ ] SWA/GA 혼합이 모든 층의 global attention과 무엇이 다르며, local 문맥과 장거리 연결을 어떻게 나누는지 설명할 수 있다.
   - **짚고 갈 개념:** sliding-window attention, global attention, receptive field, learnable sink logit.
-  - **함께 읽을 자료와 범위:** [Longformer v2](https://arxiv.org/abs/2004.05150v2) §3.1의 window·global pattern. sink logit은 StreamingLLM의 캐시된 sink token과 구별한다.
+  - **함께 읽을 자료와 범위:** [Longformer v2](https://arxiv.org/abs/2004.05150v2) §3.1로 window·global pattern을 확인하고, Flash가 sink 구현의 출처로 밝힌 [gpt-oss model card v1 §2.2](https://arxiv.org/pdf/2508.10925v1)와 Flash §2.2 식 (1)–(4)을 읽는다.
   - **원문에서 읽을 부분:** [MiMo-V2-Flash v2](https://arxiv.org/pdf/2601.02780v2) §2.1–§2.2 “Hybrid SWA Architecture”, Fig. 1, 식 (1)–(4).
 
-- [ ] MiMo의 MTP 학습 head가 Flash에서 왜 더 가벼운 speculative draft로 바뀌었는지, acceptance rate와 함께 설명할 수 있다.
-  - **짚고 갈 개념:** sequential MTP, shared head, draft/verify, acceptance rate.
-  - **함께 읽을 자료와 범위:** [DeepSeek-V3 v2](https://arxiv.org/pdf/2412.19437v2) §2.2–§2.2.2의 sequential MTP. 기본 유도는 W05에서 복습하고 여기서는 MiMo 계열의 설계 변경을 본다.
-  - **원문에서 읽을 부분:** [MiMo v2](https://arxiv.org/pdf/2505.07608v2) §2.2 “Model Architecture”와 [MiMo-V2-Flash v2](https://arxiv.org/pdf/2601.02780v2) §2.3 “Efficient MTP Architecture”.
+- [ ] Flash가 MTP를 self-speculative draft로 재목적화하면서 dense FFN·SWA·pretrain 1-head/posttrain K-head 설계로 KV I/O와 RL rollout 병목을 어떻게 줄이려 했는지 설명할 수 있다.
+  - **짚고 갈 개념:** self-speculative decoding · arithmetic intensity · KV-cache I/O · draft/verify · acceptance length · rollout straggler
+  - **함께 읽을 자료와 범위:** [MiMo-V2-Flash v2](https://arxiv.org/pdf/2601.02780v2) §2.3.1–§2.3.2 → §5.1–§5.2를 읽는다. [DeepSeek-V3 v2](https://arxiv.org/pdf/2412.19437v2) §2.2는 sequential MTP의 원형 비교에만 쓴다.
+  - **원문에서 읽을 부분:** [MiMo v2 §2.2](https://arxiv.org/pdf/2505.07608v2)와 [MiMo-V2-Flash v2 §2.3, §5.1–§5.2 — Efficient MTP](https://arxiv.org/pdf/2601.02780v2)
 
-- [ ] MOPD가 학생의 자체 생성 trajectory에 여러 전문 교사의 token 신호와 outcome reward를 결합하는 이유를 설명할 수 있다.
-  - **짚고 갈 개념:** on-policy distillation, reverse KL, specialized teacher, outcome reward model.
-  - **함께 읽을 자료와 범위:** [GKD v3](https://arxiv.org/pdf/2306.13649v3) §2–§3의 student-generated sequence와 reverse KL. 교사 답을 그대로 모사하는 KD와의 차이를 확인한다.
+- [ ] MOPD가 prompt의 도메인별 전문 교사를 선택해 학생 rollout의 token-level reverse-KL advantage를 만들고, 이를 ORM/GRPO outcome advantage와 결합하는 방식을 설명할 수 있다.
+  - **짚고 갈 개념:** domain-specialized teacher · on-policy rollout · reverse KL · token-level advantage · outcome reward model
+  - **함께 읽을 자료와 범위:** [GKD v3](https://arxiv.org/pdf/2306.13649v3) §2–§3은 student-generated sequence를 쓰는 단일 교사 배경으로만 읽고, Flash §4.1·§4.4에서 domain teacher 선택과 ORM 결합을 확인한다.
   - **원문에서 읽을 부분:** [MiMo-V2-Flash v2](https://arxiv.org/pdf/2601.02780v2) §4.1 “MOPD”와 §4.4 “Multi-Teacher Online Policy Distillation”, 식 (5)–(9).
 
 ## 팀별 분석
@@ -47,3 +47,4 @@
 - [MiMo-V2-Flash v2](https://arxiv.org/abs/2601.02780v2)
 - [Longformer v2](https://arxiv.org/abs/2004.05150v2)
 - [On-Policy Distillation of Language Models v3](https://arxiv.org/abs/2306.13649v3)
+- [gpt-oss-120b & gpt-oss-20b Model Card v1](https://arxiv.org/abs/2508.10925v1)

@@ -19,13 +19,13 @@
 
 - [ ] **TITO와 Direct Double-sided Importance Sampling이 비동기 trajectory의 학습 신호를 어떻게 보존하고, 어떤 sample을 버리는지 설명할 수 있다.**
   - **짚고 갈 개념:** token-action alignment, importance ratio, trust-region mask, off-policy bias, stale policy, incomplete group.
-  - **함께 읽을 자료와 범위:** [PPO v2](https://arxiv.org/abs/1707.06347v2) §3–§4에서 importance ratio·clipping·KL을 복습한다. DSA의 구조와 수식은 W08 범위로 남긴다.
-  - **원문에서 읽을 부분:** [GLM-5 v2](https://arxiv.org/abs/2602.15763v2) §4.1.2 “Optimizing Asynchronous Training Stability”와 §3.2의 DSA 전환 조건. TITO의 token ID·metadata, rollout log-probability, stale trajectory·환경 실패·불완전 group 처리 규칙을 구분한다.
+  - **함께 읽을 자료와 범위:** [DeepSeekMath v3](https://arxiv.org/abs/2402.03300v3) §4.1.1–§4.1.3에서 GLM-5가 직접 인용한 GRPO의 group-relative advantage를 확인한다. 이어 GLM-5 §3.2 식 (1)과 §4.1.2 식 (3)–(5)을 나란히 읽어 rollout log-probability를 쓰는 ratio와 token mask를 구분한다.
+  - **원문에서 읽을 부분:** [GLM-5 v2](https://arxiv.org/abs/2602.15763v2) §4.1.2 “Optimizing Asynchronous Training Stability”와 식 (3)–(5). TITO의 token ID·metadata, rollout log-probability, stale trajectory·환경 실패·불완전 group 처리 규칙을 구분한다.
 
 - [ ] **검증 가능한 장기 agent 환경과 context 관리가 ‘agentic engineering’ 주장을 어디까지 뒷받침하는지 판단할 수 있다.**
-  - **짚고 갈 개념:** executable verifier, F2P/P2P, reward hacking, hierarchical context management, cumulative regression.
-  - **함께 읽을 자료와 범위:** [DeepSeek-V3.2 v1](https://arxiv.org/abs/2512.02556v1) §3.2.3과 §4.4에서 검증 가능한 agent 과제와 context 관리의 앞선 사례를 확인한다.
-  - **원문에서 읽을 부분:** [GLM-5 v2](https://arxiv.org/abs/2602.15763v2) §4.2 “Environment Scaling for Agents”, §6.2 “Evaluation of Real-world Agentic Engineering Experience”, Appendix B.4.1. issue–PR·terminal·search 환경의 검증 경로와 keep-recent-k/discard-all을 읽고, chained PR·내부 평가·judge 기반 평가의 적용 범위를 판단한다.
+  - **짚고 갈 개념:** executable verifier, F2P/P2P, Dockerized task, web knowledge graph, bidirectional verification, reward hacking, context management.
+  - **함께 읽을 자료와 범위:** GLM-5가 직접 인용한 [SWE-bench Goes Live! v1 §3.3–§3.4](https://arxiv.org/abs/2505.23419v1)의 live issue→reproducible Docker 환경과 [Harbor task tutorial](https://harborframework.com/docs/tasks/task-tutorial)의 task schema·validator를 읽는다. GLM-5의 four environment families는 자체 본문에서 확인한다.
+  - **원문에서 읽을 부분:** [GLM-5 v2](https://arxiv.org/abs/2602.15763v2) §4.2.1–§4.2.5, §6.2, Appendix B.4.1. SWE는 issue–PR→setup/log parsing→F2P/P2P, terminal은 seed/web corpus→Harbor task→self-validation, search는 WKG→multi-hop QA→양방향 검증, slide는 static/runtime/perceptual reward와 reward-hacking 보완으로 각각 그린다.
 
 ## 팀별 분석
 

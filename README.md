@@ -82,22 +82,22 @@ LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
 
 | 주차 | Technical Report | 핵심 주제 |
 | --- | --- | --- |
-| W01 | [LLaMA 1](https://arxiv.org/abs/2302.13971) → [Llama 2](https://arxiv.org/abs/2307.09288) | Transformer block · RoPE가 Q/K 내적에 상대 위치를 반영하는 원리 · MHA/GQA의 KV 공유 · SFT와 보상 학습 |
-| W02 | [Qwen2](https://arxiv.org/abs/2407.10671) → [Qwen2.5](https://arxiv.org/abs/2412.15115) | GQA·MoE와 문맥 확장 · 데이터 규모·품질의 변화 · DPO와 GRPO의 학습 신호 |
-| W03 | [Qwen3](https://arxiv.org/abs/2505.09388) | MoE 구조의 변경 · 추론 학습과 thinking 모드 통합 · off-policy/on-policy 증류와 RL 비교 |
-| W04 | [DeepSeek-V2](https://arxiv.org/abs/2405.04434) | MLA의 KV 압축과 위치 정보 분리 · 전문가 분업과 부하 제어 · GRPO |
-| W05 | [DeepSeek-V3](https://arxiv.org/abs/2412.19437) | 부하 균형과 다중 토큰 예측(MTP) · FP8 학습과 통신 중첩 · reasoning 데이터의 SFT 활용 |
-| W06 | [DeepSeek-R1](https://arxiv.org/abs/2501.12948) | SFT 없는 RL과 다단계 학습 비교 · 검증 가능한 보상 · 증류 효과와 실패 사례 |
-| W07 | [MiMo](https://arxiv.org/abs/2505.07608) → [MiMo-V2-Flash](https://arxiv.org/abs/2601.02780) | dense→MoE와 local/global attention · GRPO에서 다교사 MOPD까지의 학습 구성 비교 · MTP와 추론 가속 |
-| W08 | [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556) | DSA의 토큰 선택과 학습 · GRPO 확장 · agent 과제 합성과 검증 |
-| W09 | [DeepSeek-V4](https://arxiv.org/abs/2606.19348) | 압축 attention(CSA/HCA) · mHC·Muon과 분산 학습 · 장문 처리와 다교사 OPD |
-| W10 | [Qwen3.8-Next](https://arxiv.org/abs/2608.30320) | GDN과 QSA의 역할 분담 · Gated Residual·n-gram memory · Muon의 TP 구현과 batch/LR scaling |
-| W11 | [GLM-4.5](https://arxiv.org/abs/2508.06471) | 전문 모델의 SFT·RL과 능력 통합 · 증류와 재학습 · agent 학습·평가 |
-| W12 | [GLM-5](https://arxiv.org/abs/2602.15763) | continued pre-training을 통한 DSA 전환 · 단계별 OPD · 비동기 RL과 agent 환경 |
-| W13 | [VibeThinker-1.5B](https://arxiv.org/abs/2511.06221) → [VibeThinker-3B](https://arxiv.org/abs/2606.16140) | 다양한 풀이를 확보하는 증류 · 성공률에 따른 MGPO 학습 · 추론 길이 제어와 자기증류 |
-| W14 | [LFM2](https://arxiv.org/abs/2511.23404) | 기기 실측을 통한 구조 선택 · convolution과 attention의 역할 분담 · 증류·사후학습과 품질·지연·메모리 비교 |
-| W15 | [Motif 2](https://arxiv.org/abs/2511.07464) → [Motif 3](https://arxiv.org/abs/2608.09119) | 차분 attention의 KV 압축 · residual·optimizer의 안정성 · 전문 교사를 통합하는 MOPD |
-| W16 | [Solar Open](https://arxiv.org/abs/2601.07022) → [Solar Open 2](https://arxiv.org/abs/2607.20062) | 고정 상태와 전체 문맥 attention의 결합 · 기존 모듈의 선택적 전이 · 비동기 RL과 다교사 증류 |
+| W01 | [LLaMA 1](https://arxiv.org/abs/2302.13971) → [Llama 2](https://arxiv.org/abs/2307.09288) | LLaMA 구성요소, Llama 2 구조 변경과 선호 ranking·PPO |
+| W02 | [Qwen1.5 공식 자료](https://qwenlm.github.io/blog/qwen1.5/) → [Qwen2](https://arxiv.org/abs/2407.10671) → [Qwen2.5](https://arxiv.org/abs/2412.15115) | 구조·BBPE 계승과 instruction 선별·합성·검증 |
+| W03 | [Qwen3](https://arxiv.org/abs/2505.09388) | 생각/비생각 모드, 생각 예산과 교사 이전 |
+| W04 | [DeepSeek-V2](https://arxiv.org/abs/2405.04434) | MLA의 KV 압축·위치 분리와 DeepSeekMoE의 분할·공유 |
+| W05 | [DeepSeek-V3](https://arxiv.org/abs/2412.19437) | MoE 균형, sequential MTP와 FP8 학습 |
+| W06 | [DeepSeek-R1](https://arxiv.org/abs/2501.12948) | pure RL, cold start와 추론 증류의 경계 |
+| W07 | [MiMo](https://arxiv.org/abs/2505.07608) → [MiMo-V2-Flash](https://arxiv.org/abs/2601.02780) | 추론·배포 구조와 학생 trajectory 기반 MOPD |
+| W08 | [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556) | DSA의 선택 학습과 검증 가능한 agent 과제 합성 |
+| W09 | [DeepSeek-V4](https://arxiv.org/abs/2606.19348) | CSA/HCA 압축과 full-vocabulary OPD의 비용 |
+| W10 | [Qwen3.8-Next](https://arxiv.org/abs/2608.30320) | GDN·QSA 학습, GR·n-gram과 행렬별 Muon 적용 |
+| W11 | [GLM-4.5](https://arxiv.org/abs/2508.06471) | 전문가 통합, reasoning RL 설계와 agent SFT 합성 |
+| W12 | [GLM-5](https://arxiv.org/abs/2602.15763) | 비동기 장기 agent RL과 학습 신호 보존 |
+| W13 | [VibeThinker-1.5B](https://arxiv.org/abs/2511.06221) → [VibeThinker-3B](https://arxiv.org/abs/2606.16140) | SSP, seed-to-trace curriculum과 MGPO·Long2Short |
+| W14 | [LFM2](https://arxiv.org/abs/2511.23404) | 기기 실측 탐색, short convolution과 Top-K 증류 |
+| W15 | [Motif 2](https://arxiv.org/abs/2511.07464) → [Motif 3](https://arxiv.org/abs/2608.09119) | GDA→GDLA, Parallel Muon과 domain별 teacher 신호 |
+| W16 | [Solar Open](https://arxiv.org/abs/2601.07022) → [Solar Open 2](https://arxiv.org/abs/2607.20062) | 한국어 데이터 설계와 선택적 구조 전이 |
 
 ### 논문 선정 원칙
 

@@ -6,19 +6,19 @@
 
 - 논문: Solar Open → Solar Open 2
 - arXiv: [Solar Open v1](https://arxiv.org/abs/2601.07022v1) → [Solar Open 2 v2](https://arxiv.org/abs/2607.20062v2)
-- 핵심 주제: 저자원 언어 데이터·SnapPO · NoPE 상태 · 선택적 weight transfer
+- 핵심 주제: 저자원 언어 데이터·tokenizer·curriculum · NoPE 상태 · 선택적 weight transfer
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
 ## 학습목표
 
-- [ ] **Solar Open이 저자원 언어의 데이터 부족과 RL 운영을 서로 다른 개입으로 다룬 방식을 설명할 수 있다.**
-  - **짚고 갈 개념:** 합성 데이터·curriculum·tokenizer는 데이터 병목을, SnapPO는 생성·보상·학습의 분리를 다룬다.
-  - **함께 읽을 자료와 범위:** [Solar Open v1](https://arxiv.org/abs/2601.07022v1)의 tokenizer·데이터·SnapPO 절을 읽는다. 비동기 RL(W12)은 빼고 스냅샷·캐시만 확인한다.
-  - **원문에서 읽을 부분:** Solar Open `1.2 Challenges and Our Solutions`, `2.1 Solar Open Tokenizer`, `3.1 Data Construction and Composition`, `3.2 Curriculum Learning Strategy`, `6.1 SnapPO Framework`.
+- [ ] **Solar Open이 한국어 데이터 부족을 tokenizer·합성 데이터·저품질→고품질 curriculum으로 어떻게 연결하는지 설명할 수 있다.**
+  - **짚고 갈 개념:** bilingual tokenizer efficiency, synthetic data generation, language-aware composition, quality filtering, synthetic ratio, low-to-high curriculum.
+  - **함께 읽을 자료와 범위:** 이 경로는 Solar Open v1이 저자원 언어 문제에 제시한 자체 recipe이므로 §2.1·§3.1–§3.2를 1차 자료로 읽는다. tokenizer 압축률과 학습 data quality/synthetic ratio를 같은 지표로 취급하지 않는다.
+  - **원문에서 읽을 부분:** [Solar Open v1](https://arxiv.org/abs/2601.07022v1) §1.2, §2.1, §3.1–§3.2, Figure 4. 4.5T synthetic data, 단계별 synthetic ratio와 filtering threshold가 어떻게 함께 변하는지 표로 정리한다.
 
-- [ ] **KDA의 고정 상태가 Solar Open 2에서 NoPE와 음의 고유값으로 확장되는 이유를 설명할 수 있다.**
-  - **짚고 갈 개념:** 선형 attention의 순차 상태와 softmax의 전역 회상을 섞는다. 음의 고유값은 상태가 감쇠·유지에만 머물지 않고 수정될 여지를 준다.
+- [ ] **KDA의 고정 크기 recurrent state가 Solar Open 2에서 NoPE와 음의 고유값으로 확장되는 이유를 설명할 수 있다.**
+  - **짚고 갈 개념:** 선형 attention의 순차 상태와 softmax의 전역 회상을 섞는다. 음의 고유값은 상태가 감쇠·유지뿐 아니라 부호가 교대하는 변화를 표현하게 한다.
   - **함께 읽을 자료와 범위:** [Kimi Linear v2](https://arxiv.org/abs/2510.26692v2) `2.2`, `3`; [Unlocking State-Tracking v5](https://arxiv.org/abs/2411.12537v5) `3.1`, `4.1`–`4.2`; [PE Length Generalization v2](https://arxiv.org/abs/2305.19466v2) `4`–`5` — KDA 갱신·음의 고유값·NoPE를 확인한다.
   - **원문에서 읽을 부분:** Solar Open 2 `2.2 Solar Open 2 Architecture`, `Figure 3`.
 

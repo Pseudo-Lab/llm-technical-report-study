@@ -6,7 +6,7 @@
 
 - 논문: DeepSeek-V2
 - arXiv: [DeepSeek-V2 (v5)](https://arxiv.org/abs/2405.04434v5)
-- 핵심 주제: MLA가 저장하는 KV 상태 · latent KV 압축과 decoupled RoPE · 메모리 절감과 실제 추론 병목
+- 핵심 주제: MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
@@ -20,10 +20,10 @@
   - **짚고 갈 개념:** low-rank projection, latent vector, RoPE, positional key.
   - **함께 읽을 자료와 범위:** [RoFormer v5](https://arxiv.org/abs/2104.09864v5) §3.2·§3.4.2의 rotary position embedding.
   - **원문에서 읽을 부분:** [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.1.2 “Low-Rank Key-Value Joint Compression”–§2.1.3 “Decoupled Rotary Position Embedding”.
-- [ ] MLA의 메모리 절감이 실제 추론 속도와 항상 같은 비율로 이어지지 않는 이유를 설명할 수 있다.
-  - **짚고 갈 개념:** memory bandwidth, cache footprint, throughput, context length.
-  - **함께 읽을 자료와 범위:** [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §3.2.3 “Training and Inference Efficiency”의 system-level 조건.
-  - **원문에서 읽을 부분:** [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) Appendix D “Ablation of Attention Mechanisms”, 특히 D.1 “Ablation of MHA, GQA, and MQA”와 D.2 “Comparison Between MLA and MHA”.
+- [ ] DeepSeekMoE의 fine-grained routed expert와 shared expert가 전문화·지식 중복을 어떻게 나누며, device-limited routing이 통신량을 어떻게 제한하는지 설명할 수 있다.
+  - **짚고 갈 개념:** routed/shared expert · top-k gate · expert parallelism · device-limited routing · load-balance auxiliary loss
+  - **함께 읽을 자료와 범위:** [DeepSeekMoE v1](https://arxiv.org/pdf/2401.06066v1) §2–§3.3을 먼저 읽고, [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.2.1–§2.2.3에서 V2의 device-level·communication balance까지 확인한다. W05에서는 이 auxiliary-loss 계열을 loss-free bias update로 바꾼다는 점만 비교한다.
+  - **원문에서 읽을 부분:** [DeepSeek-V2 v5 §2.2.1–§2.2.3, Fig. 4, 식 (20)–(31) — DeepSeekMoE](https://arxiv.org/pdf/2405.04434v5)
 
 ## 팀별 분석
 
