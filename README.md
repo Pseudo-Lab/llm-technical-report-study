@@ -1,5 +1,7 @@
 <h1 align="center">LLM Technical Report Study</h1>
 
+> 최신 LLM 기술보고서를 함께 읽고 분석해, 16주 동안 공동 학습 문서 16개를 만드는 스터디입니다.
+
 <div align="center">
   <a href="https://pseudo-lab.com"><img src="https://img.shields.io/badge/PseudoLab-S13-3776AB" alt="PseudoLab 13th season" /></a>
   <a href="https://discord.gg/EPurkHVtp2"><img src="https://img.shields.io/badge/Discord-BF40BF" alt="Discord Community" /></a>
@@ -8,8 +10,6 @@
   <a href="https://github.com/Pseudo-Lab/llm-technical-report-study/pulls"><img src="https://img.shields.io/github/issues-pr/Pseudo-Lab/llm-technical-report-study" alt="Pull requests" /></a>
   <a href="https://github.com/Pseudo-Lab/llm-technical-report-study/issues"><img src="https://img.shields.io/github/issues/Pseudo-Lab/llm-technical-report-study" alt="Issues" /></a>
 </div>
-
-> 최신 LLM Technical Report를 배경지식과 함께 읽고, 모델의 설계 선택과 학습 방법을 실험 근거로 이해하며 공동 기록으로 남깁니다.
 
 ## ✨ Why this project?
 
@@ -27,13 +27,9 @@
 
 ### 이번 시즌의 목표
 
-- [ ] 핵심 기법이 등장한 배경과 이전 방법과의 차이를 설명할 수 있습니다.
-- [ ] 같은 보고서를 다섯 관점으로 분석하며 구조·데이터·학습의 연결과 실험 결과를 이해합니다.
-- [ ] 매주 다섯 팀의 분석, 원문 근거와 토론 내용을 하나의 공동 Markdown 문서로 정리합니다.
-
-### 📦 이번 시즌에 남길 자료
-
-- 주차별 공동 Markdown 문서 16개: 논문별 학습목표, 배경 개념, 팀별 분석과 토론 내용
+- [ ] LLaMA 1·Llama 2를 포함한 22편을 읽고, 핵심 기법이 해결하려는 문제와 이전 방법과의 차이를 설명합니다.
+- [ ] 같은 보고서를 다섯 관점으로 분석해, 구조·데이터·학습의 연결과 설계 선택을 뒷받침하는 실험 근거를 정리합니다.
+- [ ] 시즌 안에 주차별 공동 Markdown 문서 16개를 완성합니다. 각 문서에는 논문별 학습목표, 배경 개념, 다섯 팀의 분석, 원문 근거와 토론 내용을 담습니다.
 
 ## 🧭 Study Overview
 
@@ -164,9 +160,9 @@ LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
 
 ## 🧑‍🤝‍🧑 How We Work
 
-1. **읽기·준비:** 모두 해당 주차의 논문 전체를 읽고, 소속 팀의 관점에서 발표를 준비합니다. 두 편을 묶은 주차는 두 편 모두 읽습니다.
-2. **발표·토론:** 팀별로 준비한 내용을 공유하고, 주요 기법과 실험 결과를 함께 토론합니다.
-3. **공동 기록:** 분석과 토론을 주차별 문서 하나로 합칩니다. 참여자들이 돌아가며 주간 편집자를 맡습니다.
+1. **모임 전 — 읽기·준비:** 모두 해당 주차의 논문 전체를 읽고, 소속 팀의 관점에서 발표를 준비합니다. 두 편을 묶은 주차는 두 편 모두 읽습니다. 분석 내용과 원문 근거, 이해되지 않은 개념과 토론할 질문을 주차별 공동 문서에 모읍니다.
+2. **토요일 모임 — 발표·토론:** 다섯 팀이 준비한 내용을 공유합니다. 배경 개념을 짚고, 주요 설계 선택과 실험 결과를 함께 검토하며 준비한 질문을 토론합니다.
+3. **모임 후 — 공동 문서 정리:** 토론에서 확인한 내용과 남은 질문을 반영해 그 주의 문서 하나로 정리합니다. 참여자들이 돌아가며 주간 편집자를 맡아 팀별 내용을 취합하고 중복된 설명과 원문 링크를 점검합니다.
 
 ## 🔭 시즌 이후: LLM 계보와 기술 변화 정리 (선택)
 
@@ -180,8 +176,8 @@ LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
 
 ## 📚 참고 자료
 
-- [보충 읽기 목록](docs/background-readings.md): 보고서 이해에 필요한 선행 연구와 읽을 범위를 정리한 자료입니다.
-- [후보 논문 목록](docs/paper-candidates.md): 이후 읽을 논문을 검토하기 위한 후보와 출처입니다.
+- [주차별 논문과 공동 문서](docs/weeks/README.md): 16주 문서 틀을 준비했으며, 매주 분석과 토론 내용을 채워갑니다.
+- [Awesome LLM Technical Reports](docs/awesome-technical-reports.md): 함께 읽는 보고서와 추가 읽기 후보를 모은 목록입니다.
 
 ## 🤝 GitHub Collaboration
 
@@ -190,6 +186,8 @@ LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
 - 작업 브랜치는 `feature/<issue-number>` 형식을 사용합니다.
 - 커밋 메시지에는 `[#<issue-number>]`를 포함합니다.
 - 변경 사항은 Pull Request에서 검토한 뒤 기본 브랜치에 반영합니다.
+
+처음 기여한다면 [Markdown 템플릿과 PR 작성 방법](templates/README.md#markdown을-수정해-pr-보내기)을 참고해주세요. 논문은 복사용 표 행으로 추가하고, 주간 문서는 준비된 소제목 아래에 자유롭게 작성하면 됩니다.
 
 ## Acknowledgement 🙏
 

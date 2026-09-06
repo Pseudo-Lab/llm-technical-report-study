@@ -1,0 +1,33 @@
+name: Awesome 목록에 논문 추가
+description: Awesome LLM Technical Reports 목록에 수록할 논문을 제안합니다.
+title: "[Awesome 논문 추가] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        이 양식은 `docs/awesome-technical-reports.md`에 논문을 추가하기 위한 제안용입니다.
+        정규 16주 커리큘럼 변경이나 시즌 이후에 읽을 논문 선정은 별도 논의 사항입니다.
+
+        추천만 하려면 이 Issue만 작성해도 됩니다. 직접 추가하려면 `templates/awesome-entry.md`의 Markdown 행을 복사해 목록에 붙여 넣고, 이 Issue를 연결한 PR을 올려주세요.
+  - type: input
+    id: report-name
+    attributes:
+      label: 보고서 이름
+      placeholder: Qwen3 Technical Report
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: 원문 링크
+      description: arXiv 논문 링크를 우선하고, 없으면 저자·기관의 독립 논문 PDF를 적어주세요. 블로그·모델 카드·발표 자료는 제외합니다.
+      placeholder: https://arxiv.org/abs/2505.09388
+    validations:
+      required: true
+  - type: textarea
+    id: reason
+    attributes:
+      label: Awesome 목록에 추가할 이유
+      placeholder: 관심 있는 기법이나 기존에 읽은 보고서와 비교하고 싶은 점을 자유롭게 적어주세요.
+    validations:
+      required: true
