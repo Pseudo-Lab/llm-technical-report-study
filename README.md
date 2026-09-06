@@ -69,22 +69,22 @@ Transformer와 LLM의 기본적인 학습 과정을 이해하고, 기술보고�
 
 | 주차 | Technical Report | 핵심 주제 |
 | --- | --- | --- |
-| W01 | [LLaMA 1 v1](https://arxiv.org/abs/2302.13971v1) | 기존 Transformer 개선의 recipe · optimizer · compute/token budget |
-| W02 | [Llama 2 v2](https://arxiv.org/abs/2307.09288v2) | LLaMA 1 recipe의 유지와 구조 변화 · preference reward model · iterative RLHF |
-| W03 | [Qwen1.5 공식 자료](https://qwenlm.github.io/blog/qwen1.5/) → [Qwen2 (v4)](https://arxiv.org/abs/2407.10671v4) | 7B MHA→GQA · long-context 처리 · dense-to-MoE initialization · instruction pool과 scalable synthesis |
-| W04 | [Qwen2.5 (v2)](https://arxiv.org/abs/2412.15115v2) → [Qwen3 (v1)](https://arxiv.org/abs/2505.09388v1) | Qwen2.5 합성·검증과 계승 경계 · 생각/비생각 모드 통합 · 생각 예산 · strong-to-weak distillation |
-| W05 | [DeepSeek-V2 (v5)](https://arxiv.org/abs/2405.04434v5) | MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형 |
-| W06 | [DeepSeek-V3 (v2)](https://arxiv.org/abs/2412.19437v2) | 채택한 auxiliary-loss-free MoE 균형 · sequential MTP · FP8 mixed-precision 학습 |
-| W07 | [DeepSeek-R1 (v2)](https://arxiv.org/abs/2501.12948v2) | R1-Zero의 pure RL · readable reasoning을 위한 다단계 post-training · 증류와 직접 RL의 조건부 비교 |
-| W08 | [MiMo (v2)](https://arxiv.org/abs/2505.07608v2) → [MiMo-V2-Flash (v2)](https://arxiv.org/abs/2601.02780v2) | MiMo의 reasoning data·verifier-RL → Flash의 hybrid SWA/GA·deployment MTP·MOPD |
-| W09 | [DeepSeek-V3.2 (v1)](https://arxiv.org/abs/2512.02556v1) | MLA 위 DSA indexer·top-k KV 선택 · scalable GRPO · thinking agent context·환경 합성 |
-| W10 | [DeepSeek-V4 (v1)](https://arxiv.org/abs/2606.19348v1) | CSA의 block compression+DSA · HCA의 강한 dense compression · specialist→OPD 통합 |
-| W11 | [Qwen3.8-Next (v1)](https://arxiv.org/abs/2608.30320v1) | GDN·전역 주의·QSA의 역할 분담, GR·n-gram memory, TP 환경의 Muon 적용 |
-| W12 | [GLM-4.5 (v1)](https://arxiv.org/abs/2508.06471v1) | 전문 모델의 SFT·RL과 능력 통합, reasoning/agent RL의 국소 설계, agent SFT 합성 |
-| W13 | [GLM-5 (v2)](https://arxiv.org/abs/2602.15763v2) | 비동기 agent RL의 안정화, token-정렬 최적화, 검증 가능한 장기 agent 환경 |
-| W14 | [VibeThinker-1.5B (v1)](https://arxiv.org/abs/2511.06221v1) → [VibeThinker-3B (v1)](https://arxiv.org/abs/2606.16140v1) | SSP의 다양성 우선 증류 · 3B의 seed-to-trace curriculum · MGPO와 Long2Short |
-| W15 | [Motif 2 v1](https://arxiv.org/abs/2511.07464v1) → [Motif 3 v1](https://arxiv.org/abs/2608.09119v1) | GDA→GDLA의 신호·잡음 분리와 latent KV · Parallel Muon · seven-teacher MOPD |
-| W16 | [Solar Open v1](https://arxiv.org/abs/2601.07022v1) → [Solar Open 2 v2](https://arxiv.org/abs/2607.20062v2) | 저자원 언어 데이터·tokenizer·curriculum · NoPE 상태 · 선택적 weight transfer |
+| W01 | [LLaMA 1](https://arxiv.org/abs/2302.13971v1) | 기존 Transformer 개선의 recipe · optimizer · compute/token budget |
+| W02 | [Llama 2](https://arxiv.org/abs/2307.09288v2) | LLaMA 1 recipe의 유지와 구조 변화 · preference reward model · iterative RLHF |
+| W03 | [Qwen1.5 공식 자료](https://qwenlm.github.io/blog/qwen1.5/) → [Qwen2](https://arxiv.org/abs/2407.10671v4) | 7B MHA→GQA · long-context 처리 · dense-to-MoE initialization · instruction pool과 scalable synthesis |
+| W04 | [Qwen2.5](https://arxiv.org/abs/2412.15115v2) → [Qwen3](https://arxiv.org/abs/2505.09388v1) | Qwen2.5 합성·검증과 계승 경계 · 생각/비생각 모드 통합 · 생각 예산 · strong-to-weak distillation |
+| W05 | [DeepSeek-V2](https://arxiv.org/abs/2405.04434v5) | MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형 |
+| W06 | [DeepSeek-V3](https://arxiv.org/abs/2412.19437v2) | 채택한 auxiliary-loss-free MoE 균형 · sequential MTP · FP8 mixed-precision 학습 |
+| W07 | [DeepSeek-R1](https://arxiv.org/abs/2501.12948v2) | R1-Zero의 pure RL · readable reasoning을 위한 다단계 post-training · 증류와 직접 RL의 조건부 비교 |
+| W08 | [MiMo](https://arxiv.org/abs/2505.07608v2) → [MiMo-V2-Flash](https://arxiv.org/abs/2601.02780v2) | MiMo의 reasoning data·verifier-RL → Flash의 hybrid SWA/GA·deployment MTP·MOPD |
+| W09 | [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556v1) | MLA 위 DSA indexer·top-k KV 선택 · scalable GRPO · thinking agent context·환경 합성 |
+| W10 | [DeepSeek-V4](https://arxiv.org/abs/2606.19348v1) | CSA의 block compression+DSA · HCA의 강한 dense compression · specialist→OPD 통합 |
+| W11 | [Qwen3.8-Next](https://arxiv.org/abs/2608.30320v1) | GDN·전역 주의·QSA의 역할 분담, GR·n-gram memory, TP 환경의 Muon 적용 |
+| W12 | [GLM-4.5](https://arxiv.org/abs/2508.06471v1) | 전문 모델의 SFT·RL과 능력 통합, reasoning/agent RL의 국소 설계, agent SFT 합성 |
+| W13 | [GLM-5](https://arxiv.org/abs/2602.15763v2) | 비동기 agent RL의 안정화, token-정렬 최적화, 검증 가능한 장기 agent 환경 |
+| W14 | [VibeThinker-1.5B](https://arxiv.org/abs/2511.06221v1) → [VibeThinker-3B](https://arxiv.org/abs/2606.16140v1) | SSP의 다양성 우선 증류 · 3B의 seed-to-trace curriculum · MGPO와 Long2Short |
+| W15 | [Motif 2](https://arxiv.org/abs/2511.07464v1) → [Motif 3](https://arxiv.org/abs/2608.09119v1) | GDA→GDLA의 신호·잡음 분리와 latent KV · Parallel Muon · seven-teacher MOPD |
+| W16 | [Solar Open](https://arxiv.org/abs/2601.07022v1) → [Solar Open 2](https://arxiv.org/abs/2607.20062v2) | 저자원 언어 데이터·tokenizer·curriculum · NoPE 상태 · 선택적 weight transfer |
 
 ## 👥 분석팀
 
