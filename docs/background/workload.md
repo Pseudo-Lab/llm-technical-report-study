@@ -1,92 +1,64 @@
-# 16주 읽기 분량 점검 — 개인 준비 3–4시간 기준
+# 16주 읽기 분량과 분담 — 개인 준비 3–4시간 기준
 
 [주차 목록](../weeks/README.md) · [Background 지도](README.md)
 
-**검토 결과:** 현행 “모두 논문 전체를 읽고, 묶인 주차는 두 편 모두 읽기”와 모든 Background 원전의 정독을 함께 요구하면 주당 3–4시간을 넘길 위험이 크다. 특히 W01·W02·W09·W10·W12·W15·W16의 읽기 깊이를 조정해야 한다. 이 문서는 **분량 진단과 운영 조정안**이며, 현재 편성과 완독 규칙에 적용하기 전 검토할 제안이다.
+LLaMA 1과 Llama 2는 각각 W01·W02에 읽는다. Qwen은 **W03: Qwen1.5 + Qwen2**, **W04: Qwen2.5 + Qwen3**로 나눈다. 전체는 **16주, 기술 보고서 21편과 Qwen1.5 공식 출시 자료**다.
 
-Background 가이드는 본문을 이해하는 데 필요한 개념을 찾아 둔 지도다. **지도에 수록된 모든 원전과 모든 수식을 한 사람이 그 주에 공부하는 과제**로 쓰기에는 범위가 넓다. 주차별 세 학습목표도 준비시간 안에 각자 모두 완수할지, 팀 발표·토론 후 함께 달성할지를 정해야 한다.
+Background 가이드는 본문을 이해하는 데 필요한 개념과 원전을 찾아 둔 지도다. 모든 참가자가 수록된 원전을 매주 전부 정독하는 과제가 아니다. 모두 주 자료의 흐름과 공통 핵심을 읽고, 소속 팀에서 맡은 한 갈래를 더 깊게 읽는다. 세 학습목표는 모임 후 함께 설명할 수 있어야 할 목표다.
 
-## 분량을 판단한 기준
+## 개인 준비시간과 읽기 깊이
 
-- **주 보고서 분량:** 아래 쪽수는 주차에 고정한 PDF 전체로, 평가·참고문헌·부록을 포함한다. 정독할 본문 쪽수나 예상 소요시간과 같지 않다.
-- **새 개념의 갈래:** 구조·데이터·최적화·시스템·후학습 사이를 몇 번 전환해야 하는지, 새 수식과 알고리즘을 얼마나 따라가야 하는지 본다.
-- **선행 지식의 재사용:** 앞 주차의 GQA·MLA·GRPO 등을 다시 공부하는 것과, 이번 주에 처음 배우는 방법을 구분한다.
-- **실제 읽기 깊이:** 보고서 전체의 흐름 확인, 공통 핵심 정독, 팀별 원전 심화를 나누어 본다. 위험도는 편집 판단이며 실측 독서시간이나 학습 효과 측정치가 아니다.
-
-## 전체 16주 점검
-
-| 주차 | 주 보고서 PDF 전체 | 현재 구성의 부담 | 3–4시간 운영안에서 조절할 부분 |
-| --- | ---: | --- | --- |
-| [W01](../weeks/w01/README.md) LLaMA 1 + Llama 2 | 27 + 77 = **104쪽** | **매우 높음.** 첫 주에 block recipe와 ranking/RM/PPO를 함께 시작한다. | 공통은 LLaMA block과 Llama 2 변경표. RLHF 수식은 담당 팀이 깊게 읽고 전체에는 흐름을 공유한다. 모든 배경 원전의 정독은 별도 준비시간이 필요하다. |
-| [W02](../weeks/w02/README.md) Qwen2 + Qwen2.5 | 26 + 26 = **52쪽** | **매우 높음.** 구조·토크나이저, instruction 선별·확장, 과제별 합성·검증이 한 주에 묶였다. | Qwen1.5는 전작 비교표로 제한한다. 공통은 구조의 유지/변경과 데이터 경로 개요, 원전 심화는 팀별 한 갈래로 나눈다. 아래에 구체안을 적었다. |
-| [W03](../weeks/w03/README.md) Qwen3 | **35쪽** | **상대적으로 집중 가능.** 이전 Qwen 기초를 재사용해 mode fusion·학습 단계·증류를 연결할 수 있다. | 이전 구조·tokenizer 원전은 재독하지 않고 변경점만 확인한다. OCR·mixture·reward 종류의 세부는 담당 팀으로 나눈다. |
-| [W04](../weeks/w04/README.md) DeepSeek-V2 | **52쪽** | **높음.** MLA의 차원·RoPE 분리와 MoE routing을 처음 유도하면 시간이 많이 든다. | 공통 MLA 그림·cache 차원, 팀별 MLA 유도 또는 expert/routing 한 갈래. 분산·후학습까지 모두 수식화하지 않는다. |
-| [W05](../weeks/w05/README.md) DeepSeek-V3 | **53쪽** | **높음.** loss-free balance·MTP·FP8은 서로 다른 배경이 필요하다. | 공통은 세 변경의 역할 연결, 정독은 한 기법에 집중한다. FP8 수치 표현과 DualPipe/통신은 같은 개인의 추가 숙제로 겹치지 않게 배정한다. |
-| [W06](../weeks/w06/README.md) DeepSeek-R1 | **86쪽** | **전체 완독 분량 위험.** 핵심은 pure RL→cold start→증류로 연결되지만 보충 자료까지 포함하면 길다. | 핵심 recipe와 GRPO를 정독하고 사례·평가·시스템 보충은 질문별로 찾아 읽는다. 86쪽을 모두 같은 깊이로 읽는 예산은 아니다. |
-| [W07](../weeks/w07/README.md) MiMo + MiMo-V2-Flash | 28 + 31 = **59쪽** | **전체 완독 분량 위험.** 두 보고서의 architecture·data·RL 시스템이 함께 있다. | 팀 안에서 MiMo와 Flash의 정독을 나누고, 공통에는 MTP 활용과 Flash의 MOPD 연결을 공유한다. |
-| [W08](../weeks/w08/README.md) DeepSeek-V3.2 | **23쪽** | **상대적으로 집중 가능.** MLA·GRPO 기초를 재사용할 수 있다. | 공통 DSA 선택·학습 경로, 팀별 RL 안정화 또는 agent 환경 합성. 앞 주차의 전체 원전을 다시 요구하지 않는다. |
-| [W09](../weeks/w09/README.md) DeepSeek-V4 | **58쪽** | **매우 높음.** CSA/HCA·mHC·Muon·분산 실행·FP4·OPD를 모두 깊게 읽기 어렵다. | 공통은 CSA/HCA의 압축 단위. residual·optimizer·정밀도·teacher serving은 담당 팀의 별도 갈래로 나눈다. |
-| [W10](../weeks/w10/README.md) Qwen3.8-Next | **28쪽** | **매우 높음.** 짧은 보고서 안에 GDN·QSA·GR·n-gram·Muon의 수식과 비교 원전이 밀집했다. | 공통은 GDN state와 QSA retrieval의 역할. GR·n-gram·Muon 중 팀별 한 갈래를 심화한다. 다섯 기법의 수식 유도를 각자 완료하는 주차로 잡지 않는다. |
-| [W11](../weeks/w11/README.md) GLM-4.5 | **26쪽** | **상대적으로 집중 가능.** specialist→통합이라는 중심 흐름이 있다. | 공통 expert-output SFT와 통합 흐름, 팀별 데이터 합성·보상·agent serialization의 세부를 나눈다. |
-| [W12](../weeks/w12/README.md) GLM-5 | **40쪽** | **매우 높음.** 구조·학습·배포·비동기 RL·여러 실행 환경까지 범위가 넓다. | 공통 rollout→TITO→학습 신호. MLA/DSA 변경, deployment, SWE/search/slide 환경은 각 담당의 한 갈래로 제한한다. |
-| [W13](../weeks/w13/README.md) VibeThinker 1.5B + 3B | 13 + 14 = **27쪽** | **상대적으로 집중 가능.** 짝논문이지만 SSP의 계승과 데이터/RL 변경이 연결된다. | 공통 1.5B→3B pipeline 차이, 팀별 MGPO 또는 Long2Short 유도. 두 기법을 모두 처음부터 유도하는 과제는 추가 부담이다. |
-| [W14](../weeks/w14/README.md) LFM2 | **51쪽** | **텍스트 범위에서는 높음.** 전체 PDF에는 이번 범위에서 제외한 VL·Audio 등이 포함된다. | §2–§4와 필요한 Appendix A를 중심으로 읽는다. 텍스트 설계·학습 본문은 PDF 3–15쪽에 있고, 51쪽 전체를 필수로 세지 않는다. Top-K KD 유도는 팀별 심화다. |
-| [W15](../weeks/w15/README.md) Motif 2 + Motif 3 | 17 + 32 = **49쪽** | **매우 높음.** GDLA·Parallel Muon·MoE 안정화·SuperBPE·MOPD가 한 쌍에 들어 있다. | 공통 GDA→GDLA, 팀별 optimizer/system 또는 tokenizer/data 또는 specialist/MOPD 한 갈래. 전작과 후속작의 깊은 읽기도 팀 안에서 나눈다. |
-| [W16](../weeks/w16/README.md) Solar Open + Open 2 | 33 + 33 = **66쪽** | **매우 높음.** tokenizer·SFT 합성·SnapPO·KDA·선택적 전이·agent까지 다룬다. | 공통 전작에서 무엇을 옮기고 바꾸었는지, 팀별 언어/data·구조 전이·후학습 중 한 갈래. 마지막 주라는 이유로 전 범위를 종합 과제로 쌓지 않는다. |
-
-**“상대적으로 집중 가능”도 전체 원전 정독을 3–4시간 안에 끝낼 수 있다는 보장이 아니다.** 앞 주차의 기초를 익혔고, 아래처럼 깊이를 나누는 조건에서 상대적으로 분산 부담이 적다는 뜻이다.
-
-## W02가 특히 무거운 이유
-
-주 보고서는 [Qwen2 v4](https://arxiv.org/abs/2407.10671v4)와 [Qwen2.5 v2](https://arxiv.org/abs/2412.15115v2) **두 편**이다. Qwen1.5는 [공식 출시 글](https://qwenlm.github.io/blog/qwen1.5/)과 [고정 config 비교표](qwen.md#qwen-architecture)로 전작을 확인하는 자료다. 제목에 세 모델을 같은 비중으로 나열하면 세 편을 각각 정독하는 것으로 읽힐 수 있으므로, 표기는 **“Qwen2 → Qwen2.5 (Qwen1.5 비교)”**를 권한다.
-
-하지만 Qwen1.5 표기만 고쳐도 분량 문제가 해결되지는 않는다. [현재 가이드](qwen.md)는 GQA/DCA/YaRN, BBPE/BPE, MoE 초기화, InsTag·instruction selection/evolution, Ditto, AutoIF, Math/Coder와 IFEval까지 연결한다. 배경 원전은 arXiv 14종과 Tree-Instruct를 합쳐 15종이며, 이미 배운 자료도 포함한 **링크 목록 수**다. 15편의 전체 논문을 읽으라는 뜻이나 15개의 모두 새로운 기법이라는 뜻이 아니다.
-
-### 공통으로 잡을 연결
-
-1. **구조 비교:** Qwen1.5-7B→Qwen2-7B에서 MHA/GQA가 어떻게 달라지고 Qwen2.5-7B는 무엇을 유지하는지 비교표로 확인한다. 다른 크기·MoE 분기의 예외는 같은 표의 범위 설명으로 확인한다.
-2. **데이터 흐름:** Qwen2의 `ontology/tag → instruction 선별·확장`과 Qwen2.5의 `instruction → checker/test → 통과 응답`을 한 장에 나란히 그린다. instruction을 고르는 일과 생성 응답을 검증하는 일을 구분한다.
-3. **역할극의 위치:** profile을 조건으로 응답을 합성하는 것과 Qwen2.5의 system-prompt consistency를 본문의 공개 범위로 구분한다. Ditto 전체 구현은 담당 팀이 읽는다.
-
-공통 읽기에서는 가이드의 짧은 설명과 **대상 Qwen 본문**으로 이 연결을 먼저 잡는다. GQA·BPE 등 이미 읽은 원전은 필요한 부분만 복습한다. DCA/YaRN·MoE 초기화·InsTag·Ditto·AutoIF·Math/Coder 원전의 모든 세부를 동시에 정독하지 않는다.
-
-| 공통 연결 | 먼저 읽을 본문 범위 | 고정 PDF에서 찾아갈 쪽 |
-| --- | --- | --- |
-| 구조·tokenizer 유지/변경 | Qwen2 §2.1·§2.2.1, Qwen2.5 §2와 7B config 비교표 | Qwen2 3–4쪽, Qwen2.5 2–3쪽의 해당 문단 |
-| instruction 선별·확장과 checker 흐름 | Qwen2 §4.1.1–§4.1.2, Qwen2.5 §4.1(4) | Qwen2 7쪽, Qwen2.5 5쪽의 해당 문단 |
-| 역할극과 system-prompt consistency | Qwen2 §4.1.2의 Data Repurposing, Qwen2.5 §4.1(8) | Qwen2 7쪽, Qwen2.5 6쪽의 해당 문단 |
-
-위 경로는 두 보고서의 **서로 다른 7개 PDF 면에 있는 지정 문단**을 읽는다. 두 보고서 전체가 7쪽이라는 뜻은 아니다. 문맥 확장을 맡은 팀은 Qwen2 §3.2(6쪽)와 Qwen2.5 §3.3(4쪽)을, 검증 결과의 DPO 재사용을 맡은 팀은 Qwen2.5 §4.2(6쪽)를 추가로 읽는다. 상세 합성 원전을 W03의 신규 기법으로 옮겨 분량을 줄이지는 않는다. Qwen3 본문이 이전 합성 모델을 사용했다고 밝힌 것과, 이전 pipeline의 세부를 새로 제안한 것은 구분해야 한다.
-
-### 팀별 심화는 한 갈래씩
-
-| 담당 관점 | 이번 주 정독할 한 갈래의 예 | 같은 사람이 추가로 모두 읽지 않을 범위 |
-| --- | --- | --- |
-| Architecture & Pre-training | Qwen2 dense/MoE 초기화 **또는** DCA+YaRN 문맥 확장 | 두 갈래 전체의 원전 유도를 한 사람에게 겹쳐 배정하지 않는다. |
-| Data & Synthesis | InsTag/선별·evolution **또는** Math/Coder 합성·검증 | 데이터 관련 모든 원전이 이 팀의 한 사람에게 쏠리지 않게 한다. |
-| Post-training | Ditto의 profile→응답과 Qwen 본문의 역할극·system prompt 용례 | 전문 Math/Coder 보고서 전체는 추가 필수가 아니다. |
-| Alignment & RL | AutoIF의 checker/test·검증 결과가 SFT/DPO에 쓰이는 경로 | IFEval은 평가 역할을 확인하고 새 합성 학습 기법으로 세지 않는다. |
-| Background | 이번 주 선택된 심화 갈래에 필요한 선수 개념 **하나**를 설명 | 15종 원전을 혼자 요약하는 역할이 아니다. 상세 지도는 필요할 때 찾아 쓴다. |
-
-선택한 갈래의 원전 절·수식 범위는 [기존 Qwen 가이드](qwen.md)에 그대로 남아 있다. 팀의 두 사람이 서로 다른 갈래 또는 전작/후속작을 맡으면 공동 문서에서 합친다. 분담하지 못한 심화 항목은 선택 읽기로 남기고, 다섯 팀의 설명을 개인별 추가 준비시간으로 다시 더하지 않는다.
-
-## 권장 운영안: 16주를 유지하고 읽기 깊이를 나누기
-
-개인 1회 준비를 **210분(3시간 30분)**으로 배분하는 예다. 이는 시간 예산이며, 누구나 해당 분량을 이 시간에 이해할 수 있다는 실측 예측이 아니다.
-
-| 준비 단계 | 예산 | 끝내야 할 일 |
+| 단계 | 시간 예산 | 준비 결과 |
 | --- | ---: | --- |
-| 주 보고서 전체 흐름 확인 | 40분 | 모든 배정 보고서의 abstract·introduction·목차·주요 그림·conclusion을 확인하고, 각 절이 맡은 질문을 표시한다. |
-| 공통 핵심 정독 | 90분 | 정한 연결 하나를 대상 본문과 배경 설명으로 읽고, 그림 또는 작은 예시 하나를 따라간다. W02는 위 구조 비교·데이터 흐름·역할극의 연결을 사용한다. |
-| 소속 팀 심화 | 60분 | 한 갈래와 필요한 원전의 지정 절만 정독한다. 이미 공통 읽기에서 읽은 부분은 중복 계산하지 않는다. |
-| 발표·질문 메모 | 20분 | 원문 위치, 이해한 흐름, 공개되지 않은 부분, 질문을 공동 문서에 적는다. |
+| 주 자료 전체 흐름 확인 | 40분 | 배정된 두 자료가 있으면 둘 다 abstract·introduction·주요 그림·conclusion을 확인하고 각 절의 질문을 표시한다. |
+| 공통 핵심 정독 | 90분 | 아래 공통 범위를 대상 본문과 연결된 배경 설명으로 읽는다. 작동 그림이나 작은 예시 하나를 따라간다. |
+| 소속 팀 심화 | 60분 | 팀 안에서 고른 한 갈래와 필요한 원전의 지정 절을 읽는다. 공통으로 읽은 부분은 반복하지 않는다. |
+| 발표·질문 메모 | 20분 | 원문 위치, 이해한 흐름, 미공개 범위와 질문을 공동 문서에 적는다. |
 
-짝논문 주차에는 모두 두 보고서의 흐름을 확인하고, 팀 안에서 전작과 후속작의 정독을 나눈다. 세 Action Item은 **모임 후 공동으로 설명할 수 있어야 하는 목표**로 두고, 개인 준비는 공통 핵심과 담당 갈래에 집중한다. 독립적인 발표 자료 제작·실험 재현까지 요구하면 위 예산을 다시 배정해야 한다.
+합계 **210분(3시간 30분)**은 준비 예산이다. 개인별 이해 속도를 측정한 예측은 아니다. 첫 1–2회 실제 준비시간을 확인하고 4시간을 넘으면 담당 원전·유도 범위를 줄인다. 별도 슬라이드 제작이나 실험 재현은 이 시간에 자동으로 추가하지 않는다.
 
-이 안을 적용하려면 [README의 How We Work](../../README.md#-how-we-work)에 있는 전체 읽기 규칙과, 주차 안내의 “상세 Background를 익힌 뒤 목표 수행” 문구를 함께 수정해야 한다. 첫 1–2회에 실제 준비시간을 기록하고 4시간을 넘으면 원전·유도 범위를 더 줄인다. 단순히 시간표만 붙인 상태를 과부하가 해결된 것으로 보지 않는다.
+## 16주 공통 읽기와 팀별 심화
 
-## 모든 참가자의 전체 정독을 유지한다면
+PDF 쪽수는 **평가·참고문헌·부록을 포함한 고정 판본 전체**다. 모두 같은 깊이로 읽을 필수 쪽수와 다르며, 짧은 보고서도 새 수식이 많으면 부담이 크다. 본문의 정확한 절과 배경 원전 범위는 각 주차에 연결된 가이드에서 확인한다.
 
-Qwen2와 Qwen2.5를 별도 주차로 나누는 편이 맞다. 다만 **16주·22편을 모두 유지하면서 한 주차만 분리하면 다른 주차를 다시 합쳐야 하므로 과부하가 이동**한다. 이 경우 시즌 연장이나 주 보고서 수 조정이 필요하다. LFM2 한 주를 빼면 Qwen 분리 공간은 생기지만, W01·W09·W10·W12·W15·W16의 부담까지 해결되지는 않는다.
+| 주차 | 주 자료와 PDF 전체 | 모두 읽을 공통 범위 | 팀 안에서 나눌 심화 갈래 |
+| --- | --- | --- | --- |
+| [W01](../weeks/w01/README.md) | LLaMA 1 **27쪽** | §2.1–§2.3의 tokenizer·block·optimizer와 §1의 학습/추론 예산 | BPE / norm·SwiGLU / RoPE / AdamW / 학습 예산 중 담당 개념 하나. Llama 2의 RLHF를 같은 주에 얹지 않는다. |
+| [W02](../weeks/w02/README.md) | Llama 2 **77쪽** | §2.2의 전작 대비 변경과 §3.1–§3.2의 SFT→선호/RM→RLHF 흐름 | GQA·문맥 / 선호 데이터·ranking / rejection sampling·PPO / 안전성 중 한 갈래. LLaMA block 원전은 W01 설명을 재사용한다. |
+| [W03](../weeks/w03/README.md) | Qwen1.5 공식 글 + Qwen2 **26쪽** | 같은 크기 checkpoint의 구조 차이, §4.1의 instruction 선별·확장·합성 흐름 | DCA+YaRN / MoE 초기화 / InsTag·evolution / profile 역할극·실행 검증 중 한 갈래. |
+| [W04](../weeks/w04/README.md) | Qwen2.5 **26쪽** + Qwen3 **35쪽** = **61쪽** | Qwen2.5의 합성·검증과 Qwen3의 thinking/non-thinking 통합을 잇는 학습 흐름 | BBPE·QK-Norm·MoE / Math·Coder 합성 / system prompt·AutoIF / thinking budget·증류 중 한 갈래. 아래 공통 경로를 사용한다. |
+| [W05](../weeks/w05/README.md) | DeepSeek-V2 **52쪽** | MLA 그림·KV cache 차원과 decoupled RoPE의 이유 | MLA 유도 / shared·routed expert / routing·통신 / 데이터·후학습 중 한 갈래. |
+| [W06](../weeks/w06/README.md) | DeepSeek-V3 **53쪽** | loss-free balance와 MTP가 각각 바꾸는 학습 신호, FP8의 목적 | expert 균형 / MTP / FP8 수치 표현 / DualPipe·통신을 서로 나눠 맡는다. |
+| [W07](../weeks/w07/README.md) | DeepSeek-R1 **86쪽** | R1-Zero→cold start→R1→학생 증류의 recipe와 GRPO 역할 | 목적식 / reward·데이터 / 긴 rollout 시스템 / 증류 비교 중 하나. 긴 사례·보충 평가는 담당 질문에 필요한 부분을 찾는다. |
+| [W08](../weeks/w08/README.md) | MiMo **28쪽** + Flash **31쪽** = **59쪽** | MiMo의 MTP 활용과 Flash의 학생 trajectory 기반 MOPD | 두 보고서의 정독을 팀 안에서 나누고, architecture / data / rollout·teacher 신호 중 하나를 비교한다. |
+| [W09](../weeks/w09/README.md) | DeepSeek-V3.2 **23쪽** | DSA 선택·학습 경로와 앞서 배운 MLA의 관계 | sparse 학습 / RL 안정화 / agent 환경 합성 중 하나. MLA·GRPO 원전 전체를 다시 읽지 않는다. |
+| [W10](../weeks/w10/README.md) | DeepSeek-V4 **58쪽** | CSA/HCA가 압축하는 단위와 읽는 정보의 차이 | mHC / Muon / FP4·분산 실행 / OPD·teacher serving을 나눠 맡는다. |
+| [W11](../weeks/w11/README.md) | Qwen3.8-Next **28쪽** | GDN state와 QSA retrieval의 역할·정보 보존 방식 | GR / n-gram / Muon·Polar Express / kernel·scaling 중 하나. 모든 수식 유도를 개인별 필수로 두지 않는다. |
+| [W12](../weeks/w12/README.md) | GLM-4.5 **26쪽** | specialist 학습→expert-output SFT→통합의 흐름 | 데이터 합성 / reward / agent serialization / self-distillation 중 하나. |
+| [W13](../weeks/w13/README.md) | GLM-5 **40쪽** | rollout→TITO→학습 신호, 비동기로 생기는 policy lag | MLA·DSA 변경 / deployment / SWE·search·slide 환경 / 중요도 보정 중 하나. |
+| [W14](../weeks/w14/README.md) | VibeThinker 1.5B **13쪽** + 3B **14쪽** = **27쪽** | 두 모델의 SSP 계승과 데이터/RL 변경 | seed→trace / MGPO / Long2Short 중 하나. 두 기법을 모두 처음부터 유도하는 개인 과제로 만들지 않는다. |
+| [W15](../weeks/w15/README.md) | Motif 2 **17쪽** + 3 **32쪽** = **49쪽** | GDA→GDLA와 domain별 teacher를 쓰는 목적 | optimizer·system / tokenizer·data / specialist·MOPD 중 하나. 전작·후속작의 깊은 읽기도 팀 안에서 나눈다. |
+| [W16](../weeks/w16/README.md) | Solar Open **33쪽** + Open 2 **33쪽** = **66쪽** | 전작에서 옮긴 것·바꾼 것과 선택적 구조 전이의 이유 | 한국어·data / KDA·구조 전이 / SnapPO·후학습·agent 중 하나. 마지막 주에 앞선 모든 원전을 다시 요구하지 않는다. |
 
-따라서 우선 제안은 **필요한 배경 목록은 보존하고, 개인별 필수 정독의 깊이를 제한하는 것**이다. 전편·전원 정독이 운영의 핵심이라면 편수와 기간을 함께 다시 정한다.
+## Qwen 두 주차의 읽기 경계
+
+[W03 가이드](w03.md)는 **Qwen1.5 → Qwen2**의 실제 변경과 Qwen2 본문의 배경을 맡는다. Qwen1.5는 [공식 출시 글](https://qwenlm.github.io/blog/qwen1.5/)과 고정 config로 읽으며 별도 기술 보고서 한 편으로 세지 않는다.
+
+[W04 가이드](w04.md)는 **Qwen2.5 → Qwen3**를 맡는다. Qwen2.5의 합성 pipeline을 Qwen3가 새로 제안한 방법처럼 옮기지 않는다. Qwen2.5 본문과 선행 원전의 설명을 유지한 채 같은 주에서 Qwen3의 계승·변경과 비교한다.
+
+| 주차 | 공통으로 읽을 본문 | 읽고 연결할 것 |
+| --- | --- | --- |
+| W03 | Qwen1.5 공식 글의 Introduction·Aligning with Human Preference·Long Context Understanding, [Qwen2 v4 §2.1–§2.2.1·§4.1.1–§4.1.2](https://arxiv.org/abs/2407.10671v4), 가이드의 7B config 비교 | MHA/GQA 변경과 `ontology/tag → instruction 선별·확장 → 응답 합성·검증`. PPO/DPO 채택의 공개 범위도 확인한다. |
+| W04 | [Qwen2.5 v2 §2·§4.1(4)·§4.1(8)·§4.2](https://arxiv.org/abs/2412.15115v2), [Qwen3 v1 §2·§4의 단계 개요·§4.3](https://arxiv.org/abs/2505.09388v1) | BBPE/control token, checker/test와 SFT/DPO 재사용, system-prompt consistency를 Qwen3의 thinking/non-thinking 데이터·chat template와 연결한다. |
+
+Qwen2.5 + Qwen3는 두 편 합계 61쪽으로 여전히 무겁다. W03에서 익힌 GQA·DCA·YaRN·역할극 기본 원전은 반복 정독하지 않는다. W04의 Math/Coder 원전, AutoIF 세부, Qwen3 thinking budget·on-policy distillation은 담당 갈래에 나누고 해당 내용을 모임에서 공유한다.
+
+## 다섯 팀의 분담 원칙
+
+- **Architecture & Pre-training:** 공통 구조를 확인한 뒤 구조 유도 또는 학습/실행 시스템 중 한 갈래를 맡는다.
+- **Data & Synthesis:** 데이터 생성·선별·검증 중 이번 보고서의 변경을 설명하는 경로를 고른다. 모든 합성 원전을 한 사람이 요약하지 않는다.
+- **Post-training:** SFT·증류·통합 단계에서 옮기는 데이터 또는 교사 신호 하나를 따라간다.
+- **Alignment & RL:** reward·선호·정책 갱신 중 담당 경로를 읽고, 공통 배경으로 이미 배운 PPO/GRPO를 반복 숙제로 쌓지 않는다.
+- **Background:** 이번 주 선택한 심화 갈래에서 막히는 선수 개념 하나를 설명한다. 전체 배경 목록은 필요할 때 찾아 쓴다.
+
+팀의 두 사람이 전작/후속작 또는 서로 다른 갈래를 맡으면 공동 문서에서 합친다. 배정하지 못한 심화 항목은 선택 읽기로 남긴다. 다섯 팀의 발표는 모임에서 듣고 토론하며, 그 준비량을 개인별 추가 숙제로 다시 더하지 않는다.

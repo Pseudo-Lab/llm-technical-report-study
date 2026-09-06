@@ -1,31 +1,33 @@
-# W12 — GLM-5
+# W12 — GLM-4.5
 
-[주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W12 Background](../../background/w12.md) · [주간 템플릿](../../../templates/week.md)
+
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 
-- 논문: GLM-5
-- arXiv: [GLM-5 (v2)](https://arxiv.org/abs/2602.15763v2)
-- 핵심 주제: 비동기 agent RL의 안정화, token-정렬 최적화, 검증 가능한 장기 agent 환경
+- 논문: GLM-4.5
+- arXiv: [GLM-4.5 (v1)](https://arxiv.org/abs/2508.06471v1)
+- 핵심 주제: 전문 모델의 SFT·RL과 능력 통합, reasoning/agent RL의 국소 설계, agent SFT 합성
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
 ## 학습목표
 
-- [ ] **동기 agent RL의 긴 꼬리 지연을 비동기 rollout–learner 분리로 어떻게 바꾸며, policy lag가 왜 생기는지 설명할 수 있다.**
-  - **짚고 갈 개념:** synchronous barrier, straggler, rollout–learner decoupling, policy lag, on-policy 근사, multi-task scheduling.
-  - **함께 읽을 자료와 범위:** [W12 구성요소 가이드](../../background/w12.md)의 Slime·비동기 rollout–learner·failed group·DP-aware KV locality와 [W11의 rollout 인프라](../../background/w11.md)를 이어 읽어, GLM-5가 기존 분리 rollout을 어디까지 확장했는지 비교한다.
-  - **원문에서 읽을 부분:** [GLM-5 v2](https://arxiv.org/abs/2602.15763v2) §3.6 “RL Training Infrastructure: The slime Framework”, §4.1 “Asynchronous RL for Agentic Tasks”와 §4.1.1. weight synchronization, optimizer reset, Multi-Task Rollout Orchestrator, DP-aware KV affinity를 흐름으로 그리고 처리량과 sample quality를 구분한다.
+- [ ] **Reasoning·Agent·General 전문가를 만든 뒤 하나의 모델로 통합한 이유와 실패 위험을 설명할 수 있다.**
+  - **짚고 갈 개념:** cold-start SFT, expert model, self-distillation, capability interference, thinking/non-thinking, rejection filtering.
+  - **함께 읽을 자료와 범위:** [W12 구성요소 가이드](../../background/w12.md)에서 expert/overall SFT, reasoning·agent·general reward, agent serialization이 어떻게 이어지는지 먼저 읽는다. GRPO 정의만 W07의 [DeepSeekMath v3](https://arxiv.org/abs/2402.03300v3) §4.1.1–§4.1.3으로 되돌아간다.
+  - **원문에서 읽을 부분:** [GLM-4.5 v1](https://arxiv.org/abs/2508.06471v1) §2.3 “Mid-Training”, §3 “Post-Training: Expert Model Iteration”, §3.1 “Supervised Fine-Tuning”, §3.3.2. 전문가가 생성한 응답을 모아 Overall SFT로 통합하는 절차와, agent RL 도중 cold-start 응답을 갱신하는 반복 self-distillation을 구분한다. 긴 CoT·즉답·tool-call 데이터를 각 절차에서 어떻게 구성하는지 확인한다.
 
-- [ ] **TITO와 Direct Double-sided Importance Sampling이 비동기 trajectory의 학습 신호를 어떻게 보존하고, 어떤 sample을 버리는지 설명할 수 있다.**
-  - **짚고 갈 개념:** token-action alignment, importance ratio, trust-region mask, off-policy bias, stale policy, incomplete group.
-  - **함께 읽을 자료와 범위:** [W12 구성요소 가이드](../../background/w12.md)의 TITO/DDIS와 failed group 절을 먼저 읽고, [DeepSeekMath v3](https://arxiv.org/abs/2402.03300v3) §4.1.1–§4.1.3에서 GLM-5가 직접 인용한 GRPO의 group-relative advantage를 확인한다. 이어 GLM-5 §3.2 식 (1)과 §4.1.2 식 (3)–(5)을 나란히 읽어 rollout log-probability를 쓰는 ratio와 token mask를 구분한다.
-  - **원문에서 읽을 부분:** [GLM-5 v2](https://arxiv.org/abs/2602.15763v2) §4.1.2 “Optimizing Asynchronous Training Stability”와 식 (3)–(5). TITO의 token ID·metadata, rollout log-probability, stale trajectory·환경 실패·불완전 group 처리 규칙을 구분한다.
+- [ ] **GLM-4.5의 reasoning RL이 reward variance와 긴 출력 길이를 관리하고, agent RL이 tool trajectory의 성공을 보상으로 바꾸는 방식을 설명할 수 있다.**
+  - **짚고 갈 개념:** two-stage difficulty curriculum, 64K single-stage RL, dynamic temperature, token-weighted loss, outcome verifier, format failure.
+  - **함께 읽을 자료와 범위:** [W12 구성요소 가이드](../../background/w12.md)에서 reasoning·code·agent·general RL의 보상 단위를 나란히 본다. GRPO 정의는 W07의 [DeepSeekMath v3](https://arxiv.org/abs/2402.03300v3) §4.1.1–§4.1.3만 다시 참조한다.
+  - **원문에서 읽을 부분:** [GLM-4.5 v1](https://arxiv.org/abs/2508.06471v1) §3.2 “Reasoning RL”, Figures 5–7, §3.3 “Agentic RL”. 정답·도구 종료 상태·형식 오류가 같은 reward가 아닌지 구분한다.
 
-- [ ] **검증 가능한 장기 agent 환경과 context 관리가 ‘agentic engineering’ 주장을 어디까지 뒷받침하는지 판단할 수 있다.**
-  - **짚고 갈 개념:** executable verifier, F2P/P2P, Dockerized task, web knowledge graph, bidirectional verification, reward hacking, context management.
-  - **함께 읽을 자료와 범위:** [W12 구성요소 가이드](../../background/w12.md)의 SWE/terminal executable verifier, search WKG/HCM, slide reward 절을 먼저 읽는다. 이어 GLM-5가 직접 인용한 [SWE-bench Goes Live! v1 §3.3–§3.4](https://arxiv.org/abs/2505.23419v1)의 live issue→reproducible Docker 환경과 [Harbor task tutorial](https://harborframework.com/docs/tasks/task-tutorial)의 task schema·validator를 읽는다.
-  - **원문에서 읽을 부분:** [GLM-5 v2](https://arxiv.org/abs/2602.15763v2) §4.2.1–§4.2.5, §6.2, Appendix B.4.1. SWE는 issue–PR→setup/log parsing→F2P/P2P, terminal은 seed/web corpus→Harbor task→self-validation, search는 WKG→multi-hop QA→양방향 검증, slide는 static/runtime/perceptual reward와 reward-hacking 보완으로 각각 그린다.
+- [ ] **agent SFT 데이터를 도구·과제·trajectory·검증의 네 단계로 합성하고, XML형 function-call 표기가 왜 학습 부담을 줄이는지 설명할 수 있다.**
+  - **짚고 갈 개념:** tool/API collection, task synthesis, user simulator, terminal-state verification, rejection filtering, serialization/escaping.
+  - **함께 읽을 자료와 범위:** [W12 구성요소 가이드](../../background/w12.md)에서 XML-like tag, four-stage synthesis, Slime data buffer를 분리해 읽는다. 이어 [GLM-4.5 v1 §3.1·Figure 4](https://arxiv.org/abs/2508.06471v1)의 네 단계와 filter 규칙을 확인한다.
+  - **원문에서 읽을 부분:** [GLM-4.5 v1](https://arxiv.org/abs/2508.06471v1) §3.1의 “Reducing Character Escaping in Function Call Templates”, “Rejection Sampling”, “Automatic Agentic SFT Data Construction”, Figure 4. 네 단계에서 실패한 trajectory가 어느 filter에서 제거되는지 그린다.
 
 ## 팀별 분석
 
@@ -43,4 +45,4 @@
 
 ## 참고 자료
 
-- [GLM-5 원문 v2](https://arxiv.org/abs/2602.15763v2)
+- [GLM-4.5 원문 v1](https://arxiv.org/abs/2508.06471v1)

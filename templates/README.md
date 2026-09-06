@@ -2,9 +2,9 @@
 
 - [Awesome 목록 한 줄 추가](awesome-entry.md): 복사용 Markdown 표 행과 논문 추가 방법입니다.
 - [주간 문서](week.md): 논문 정보, 학습목표, 다섯 팀의 분석과 토론을 한 문서에 담습니다.
-- [배경 문서](background.md): 여러 논문을 읽을 때 필요한 개념과 관련 기법을 정리합니다.
+- [배경 문서](background.md): 주차별 본문 구성요소와 필요한 선행 개념·원전 범위를 정리합니다.
 
-주간 문서는 `docs/weeks/wNN/README.md`, 배경 문서는 `docs/background/<concept>.md`에 작성합니다. 팀별 본문은 소제목 아래에 자유롭게 작성합니다.
+주간 문서는 `docs/weeks/wNN/README.md`, 배경 문서는 `docs/background/wNN.md`에 작성합니다. NN을 실제 주차 번호로 바꾸며, 템플릿의 상대 링크는 복사한 위치를 기준으로 합니다. 주차 문서와 배경 문서의 번호를 맞추고, 팀별 본문은 소제목 아래에 자유롭게 작성합니다.
 
 [16주 문서 목록](../docs/weeks/README.md) · [배경 자료](../docs/background/README.md)
 

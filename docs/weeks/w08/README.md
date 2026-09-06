@@ -1,31 +1,33 @@
-# W08 — DeepSeek-V3.2
+# W08 — MiMo → MiMo-V2-Flash
 
-[주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [W08 전체 개념 경로](../../background/w08.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W08 Background](../../background/w08.md) · [주간 템플릿](../../../templates/week.md)
+
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 
-- 논문: DeepSeek-V3.2
-- arXiv: [DeepSeek-V3.2 (v1)](https://arxiv.org/abs/2512.02556v1)
-- 핵심 주제: MLA 위 DSA indexer·top-k KV 선택 · scalable GRPO · thinking agent context·환경 합성
+- 논문: MiMo → MiMo-V2-Flash
+- arXiv: [MiMo (v2)](https://arxiv.org/abs/2505.07608v2) → [MiMo-V2-Flash (v2)](https://arxiv.org/abs/2601.02780v2)
+- 핵심 주제: MiMo의 reasoning data·verifier-RL → Flash의 hybrid SWA/GA·deployment MTP·MOPD
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
 ## 학습목표
 
-- [ ] DSA가 MLA latent KV 전체에 dense attention하지 않고 indexer top-k만 core attention에 보내며, dense warm-up과 sparse training으로 selector를 어떻게 학습하는지 설명할 수 있다.
-  - **짚고 갈 개념:** KV cache, MLA latent KV, MQA-mode sharing, lightning index score, top-k selector, L1-normalized attention target, KL alignment, stop-gradient.
-  - **함께 읽을 자료와 범위:** [W08 개념 경로 §1](../../background/w08.md#dsa) → V3.2이 직접 연결한 [DeepSeek-V2 v5 §2.1.1–§2.1.4](https://arxiv.org/pdf/2405.04434v5)와 [MQA v1 §2.4](https://arxiv.org/pdf/1911.02150v1). DSA의 selection과 MQA의 KV-sharing을 다른 축으로 그린다.
-  - **원문에서 읽을 부분:** [DeepSeek-V3.2 v1 §2.1–§2.1.1, Fig. 2, 식 (1)–(4), Appendix A](https://arxiv.org/pdf/2512.02556v1).
+- [ ] MiMo가 reasoning pattern을 잃지 않도록 extraction·dedup·quality tagging·3-stage mixture를 어떻게 조합했고, MTP를 학습용 1개 layer와 추론용 여러 draft layer로 왜 나눴는지 설명할 수 있다.
+  - **짚고 갈 개념:** reasoning-density preservation, MinHash deduplication, content-aware quality tagger, synthetic reasoning response, data mixture, MTP objective/draft/acceptance.
+  - **함께 읽을 자료와 범위:** [W08 개념 경로 §1–§2](../../background/w08.md#mimo-pretraining) → MiMo가 직접 인용한 [MTP v1 §2·§3.2](https://arxiv.org/abs/2404.19737v1). GQA·RMSNorm·SwiGLU·RoPE는 이 보고서의 새 제안이 아니므로 [W01](../../background/w01.md)·[W03](../../background/w03.md)에서 필요한 만큼만 복습한다.
+  - **원문에서 읽을 부분:** [MiMo v2 §2.1–§2.3, Fig. 2](https://arxiv.org/pdf/2505.07608v2).
 
-- [ ] V3.2가 rollout을 여러 update에 재사용하고 MoE/top-p sampling을 쓸 때, unbiased KL·off-policy sequence masking·Keep Routing·Keep Sampling Mask로 GRPO를 어떻게 안정화하는지 설명할 수 있다.
-  - **짚고 갈 개념:** importance-sampling ratio, K3 KL estimator, off-policy divergence, negative-advantage mask, expert routing consistency, truncated action support.
-  - **함께 읽을 자료와 범위:** [W08 개념 경로 §2](../../background/w08.md#scaling-grpo) → GRPO 원전 [DeepSeekMath v3 §4.1.1–§4.1.3](https://arxiv.org/pdf/2402.03300v3) → V3.2 §3.1. “mask”가 모든 off-policy sample을 버리는 것인지, 어떤 조건의 negative sequence만 가리는지 식 (8)–(9)에서 확인한다.
-  - **원문에서 읽을 부분:** [DeepSeek-V3.2 v1 §3.1, 식 (5)–(9)](https://arxiv.org/pdf/2512.02556v1).
+- [ ] MiMo가 verifier-RL에서 code test 난도, dynamic sampling, easy-data re-sampling, Seamless Rollout Engine을 왜 함께 설계했는지 설명할 수 있다.
+  - **짚고 갈 개념:** rule-based reward, test-case difficulty, strict/soft partial reward, effective gradient, dynamic sampling, straggler, asynchronous reward computation.
+  - **함께 읽을 자료와 범위:** [W08 개념 경로 §3](../../background/w08.md#mimo-verifier-rl) → MiMo §3.1–§3.4. GRPO 기본식은 [W07](../../background/w07.md#verifiable-rl)에서 가져오되, MiMo의 reward/sampling/engine을 R1 recipe로 바꾸어 쓰지 않는다.
+  - **원문에서 읽을 부분:** [MiMo v2 §3.1–§3.4.1, Fig. 5–6, §3.6](https://arxiv.org/pdf/2505.07608v2).
 
-- [ ] V3.2가 thinking tool-use를 위한 context policy·cold start를 만들고, general-agent 합성 pipeline에서 environment·toolset·task·solution·verifier를 어떤 제약으로 함께 만드는지 설명할 수 있다.
-  - **짚고 갈 개념:** role-aware context retention, `<think>`/tool-call system prompt, tool-interface restriction, verifier, iterative difficulty increase, non-zero pass@100 filter, synthetic-task transfer.
-  - **함께 읽을 자료와 범위:** [W08 개념 경로 §3–§4](../../background/w08.md#thinking-agent) → V3.2 §3.2.1–§3.2.3. solution 함수가 tool call·논리 계산만 수행하고 DB에 직접 접근할 수 없다는 제약, 그리고 §4.3의 난도와 transfer를 각각 표시한다.
-  - **원문에서 읽을 부분:** [DeepSeek-V3.2 v1 §3.2.1–§3.2.3, Fig. 4, Table 1, Appendix B Tables 6–8, §4.3 Fig. 5, §4.4 Fig. 6](https://arxiv.org/pdf/2512.02556v1).
+- [ ] Flash가 MiMo의 dense GQA model을 hybrid SWA/GA·lightweight MTP로 바꾸고, domain teacher MOPD와 MoE rollout system을 어떻게 결합했는지 설명할 수 있다.
+  - **짚고 갈 개념:** sliding-window/global attention, learnable sink logit, self-speculative decoding, reverse-KL advantage, domain teacher routing, Rollout Routing Replay, sequence scheduler.
+  - **함께 읽을 자료와 범위:** [W08 개념 경로 §4](../../background/w08.md#flash-changes) → SWA/GA의 [Longformer v2 §3–§3.1](https://arxiv.org/abs/2004.05150v2), sink의 [gpt-oss model card v1 §2.2](https://arxiv.org/pdf/2508.10925v1), student rollout distillation의 [On-Policy Distillation v3 §2–§3](https://arxiv.org/pdf/2306.13649v3). 각각 Flash가 본문에서 직접 인용한 배경이며, MOPD 자체는 Flash의 조합이다.
+  - **원문에서 읽을 부분:** [MiMo-V2-Flash v2 §2.1–§2.3, Fig. 2, 식 (1)–(4), §4.1·§4.4 식 (5)–(9), §4.6, §5.1–§5.2](https://arxiv.org/pdf/2601.02780v2).
 
 ## 팀별 분석
 
@@ -43,6 +45,8 @@
 
 ## 참고 자료
 
-- [DeepSeek-V3.2 v1](https://arxiv.org/abs/2512.02556v1)
-- [DeepSeek-V2 v5](https://arxiv.org/abs/2405.04434v5)
-- [Fast Transformer Decoding / MQA v1](https://arxiv.org/abs/1911.02150v1)
+- [MiMo v2](https://arxiv.org/abs/2505.07608v2)
+- [MiMo-V2-Flash v2](https://arxiv.org/abs/2601.02780v2)
+- [Longformer v2](https://arxiv.org/abs/2004.05150v2)
+- [On-Policy Distillation of Language Models v3](https://arxiv.org/abs/2306.13649v3)
+- [gpt-oss-120b & gpt-oss-20b Model Card v1](https://arxiv.org/abs/2508.10925v1)

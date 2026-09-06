@@ -27,7 +27,7 @@
 
 ### 이번 시즌의 목표
 
-- [ ] LLaMA 1·Llama 2를 포함한 22편을 읽고, 핵심 기법이 해결하려는 문제와 이전 방법과의 차이를 설명합니다.
+- [ ] 기술 보고서 21편과 Qwen1.5 공식 출시 자료를 읽고, 핵심 기법이 해결하려는 문제와 이전 방법과의 차이를 설명합니다.
 - [ ] 같은 보고서를 다섯 관점으로 분석해, 구조·데이터·학습의 연결과 설계 선택을 뒷받침하는 실험 근거를 정리합니다.
 - [ ] 시즌 안에 주차별 공동 Markdown 문서 16개를 완성합니다. 각 문서에는 논문별 학습목표, 배경 개념, 다섯 팀의 분석, 원문 근거와 토론 내용을 담습니다.
 
@@ -42,6 +42,7 @@
 | 진행 방식 | 가짜연구소 Discord 온라인 모임, 세부 채널 추후 안내 |
 | 정규 참여자 | 약 10명 |
 | 분석팀 | 5개 팀, 팀당 2명 기본 |
+| 개인 준비시간 | 주당 3–4시간을 기준으로 공통 읽기와 팀별 심화 배분 |
 | 주간 기록 | 주차별 Markdown 문서 1개 |
 | 시즌 이후 (선택) | LLM 계보·기술 변화와 모델 비교 자료 정리 |
 
@@ -78,26 +79,26 @@ Transformer와 LLM의 기본적인 학습 과정을 이해하고 있으며, 원�
 
 ## 🗺️ 16주 커리큘럼과 핵심 주제
 
-LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
+기술 보고서 21편과 Qwen1.5 공식 출시 자료를 16주 동안 읽습니다. LLaMA 1·Llama 2는 각각 한 주로 나누고, Qwen1.5·Qwen2와 Qwen2.5·Qwen3는 두 모델씩 묶습니다.
 
 | 주차 | Technical Report | 핵심 주제 |
 | --- | --- | --- |
-| W01 | [LLaMA 1](https://arxiv.org/abs/2302.13971) → [Llama 2](https://arxiv.org/abs/2307.09288) | LLaMA 구성요소, Llama 2 구조 변경과 선호 ranking·PPO |
-| W02 | [Qwen1.5 공식 자료](https://qwenlm.github.io/blog/qwen1.5/) → [Qwen2](https://arxiv.org/abs/2407.10671) → [Qwen2.5](https://arxiv.org/abs/2412.15115) | 구조·BBPE 계승과 instruction 선별·합성·검증 |
-| W03 | [Qwen3](https://arxiv.org/abs/2505.09388) | 생각/비생각 모드, 생각 예산과 교사 이전 |
-| W04 | [DeepSeek-V2](https://arxiv.org/abs/2405.04434) | MLA의 KV 압축·위치 분리와 DeepSeekMoE의 분할·공유 |
-| W05 | [DeepSeek-V3](https://arxiv.org/abs/2412.19437) | MoE 균형, sequential MTP와 FP8 학습 |
-| W06 | [DeepSeek-R1](https://arxiv.org/abs/2501.12948) | pure RL, cold start와 추론 증류의 경계 |
-| W07 | [MiMo](https://arxiv.org/abs/2505.07608) → [MiMo-V2-Flash](https://arxiv.org/abs/2601.02780) | 추론·배포 구조와 학생 trajectory 기반 MOPD |
-| W08 | [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556) | DSA의 선택 학습과 검증 가능한 agent 과제 합성 |
-| W09 | [DeepSeek-V4](https://arxiv.org/abs/2606.19348) | CSA/HCA 압축과 full-vocabulary OPD의 비용 |
-| W10 | [Qwen3.8-Next](https://arxiv.org/abs/2608.30320) | GDN·QSA 학습, GR·n-gram과 행렬별 Muon 적용 |
-| W11 | [GLM-4.5](https://arxiv.org/abs/2508.06471) | 전문가 통합, reasoning RL 설계와 agent SFT 합성 |
-| W12 | [GLM-5](https://arxiv.org/abs/2602.15763) | 비동기 장기 agent RL과 학습 신호 보존 |
-| W13 | [VibeThinker-1.5B](https://arxiv.org/abs/2511.06221) → [VibeThinker-3B](https://arxiv.org/abs/2606.16140) | SSP, seed-to-trace curriculum과 MGPO·Long2Short |
-| W14 | [LFM2](https://arxiv.org/abs/2511.23404) | 기기 실측 탐색, short convolution과 Top-K 증류 |
-| W15 | [Motif 2](https://arxiv.org/abs/2511.07464) → [Motif 3](https://arxiv.org/abs/2608.09119) | GDA→GDLA, Parallel Muon과 domain별 teacher 신호 |
-| W16 | [Solar Open](https://arxiv.org/abs/2601.07022) → [Solar Open 2](https://arxiv.org/abs/2607.20062) | 한국어 데이터 설계와 선택적 구조 전이 |
+| W01 | [LLaMA 1 v1](https://arxiv.org/abs/2302.13971v1) | 기존 Transformer 개선의 recipe · optimizer · compute/token budget |
+| W02 | [Llama 2 v2](https://arxiv.org/abs/2307.09288v2) | LLaMA 1 recipe의 유지와 구조 변화 · preference reward model · iterative RLHF |
+| W03 | [Qwen1.5 공식 자료](https://qwenlm.github.io/blog/qwen1.5/) → [Qwen2 (v4)](https://arxiv.org/abs/2407.10671v4) | 7B MHA→GQA · long-context 처리 · dense-to-MoE initialization · instruction pool과 scalable synthesis |
+| W04 | [Qwen2.5 (v2)](https://arxiv.org/abs/2412.15115v2) → [Qwen3 (v1)](https://arxiv.org/abs/2505.09388v1) | Qwen2.5 합성·검증과 계승 경계 · 생각/비생각 모드 통합 · 생각 예산 · strong-to-weak distillation |
+| W05 | [DeepSeek-V2 (v5)](https://arxiv.org/abs/2405.04434v5) | MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형 |
+| W06 | [DeepSeek-V3 (v2)](https://arxiv.org/abs/2412.19437v2) | 채택한 auxiliary-loss-free MoE 균형 · sequential MTP · FP8 mixed-precision 학습 |
+| W07 | [DeepSeek-R1 (v2)](https://arxiv.org/abs/2501.12948v2) | R1-Zero의 pure RL · readable reasoning을 위한 다단계 post-training · 증류와 직접 RL의 조건부 비교 |
+| W08 | [MiMo (v2)](https://arxiv.org/abs/2505.07608v2) → [MiMo-V2-Flash (v2)](https://arxiv.org/abs/2601.02780v2) | MiMo의 reasoning data·verifier-RL → Flash의 hybrid SWA/GA·deployment MTP·MOPD |
+| W09 | [DeepSeek-V3.2 (v1)](https://arxiv.org/abs/2512.02556v1) | MLA 위 DSA indexer·top-k KV 선택 · scalable GRPO · thinking agent context·환경 합성 |
+| W10 | [DeepSeek-V4 (v1)](https://arxiv.org/abs/2606.19348v1) | CSA의 block compression+DSA · HCA의 강한 dense compression · specialist→OPD 통합 |
+| W11 | [Qwen3.8-Next (v1)](https://arxiv.org/abs/2608.30320v1) | GDN·전역 주의·QSA의 역할 분담, GR·n-gram memory, TP 환경의 Muon 적용 |
+| W12 | [GLM-4.5 (v1)](https://arxiv.org/abs/2508.06471v1) | 전문 모델의 SFT·RL과 능력 통합, reasoning/agent RL의 국소 설계, agent SFT 합성 |
+| W13 | [GLM-5 (v2)](https://arxiv.org/abs/2602.15763v2) | 비동기 agent RL의 안정화, token-정렬 최적화, 검증 가능한 장기 agent 환경 |
+| W14 | [VibeThinker-1.5B (v1)](https://arxiv.org/abs/2511.06221v1) → [VibeThinker-3B (v1)](https://arxiv.org/abs/2606.16140v1) | SSP의 다양성 우선 증류 · 3B의 seed-to-trace curriculum · MGPO와 Long2Short |
+| W15 | [Motif 2 v1](https://arxiv.org/abs/2511.07464v1) → [Motif 3 v1](https://arxiv.org/abs/2608.09119v1) | GDA→GDLA의 신호·잡음 분리와 latent KV · Parallel Muon · seven-teacher MOPD |
+| W16 | [Solar Open v1](https://arxiv.org/abs/2601.07022v1) → [Solar Open 2 v2](https://arxiv.org/abs/2607.20062v2) | 저자원 언어 데이터·tokenizer·curriculum · NoPE 상태 · 선택적 weight transfer |
 
 ### 논문 선정 원칙
 
@@ -160,9 +161,9 @@ LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
 
 ## 🧑‍🤝‍🧑 How We Work
 
-1. **모임 전 — 읽기·준비:** 모두 해당 주차의 논문 전체를 읽고, 소속 팀의 관점에서 발표를 준비합니다. 두 편을 묶은 주차는 두 편 모두 읽습니다. 분석 내용과 원문 근거, 이해되지 않은 개념과 토론할 질문을 주차별 공동 문서에 모읍니다.
+1. **모임 전 — 읽기·준비:** 모두 해당 주차 주 자료의 전체 흐름과 공통 핵심 범위를 읽고, 소속 팀에서 맡은 한 갈래를 심화합니다. 두 자료를 묶은 주차는 양쪽 흐름을 확인하고 정독을 팀 안에서 나눕니다. 개인 준비는 주당 3–4시간을 기준으로 하며, [주차별 읽기 분량과 분담](docs/background/workload.md)에 따라 필요한 Background 원전의 지정 절만 읽습니다. 전체 배경 목록을 각자 모두 정독하는 과제로 삼지 않습니다. 분석과 원문 근거, 질문은 공동 문서에 모읍니다.
 2. **토요일 모임 — 발표·토론:** 다섯 팀이 준비한 내용을 공유합니다. 배경 개념을 짚고, 주요 설계 선택과 실험 결과를 함께 검토하며 준비한 질문을 토론합니다.
-3. **모임 후 — 공동 문서 정리:** 토론에서 확인한 내용과 남은 질문을 반영해 그 주의 문서 하나로 정리합니다. 참여자들이 돌아가며 주간 편집자를 맡아 팀별 내용을 취합하고 중복된 설명과 원문 링크를 점검합니다.
+3. **모임 후 — 공동 문서 정리:** 세 학습목표를 함께 설명할 수 있는지 확인하고, 토론에서 확인한 내용과 남은 질문을 반영해 그 주의 문서 하나로 정리합니다. 참여자들이 돌아가며 주간 편집자를 맡아 팀별 내용을 취합하고 중복된 설명과 원문 링크를 점검합니다.
 
 ## 🔭 시즌 이후: LLM 계보와 기술 변화 정리 (선택)
 
@@ -177,6 +178,7 @@ LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
 ## 📚 참고 자료
 
 - [주차별 논문과 공동 문서](docs/weeks/README.md): 16주 학습목표와 읽기 범위를 확인하고, 매주 분석과 토론 내용을 채워갑니다.
+- [주차별 읽기 분량과 분담](docs/background/workload.md): 개인 준비 3–4시간에 맞춘 공통 범위와 담당 심화를 확인합니다.
 - [주차별 Background 읽기 지도](docs/background/README.md#week-map): 본문 구성요소별 필요한 개념, 배경 원전과 읽을 범위, 이전 방법과의 차이를 확인합니다.
 - [Awesome LLM Technical Reports](docs/awesome-technical-reports.md): 함께 읽는 보고서와 추가 읽기 후보를 모은 목록입니다.
 

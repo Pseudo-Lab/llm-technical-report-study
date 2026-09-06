@@ -1,31 +1,31 @@
-# W04 — DeepSeek-V2
+# W04 — Qwen2.5 → Qwen3
 
-[주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W04 Background](../../background/w04.md) · [주간 템플릿](../../../templates/week.md)
 
-> 목표에 앞서 [W04 구성요소 배경 가이드](../../background/w04.md)를 읽는다. MLA·MoE 식뿐 아니라 BBPE/data filtering, device routing·token dropping, parallel training, YaRN, SFT·reward·online RL까지 보고서 본문 순서로 연결한다.
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 
-- 논문: DeepSeek-V2
-- arXiv: [DeepSeek-V2 (v5)](https://arxiv.org/abs/2405.04434v5)
-- 핵심 주제: MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형
+- 논문: Qwen2.5 → Qwen3
+- arXiv: [Qwen2.5 (v2)](https://arxiv.org/abs/2412.15115v2) → [Qwen3 (v1)](https://arxiv.org/abs/2505.09388v1)
+- 핵심 주제: Qwen2.5 합성·검증과 계승 경계 · 생각/비생각 모드 통합 · 생각 예산 · strong-to-weak distillation
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
 ## 학습목표
 
-- [ ] MLA가 MHA·MQA·GQA와 비교해 decoding 중 무엇을 저장하는지 설명할 수 있다.
-  - **짚고 갈 개념:** autoregressive decoding, KV cache, MHA, MQA, GQA.
-  - **함께 읽을 자료와 범위:** [Transformer v7](https://arxiv.org/pdf/1706.03762v7) §3.2.1–§3.2.2, [MQA v1](https://arxiv.org/pdf/1911.02150v1) §2.4·§3–§3.1, [GQA v3](https://arxiv.org/abs/2305.13245v3) §2.1–§2.2에서 KV 공유 범위를 비교한다.
-  - **원문에서 읽을 부분:** [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.1.1 “Preliminaries: Standard Multi-Head Attention”과 §2.1.4 “Comparison of Key-Value Cache”.
-- [ ] latent KV 압축과 decoupled RoPE가 위치 정보를 보존하는 흐름을 예시로 설명할 수 있다.
-  - **짚고 갈 개념:** low-rank projection, latent vector, RoPE, positional key.
-  - **함께 읽을 자료와 범위:** [RoFormer v5](https://arxiv.org/abs/2104.09864v5) §3.2·§3.4.2의 rotary position embedding.
-  - **원문에서 읽을 부분:** [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.1.2 “Low-Rank Key-Value Joint Compression”–§2.1.3 “Decoupled Rotary Position Embedding”.
-- [ ] DeepSeekMoE의 fine-grained routed expert와 shared expert가 전문화·지식 중복을 어떻게 나누며, device-limited routing이 통신량을 어떻게 제한하는지 설명할 수 있다.
-  - **짚고 갈 개념:** routed/shared expert · top-k gate · expert parallelism · device-limited routing · load-balance auxiliary loss
-  - **함께 읽을 자료와 범위:** [DeepSeekMoE v1](https://arxiv.org/pdf/2401.06066v1) §2–§3.3을 먼저 읽고, [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.2.1–§2.2.3에서 V2의 device-level·communication balance까지 확인한다. W05에서는 이 auxiliary-loss 계열을 loss-free bias update로 바꾼다는 점만 비교한다.
-  - **원문에서 읽을 부분:** [DeepSeek-V2 v5 §2.2.1–§2.2.3, Fig. 4, 식 (20)–(31) — DeepSeekMoE](https://arxiv.org/pdf/2405.04434v5)
+- [ ] Qwen2.5가 유지한 dense decoder·BBPE·long-context recipe와 Qwen3의 QKV-bias 제거·QK-Norm·shared-expert 제거·global-batch load balance를 구분해 설명할 수 있다.
+  - **짚고 갈 개념:** GQA · KV cache · SwiGLU · RoPE · pre-RMSNorm · BBPE regular/control token · DCA · YaRN · QK-Norm · fine-grained/shared-routed expert · global-batch load-balancing loss
+  - **함께 읽을 자료와 범위:** [Qwen2.5 handoff와 Qwen3 architecture](../../background/w04.md#qwen25-handoff)를 먼저 읽고, GQA v3 §2.1–§2.2, DCA v2 §1·§3.1–§3.4, YaRN v3 §2–§4, DeepSeekMoE v1 §3.1–§3.2·Fig.2, Demons in the Detail v1 §2–§3·Eq. (3)–(6)·Algorithm 1을 따른다.
+  - **원문에서 읽을 부분:** [Qwen2.5 v2 §2·§3.3](https://arxiv.org/abs/2412.15115v2), [Qwen3 v1 §2·§3.2, Table 1–2](https://arxiv.org/abs/2505.09388v1). Qwen3이 Qwen2.5의 22 control token이나 Turbo 1M recipe를 그대로 채택했다고 쓰지 않는다.
+- [ ] Qwen2.5의 합성 응답 검증·system-prompt consistency와 Qwen3의 thinking/non-thinking 통합이 각각 어떤 데이터를 만들고 어떤 행동을 학습시키는지 설명할 수 있다.
+  - **짚고 갈 개념:** Math/Coder 합성 · rejection sampling·reward model · sandbox 실행 · verification code·unit test · pass/fail의 SFT/DPO 재사용 · system-prompt consistency · self-rejection sampling · thinking/non-thinking SFT data · quality checklist · `/think`·`/no think` · 빈 생각 블록 · 다회차 전환 · 추론 토큰 예산 · 강제 중단 · 테스트 시 계산량 · 긴 문맥 검색 · 추론 간섭
+  - **함께 읽을 자료와 범위:** [합성·검증 가이드](../../background/w04.md#qwen25-synthesis)에서 Qwen2.5 §3.1·§4.1(2)–(4)·(8)–(9)·§4.2를 확인한다. 담당 심화는 Math/Coder, AutoIF, Ditto 중 한 갈래로 나누며, 각각 [Qwen2.5-Math v1 §3.1.1–§3.2.1](https://arxiv.org/abs/2409.12122v1)·[Qwen2.5-Coder v1 §4.1](https://arxiv.org/abs/2409.12186v1), AutoIF §3.2–§3.4, Ditto §3.1–§3.4의 지정 범위를 읽는다. 이어 Qwen3 §4.1–§4.3의 reasoning data·non-thinking data·chat template을 비교한다. 생각 예산의 강제 중단·긴 문맥 한계는 담당 심화로 §4.7과 Appendix A.1.1을 읽는다.
+  - **원문에서 읽을 부분:** [Qwen2.5 v2 §3.1·§4.1(2)–(4)·(8)–(9)·§4.2](https://arxiv.org/abs/2412.15115v2), [Qwen3 v1 §4.1–§4.3·§4.7, Table 9, Appendix A.1.1](https://arxiv.org/abs/2505.09388v1). Qwen2.5의 검증·system-prompt pipeline을 Qwen3가 그대로 채택했다고 가정하지 않고, 입력 문맥과 출력 생각 예산도 구분한다.
+- [ ] Qwen3의 strong-to-weak distillation이 생각·비생각 두 모드의 교사 출력을 옮긴 뒤, 학생이 생성한 같은 모드 prefix에서 logit을 맞추는 이유를 직접 강화학습과 비교해 설명할 수 있다.
+  - **짚고 갈 개념:** mode-conditioned teacher distribution · off-policy response distillation · on-policy logit alignment · KL divergence · exploration
+  - **함께 읽을 자료와 범위:** [Qwen3 v1 §4.5](https://arxiv.org/abs/2505.09388v1)에서 `/think`·`/no think` teacher response를 모두 쓰는 off-policy 단계와 학생 생성 sequence에서 logit을 맞추는 on-policy 단계를 읽고, §4.7 Table 21의 동일 checkpoint 직접 RL 비교로 이어 간다.
+  - **원문에서 읽을 부분:** [Qwen3 v1 §4.5·§4.7, Table 21](https://arxiv.org/abs/2505.09388v1). Qwen2.5의 offline DPO/online GRPO는 배경 recipe이지만 Qwen3 strong-to-weak two-phase loss와 같은 방법으로 합치지 않는다.
 
 ## 팀별 분석
 
@@ -43,7 +43,5 @@
 
 ## 참고 자료
 
-- [DeepSeek-V2 v5](https://arxiv.org/abs/2405.04434v5)
-- [Grouped-Query Attention v3](https://arxiv.org/abs/2305.13245v3)
-- [Fast Transformer Decoding (MQA) v1](https://arxiv.org/abs/1911.02150v1)
-- [RoFormer v5](https://arxiv.org/abs/2104.09864v5)
+- [Qwen2.5 Technical Report (v2)](https://arxiv.org/abs/2412.15115v2)
+- [Qwen3 Technical Report (v1)](https://arxiv.org/abs/2505.09388v1)

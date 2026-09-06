@@ -1,30 +1,33 @@
-# W02 — Qwen1.5 → Qwen2 → Qwen2.5
+# W02 — Llama 2
 
-[주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W02 Background](../../background/w02.md) · [주간 템플릿](../../../templates/week.md)
+
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 
-- 논문: Qwen1.5 → Qwen2 → Qwen2.5
-- arXiv: [Qwen2 (v4)](https://arxiv.org/abs/2407.10671v4) → [Qwen2.5 (v2)](https://arxiv.org/abs/2412.15115v2)
-- 핵심 주제: Qwen1.5 대비 구조·BBPE · instruction 선별·확장 · 검증 신호별 합성 데이터
-- Qwen1.5 비교 자료: [공식 출시 글](https://qwenlm.github.io/blog/qwen1.5/) · [고정 checkpoint 비교](../../background/qwen.md#qwen-architecture) — 논문과 구현 자료를 구분해 읽습니다.
+- 논문: Llama 2
+- arXiv: [Llama 2 v2](https://arxiv.org/abs/2307.09288v2)
+- 핵심 주제: LLaMA 1 recipe의 유지와 구조 변화 · preference reward model · iterative RLHF
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
 ## 학습목표
 
-- [ ] Qwen1.5 → Qwen2 → Qwen2.5의 구조·토크나이저 변경표를 만들고, 유지된 요소와 모델 크기에 따라 달라지는 요소를 설명할 수 있다.
-  - **짚고 갈 개념:** MHA/GQA의 KV-head 공유 · dense/MoE 분기 · DCA와 YaRN · 학습 길이와 확장 길이 · BBPE의 regular/control token
-  - **함께 읽을 자료와 범위:** [Qwen 계열 구조·토크나이저 가이드](../../background/qwen.md#qwen-architecture)의 대응 7B config와 GQA·DCA·YaRN·MoE 초기화·Qwen tokenizer 원전 범위를 따른다. Qwen1.5-7B의 MHA→Qwen2-7B의 GQA를 계열 전체 변화로 일반화하지 않는다.
-  - **원문에서 읽을 부분:** [Qwen2 v4 §2.1–§2.2·§3.2](https://arxiv.org/abs/2407.10671v4), [Qwen2.5 v2 §2·§3.3](https://arxiv.org/abs/2412.15115v2). Qwen1.5는 공식 자료·고정 config를 대조한다. BBPE의 계승과 control token 확장, 32K 학습과 128K 처리 주장을 각각 구분한다.
-- [ ] Qwen2가 instruction pool을 선별·확장하고 역할극 자료로 재구성하는 방법을, Qwen2.5의 system prompt·대화 일관성 설계와 연결해 설명할 수 있다.
-  - **짚고 갈 개념:** instruction selection · instruction evolution · ontology extraction · profile-conditioned role-play · system-prompt consistency
-  - **함께 읽을 자료와 범위:** [Instruction pool의 선별·확장](../../background/qwen.md#instruction-pool)에서 각 방법의 본문 인용과 원전을 읽고, [Ditto v1 §3.2–§3.4](https://arxiv.org/abs/2401.12474v1)의 profile→질문→역할 응답을 따른다. Qwen2.5의 robust system prompt가 Ditto의 전체 인물 생성 pipeline을 채택한 것인지는 본문이 밝힌 범위로 판단한다.
-  - **원문에서 읽을 부분:** [Qwen2 v4 §4.1.1–§4.1.2](https://arxiv.org/abs/2407.10671v4), [Qwen2.5 v2 §4.1(8)](https://arxiv.org/abs/2412.15115v2). instruction을 고르는 단계, 새 instruction을 만드는 단계, 조건에 맞는 response를 만드는 단계를 구분한다.
-- [ ] 지시 수행·수학·코드의 합성 데이터를 검증할 때 checker·정답·보상 모델·sandbox·critic이 제공하는 신호의 차이를 설명할 수 있다.
-  - **짚고 갈 개념:** executable constraint · verification code/unit test · rejection sampling · final-answer check · reward model · critic agreement
-  - **함께 읽을 자료와 범위:** [과제별 합성·검증 가이드](../../background/qwen.md#task-synthesis)의 AutoIF §3.2–§3.4, Qwen2.5-Math §3.1.1–§3.2.1, Qwen2.5-Coder §4.1을 읽는다. [IFEval v1 §2.1–§2.2](https://arxiv.org/abs/2311.07911v1)은 Qwen의 평가 자료로 구분한다.
-  - **원문에서 읽을 부분:** [Qwen2 v4 §4.1.2](https://arxiv.org/abs/2407.10671v4), [Qwen2.5 v2 §3.1·§4.1(2)–(4)·(9)·§4.2·§5.2.1](https://arxiv.org/abs/2412.15115v2). instruction→checker/test→실행→pass/fail→SFT/DPO 경로를 그린 뒤, 수학·코드·critic 필터가 같은 정확도 보장을 주는지 대조한다.
+- [ ] **Llama 2에서 유지된 LLaMA 1 recipe와 실제 구조 변화인 2K→4K context 및 large-model GQA를 분리하여, GQA가 KV cache와 inference scalability를 어떻게 바꾸는지 설명할 수 있다.**
+  - **짚고 갈 개념:** causal MHA, KV cache, MQA, GQA, KV head 수, context length, inference throughput, retained BPE/RMSNorm/SwiGLU/RoPE/AdamW. context length·GQA는 Llama 2의 명시적 변화지만 tokenizer와 기본 block recipe는 계승 항목이다.
+  - **함께 읽을 자료와 범위:** [LLaMA 가이드의 Llama 2 delta](../../background/w02.md#llama2-delta)에서 유지/변경/data-scale을 먼저 나눈다. 이어 [GQA v3 §2.1–§2.2](https://arxiv.org/abs/2305.13245v3)와 Llama 2 v2 Appendix A.2.1의 MHA·MQA·8-KV-projection GQA 비교, Figure 24만 읽는다. LLaMA 1의 BPE·RMSNorm·SwiGLU·RoPE 원전은 W01에서 읽었으므로 여기서는 “유지”를 확인하는 데만 재방문한다.
+  - **원문에서 읽을 부분:** [Llama 2 v2 §2.1–§2.2, Table 1, Appendix A.2.1, Tables 16–18, Figure 24](https://arxiv.org/abs/2307.09288v2). 7B·13B가 아니라 34B·70B에 GQA를 사용한 적용 범위, 2T pretraining token과 new public-data mixture를 architecture difference와 분리해 기록한다.
+
+- [ ] **사람의 선호 쌍과 4단계 preference rating을 helpfulness/safety reward model의 ranking loss와 margin으로 바꾸는 과정을 수식으로 설명할 수 있다.**
+  - **짚고 갈 개념:** chosen/rejected pair, scalar reward head, pairwise ranking loss, preference-rating margin, helpfulness/safety reward model, reward-model distribution shift. reward model은 다음-token head 대신 prompt–response에 scalar를 내며, pair를 학습할 때만 chosen/rejected 순서를 쓴다.
+  - **함께 읽을 자료와 범위:** [InstructGPT v1 §3.1–§3.2](https://arxiv.org/abs/2203.02155v1)로 SFT→human preference→reward model이라는 공통 골격만 확인한다. 이후 Llama 2 v2 §3.2.1–§3.2.2와 Eq. (1)–(2), Appendix A.3.2–A.3.4에서 Meta의 rating·margin·도움됨/안전성 분리를 읽는다. InstructGPT의 dataset 수치나 training recipe를 Llama 2의 사실로 반복하지 않는다.
+  - **원문에서 읽을 부분:** [Llama 2 v2 §3.2.1–§3.2.2, Eq. (1)–(2), Tables 7–8, Figure 6](https://arxiv.org/abs/2307.09288v2). `-log σ(rθ(x,yc)-rθ(x,yr))`와 rating-based margin을 추적하고, 왜 safety/helpfulness를 separate RM으로 둬야 하는지와 preference pair가 비슷해질수록 ranking이 어려워지는 한계를 구분한다.
+
+- [ ] **Llama 2가 rejection sampling과 PPO를 어떤 순서로 iterative RLHF에 결합하며, KL penalty가 reward hacking과 policy drift를 왜 제한하는지 설명할 수 있다.**
+  - **짚고 갈 개념:** K candidate generation, reward re-ranking, rejection-sampled SFT, PPO, policy objective, reference-policy KL penalty, reward hacking, iterative data refresh. K개 중 최고 reward 응답으로 재학습하는 rejection sampling은 PPO policy update와 같은 연산이 아니다.
+  - **함께 읽을 자료와 범위:** [PPO v2 §3](https://arxiv.org/abs/1707.06347v2)에서 clipped policy update의 목적만 확인한다. 이어 Llama 2 v2 §3.2.3와 Eq. (3)–(4), Figures 7–8을 읽어 K-sample selection, 이전 version sample을 함께 보존한 변화, PPO reward objective와 KL penalty를 순서대로 연결한다. 이 주차에서는 reward-model ranking loss를 다시 유도하지 않고, 앞 목표의 RM을 fixed reward estimator로 받아 쓴다.
+  - **원문에서 읽을 부분:** [Llama 2 v2 §3.2.3, Eq. (3)–(4), Figures 7–8, §5.1–§5.2](https://arxiv.org/abs/2307.09288v2). RLHF V4 이전의 rejection sampling과 이후 PPO 결합, safety prompt에서 safety RM 우선 사용, reference-policy KL이 높은 RM score와 낮은 human evaluation으로 나타나는 reward hacking을 완화하려는 경계를 확인한다.
 
 ## 팀별 분석
 
@@ -42,5 +45,4 @@
 
 ## 참고 자료
 
-- [Qwen2 Technical Report (v4)](https://arxiv.org/abs/2407.10671v4)
-- [Qwen2.5 Technical Report (v2)](https://arxiv.org/abs/2412.15115v2)
+- [Llama 2: Open Foundation and Fine-Tuned Chat Models (v2)](https://arxiv.org/abs/2307.09288v2)

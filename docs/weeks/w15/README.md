@@ -1,8 +1,8 @@
 # W15 — Motif 2 → Motif 3
 
-[주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W15 Background](../../background/w15.md) · [주간 템플릿](../../../templates/week.md)
 
-**구성요소 읽기 지도:** [Motif 2 → Motif 3: 구조 전이, MoE 안정화, specialist 통합](../../background/w15.md). GDA/GDLA만 떼어 읽지 말고 clone·mixture schedule·three-stage SFT·mHC·PolyNorm·router health·FSDP/EP/CP long-context system·teacher 분리를 먼저 확인한다.
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 

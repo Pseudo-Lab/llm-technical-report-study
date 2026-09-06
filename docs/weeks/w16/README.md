@@ -1,8 +1,8 @@
 # W16 — Solar Open → Solar Open 2
 
-[주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W16 Background](../../background/w16.md) · [주간 템플릿](../../../templates/week.md)
 
-**구성요소 읽기 지도:** [Solar Open → Solar Open 2: 언어 데이터, hybrid state, 전이와 agent 학습](../../background/w16.md). tokenizer·synthetic ratio·MoE routing·HSDP/precision·SFT data construction·SnapPO와 Solar Open 2의 NoPE/KDA/weight transfer/MOPD를 각각 다른 층으로 읽는다.
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 

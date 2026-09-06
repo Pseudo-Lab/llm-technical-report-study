@@ -1,31 +1,31 @@
-# W05 — DeepSeek-V3
+# W05 — DeepSeek-V2
 
-[주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W05 Background](../../background/w05.md) · [주간 템플릿](../../../templates/week.md)
 
-> 목표에 앞서 [W05 구성요소 배경 가이드](../../background/w05.md)를 읽는다. V3가 실제로 다루는 routing, packing/FIM/tokenizer, DualPipe/all-to-all, FP8 수치 설계, R1 distillation·reward·GRPO를 세 목표와 별개로 추적한다.
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 
-- 논문: DeepSeek-V3
-- arXiv: [DeepSeek-V3 (v2)](https://arxiv.org/abs/2412.19437v2)
-- 핵심 주제: 채택한 auxiliary-loss-free MoE 균형 · sequential MTP · FP8 mixed-precision 학습
+- 논문: DeepSeek-V2
+- arXiv: [DeepSeek-V2 (v5)](https://arxiv.org/abs/2405.04434v5)
+- 핵심 주제: MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
 ## 학습목표
 
-- [ ] V3가 채택한 auxiliary-loss-free balancing이 MoE routing 불균형을 줄이는 방식을 설명할 수 있다.
-  - **짚고 갈 개념:** MoE router, top-k routing, expert load, routing bias.
-  - **함께 읽을 자료와 범위:** [DeepSeekMoE v1](https://arxiv.org/pdf/2401.06066v1) §2–§3.3과 [Loss-Free Balancing v1](https://arxiv.org/pdf/2408.15664v1) §2–§3. 이 기법은 V3의 신규 제안이 아니라 선행 방법의 채택이다.
-  - **원문에서 읽을 부분:** [DeepSeek-V3 v2](https://arxiv.org/pdf/2412.19437v2) §2.1.2 “DeepSeekMoE with Auxiliary-Loss-Free Load Balancing”.
-- [ ] sequential MTP가 병렬 multi-token head와 달리 예측을 인과적으로 연결하는 방식을 설명할 수 있다.
-  - **짚고 갈 개념:** next-token prediction, causal chain, shared head, speculative decoding.
-  - **함께 읽을 자료와 범위:** [MTP v1](https://arxiv.org/pdf/2404.19737v1) §2 “Method”와 [Speculative Decoding v2](https://arxiv.org/pdf/2211.17192v2) §2.1–§2.3.
-  - **원문에서 읽을 부분:** [DeepSeek-V3 v2](https://arxiv.org/pdf/2412.19437v2) §2.2 “Multi-Token Prediction”–§2.2.2 “MTP Module”.
-- [ ] V3의 FP8 mixed-precision 설계가 tile/block scaling과 FP32 accumulation으로 정확도와 안정성을 관리하는 범위를 설명할 수 있다.
-  - **짚고 갈 개념:** FP8 format, tile/block scaling, outlier, FP32 accumulation.
-  - **함께 읽을 자료와 범위:** [FP8 Formats v2](https://arxiv.org/pdf/2209.05433v2) §2–§3.2로 format/range를 확인한 뒤, V3가 직접 인용한 [FP8-LM v2 §2.1–§2.2, Appendix A.2](https://arxiv.org/pdf/2310.18313v2)와 V3 §3.3.1–§3.3.3을 읽는다.
-  - **원문에서 읽을 부분:** [DeepSeek-V3 v2 §3.3.1–§3.3.3, Fig. 6–7, Appendix B.1 — FP8 Training](https://arxiv.org/pdf/2412.19437v2)
+- [ ] MLA가 MHA·MQA·GQA와 비교해 decoding 중 무엇을 저장하는지 설명할 수 있다.
+  - **짚고 갈 개념:** autoregressive decoding, KV cache, MHA, MQA, GQA.
+  - **함께 읽을 자료와 범위:** [Transformer v7](https://arxiv.org/pdf/1706.03762v7) §3.2.1–§3.2.2, [MQA v1](https://arxiv.org/pdf/1911.02150v1) §2.4·§3–§3.1, [GQA v3](https://arxiv.org/abs/2305.13245v3) §2.1–§2.2에서 KV 공유 범위를 비교한다.
+  - **원문에서 읽을 부분:** [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.1.1 “Preliminaries: Standard Multi-Head Attention”과 §2.1.4 “Comparison of Key-Value Cache”.
+- [ ] latent KV 압축과 decoupled RoPE가 위치 정보를 보존하는 흐름을 예시로 설명할 수 있다.
+  - **짚고 갈 개념:** low-rank projection, latent vector, RoPE, positional key.
+  - **함께 읽을 자료와 범위:** [RoFormer v5](https://arxiv.org/abs/2104.09864v5) §3.2·§3.4.2의 rotary position embedding.
+  - **원문에서 읽을 부분:** [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.1.2 “Low-Rank Key-Value Joint Compression”–§2.1.3 “Decoupled Rotary Position Embedding”.
+- [ ] DeepSeekMoE의 fine-grained routed expert와 shared expert가 전문화·지식 중복을 어떻게 나누며, device-limited routing이 통신량을 어떻게 제한하는지 설명할 수 있다.
+  - **짚고 갈 개념:** routed/shared expert · top-k gate · expert parallelism · device-limited routing · load-balance auxiliary loss
+  - **함께 읽을 자료와 범위:** [DeepSeekMoE v1](https://arxiv.org/pdf/2401.06066v1) §2–§3.3을 먼저 읽고, [DeepSeek-V2 v5](https://arxiv.org/pdf/2405.04434v5) §2.2.1–§2.2.3에서 V2의 device-level·communication balance까지 확인한다. W06에서는 이 auxiliary-loss 계열을 loss-free bias update로 바꾼다는 점만 비교한다.
+  - **원문에서 읽을 부분:** [DeepSeek-V2 v5 §2.2.1–§2.2.3, Fig. 4, 식 (20)–(31) — DeepSeekMoE](https://arxiv.org/pdf/2405.04434v5)
 
 ## 팀별 분석
 
@@ -43,8 +43,7 @@
 
 ## 참고 자료
 
-- [DeepSeek-V3 v2](https://arxiv.org/abs/2412.19437v2)
-- [Auxiliary-Loss-Free Load Balancing v1](https://arxiv.org/abs/2408.15664v1)
-- [Multi-token Prediction v1](https://arxiv.org/abs/2404.19737v1)
-- [FP8 Formats for Deep Learning v2](https://arxiv.org/abs/2209.05433v2)
-- [FP8-LM v2](https://arxiv.org/abs/2310.18313v2)
+- [DeepSeek-V2 v5](https://arxiv.org/abs/2405.04434v5)
+- [Grouped-Query Attention v3](https://arxiv.org/abs/2305.13245v3)
+- [Fast Transformer Decoding (MQA) v1](https://arxiv.org/abs/1911.02150v1)
+- [RoFormer v5](https://arxiv.org/abs/2104.09864v5)
