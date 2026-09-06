@@ -1,28 +1,31 @@
-# W14 — LFM2
+# W14 — VibeThinker-1.5B → VibeThinker-3B
 
-[주차 목록](../README.md) · [주간 템플릿](../../../templates/week.md)
+[주차 목록](../README.md) · [W14 Background](../../background/w14.md) · [주간 템플릿](../../../templates/week.md)
 
-> 준비 중: 학습목표와 본문은 주차별 이슈에서 작성합니다.
+**읽기 분담:** [이번 주 공통 읽기와 팀별 심화](../../background/workload.md)를 기준으로 개인 준비 3–4시간을 배분합니다. 상세 Background는 공통 범위와 담당 갈래에 필요한 부분을 찾아 읽고, 세 학습목표는 모임 후 함께 설명할 수 있도록 정리합니다.
 
 ## 논문 정보
 
-- 논문: LFM2
-- arXiv: [LFM2](https://arxiv.org/abs/2511.23404)
-- 핵심 주제: 기기 실측을 통한 구조 선택 · convolution과 attention의 역할 분담 · 증류·사후학습과 품질·지연·메모리 비교
+- 논문: VibeThinker-1.5B → VibeThinker-3B
+- arXiv: [VibeThinker-1.5B (v1)](https://arxiv.org/abs/2511.06221v1) → [VibeThinker-3B (v1)](https://arxiv.org/abs/2606.16140v1)
+- 핵심 주제: SSP의 다양성 우선 증류 · 3B의 seed-to-trace curriculum · MGPO와 Long2Short
 - 모임 날짜: 추후 안내
 - 주간 편집자: 추후 안내
 
 ## 학습목표
 
-<!-- 아래 예시를 해당 논문의 구체적인 기법과 질문으로 바꿔 작성합니다. -->
-
-- [ ] [핵심 기법]이 해결하려는 문제와 [이전 기법]과의 차이를 설명할 수 있다.
-  - 필요한 배경 개념:
-  - 함께 읽을 자료와 범위:
-- [ ] [핵심 기법]의 동작을 수식이나 예시로 설명할 수 있다.
-  - 원문에서 확인할 절·그림·수식:
-- [ ] [주요 주장]을 뒷받침하는 실험 결과와 그 한계를 설명할 수 있다.
-  - 원문에서 확인할 실험·표:
+- [ ] VibeThinker-1.5B의 SSP가 단일 정답 정확도 중심 SFT와 달리 다양한 정답 경로를 먼저 확보하는 이유를 설명할 수 있다.
+  - **짚고 갈 개념:** Pass@1·Pass@K, solution spectrum, domain-aware probing, expert fusion.
+  - **함께 읽을 자료와 범위:** [W14 구성요소 가이드](../../background/w14.md)의 base, Pass@K, domain-aware probing·fusion 절을 먼저 읽고, [VibeThinker-1.5B v1](https://arxiv.org/abs/2511.06221v1) §2의 Pass@K 정의와 §3.1–§3.3의 spectrum·probing·fusion을 이어 읽는다. base architecture/tokenizer는 W03의 [Qwen 가이드](../../background/w03.md)를 재사용한다.
+  - **원문에서 읽을 부분:** [1.5B v1](https://arxiv.org/abs/2511.06221v1) §3.1 *The Spectrum-to-Signal Principle*, §3.2–3.3, Fig. 3.
+- [ ] **VibeThinker-3B가 신뢰 가능한 seed query에서 다경로 trace를 만들고 broad SFT에서 hard·long SFT로 옮기는 기준을 설명할 수 있다.**
+  - **짚고 갈 개념:** trusted supervision seed, query expansion, multi-path teacher sampling, majority vote, trace verification, n-gram decontamination, length–difficulty curriculum.
+  - **함께 읽을 자료와 범위:** [W14 구성요소 가이드](../../background/w14.md)의 trusted seed, multi-path trace/quality control, broad→hard·long SFT 절을 먼저 읽는다. [VibeThinker-1.5B v1](https://arxiv.org/abs/2511.06221v1) §3.3의 Pass@K 기반 specialist selection·fusion은 3B §2.1.2에서 이어받는 배경이다. 3B §2.1.1의 seed→query expansion→multiple trace→quality control은 새로 설명하는 데이터 구성 경로로 나누어 읽는다.
+  - **원문에서 읽을 부분:** [VibeThinker-3B v1](https://arxiv.org/abs/2606.16140v1) §2.1.1–§2.1.2, Figure 3. stage 2에서 trace가 5K보다 짧은 표본과 1.5B 8회 rollout의 error rate가 0.75보다 낮은 쉬운 문제를 제외하는 기준을 확인한다.
+- [ ] **MGPO의 능력 경계 가중과 Long2Short의 정답 trajectory 내 길이 재가중이 각각 무엇을 최적화하는지 설명할 수 있다.**
+  - **짚고 갈 개념:** group-relative advantage, empirical correctness \(p(q)\), maximum-entropy point, accuracy-first, length-aware reward redistribution, zero-sum shift.
+  - **함께 읽을 자료와 범위:** [W14 구성요소 가이드](../../background/w14.md)의 MGPO, Long2Short, offline self-distillation·CLR 절을 먼저 훑는다. GRPO의 공통 골격은 W07의 [DeepSeekMath v3](https://arxiv.org/abs/2402.03300v3) §4.1만 참조한다. 1.5B의 MGPO와 3B의 Long2Short은 같은 기법으로 뭉치지 말고, 전자는 문제 선택 가중이고 후자는 맞은 답들 사이의 효율 선호라는 점을 식으로 대조한다.
+  - **원문에서 읽을 부분:** [VibeThinker-1.5B v1](https://arxiv.org/abs/2511.06221v1) §3.4; [VibeThinker-3B v1](https://arxiv.org/abs/2606.16140v1) §2.2.1–§2.2.2, 식 (1)–(3). Long2Short에서 틀린 trajectory는 바꾸지 않고 맞은 trajectory 안에서만 보상이 이동하는지 확인한다.
 
 ## 팀별 분석
 

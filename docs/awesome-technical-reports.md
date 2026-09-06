@@ -16,33 +16,33 @@ arXiv 사전공개 논문과 저자·기관이 공개한 독립 논문 PDF를 �
 
 | 보고서 | 먼저 볼 부분 | 확인할 질문 | 연결 주차 |
 | --- | --- | --- | --- |
-| [Mistral 7B](https://arxiv.org/abs/2310.06825) · v1 | [§2](https://arxiv.org/html/2310.06825v1) | GQA의 KV 공유와 sliding-window attention의 직접 주의 범위는 무엇이 다른가? 층을 거친 정보 전달 범위와 rolling-buffer cache 크기는 어떻게 구분하는가? | [W01](weeks/w01/README.md) · [W07](weeks/w07/README.md) · [W14](weeks/w14/README.md) |
-| [Mixtral of Experts](https://arxiv.org/abs/2401.04088) · v1 | [§2–3](https://arxiv.org/html/2401.04088v1) | 토큰별 top-2 expert 선택에서 전체·활성 파라미터 수와 토큰당 연산량을 어떻게 구분하는가? | [W02](weeks/w02/README.md) · [W04](weeks/w04/README.md) · [W05](weeks/w05/README.md) |
-| [Kimi Linear: An Expressive, Efficient Attention Architecture](https://arxiv.org/abs/2510.26692) · v2 | [§1, §6.3](https://arxiv.org/html/2510.26692v2) | KDA와 full attention을 섞었을 때 고정 상태·KV cache·장문 처리 비용의 관계는 어떻게 달라지는가? | [W10](weeks/w10/README.md) · [W16](weeks/w16/README.md) |
+| [Mistral 7B](https://arxiv.org/abs/2310.06825) · v1 | [§2](https://arxiv.org/html/2310.06825v1) | GQA의 KV 공유와 sliding-window attention의 직접 주의 범위는 무엇이 다른가? 층을 거친 정보 전달 범위와 rolling-buffer cache 크기는 어떻게 구분하는가? | [W02](weeks/w02/README.md) · [W08](weeks/w08/README.md) |
+| [Mixtral of Experts](https://arxiv.org/abs/2401.04088) · v1 | [§2–3](https://arxiv.org/html/2401.04088v1) | 토큰별 top-2 expert 선택에서 전체·활성 파라미터 수와 토큰당 연산량을 어떻게 구분하는가? | [W03](weeks/w03/README.md) · [W05](weeks/w05/README.md) · [W06](weeks/w06/README.md) |
+| [Kimi Linear: An Expressive, Efficient Attention Architecture](https://arxiv.org/abs/2510.26692) · v2 | [§1, §6.3](https://arxiv.org/html/2510.26692v2) | KDA와 full attention을 섞었을 때 고정 상태·KV cache·장문 처리 비용의 관계는 어떻게 달라지는가? | [W11](weeks/w11/README.md) · [W16](weeks/w16/README.md) |
 
 ### 데이터와 사전학습
 
 | 보고서 | 먼저 볼 부분 | 확인할 질문 | 연결 주차 |
 | --- | --- | --- | --- |
-| [Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone](https://arxiv.org/abs/2404.14219) · v4 | [§2](https://arxiv.org/html/2404.14219v4) | 소형 모델의 데이터 선별·합성 데이터·단계별 학습과 온디바이스 제약을 어떻게 함께 고려하는가? | [W13](weeks/w13/README.md) · [W14](weeks/w14/README.md) |
-| [Phi-4 Technical Report](https://arxiv.org/abs/2412.08905) · v1 | [§2–4](https://arxiv.org/html/2412.08905v1) | 합성 데이터의 생성·선별·혼합과 사후학습은 각각 무엇을 바꾸는가? 구조 변경과 데이터 개선의 효과를 어떻게 구분하는가? | [W02](weeks/w02/README.md) · [W13](weeks/w13/README.md) |
-| [OLMo: Accelerating the Science of Language Models](https://arxiv.org/abs/2402.00838) · v4 | [§2, §5](https://arxiv.org/html/2402.00838v4) | 가중치 외에 데이터·코드·체크포인트·로그를 공개하면 어떤 학습 가설을 검증할 수 있는가? | [W01](weeks/w01/README.md) · [W02](weeks/w02/README.md) |
-| [2 OLMo 2 Furious](https://arxiv.org/abs/2501.00656) · v3 | [§3–4](https://arxiv.org/html/2501.00656v3) | 정규화와 학습 설정은 안정성에 어떤 영향을 주는가? Mid-training의 데이터 구성과 학습률 변화는 어떻게 비교하는가? | [W02](weeks/w02/README.md) · [W15](weeks/w15/README.md) |
-| [DeepSeek LLM: Scaling Open-Source Language Models with Longtermism](https://arxiv.org/abs/2401.02954) · v1 | [§3](https://arxiv.org/html/2401.02954v1) | Batch size·learning rate의 경험식과 모델·데이터 배분은 어떻게 다른 문제인가? 데이터나 학습 조건이 달라져도 같은 scaling law를 쓸 수 있는가? | [W04](weeks/w04/README.md) · [W10](weeks/w10/README.md) |
+| [Phi-3 Technical Report: A Highly Capable Language Model Locally on Your Phone](https://arxiv.org/abs/2404.14219) · v4 | [§2](https://arxiv.org/html/2404.14219v4) | 소형 모델의 데이터 선별·합성 데이터·단계별 학습과 온디바이스 제약을 어떻게 함께 고려하는가? | [W14](weeks/w14/README.md) |
+| [Phi-4 Technical Report](https://arxiv.org/abs/2412.08905) · v1 | [§2–4](https://arxiv.org/html/2412.08905v1) | 합성 데이터의 생성·선별·혼합과 사후학습은 각각 무엇을 바꾸는가? 구조 변경과 데이터 개선의 효과를 어떻게 구분하는가? | [W03](weeks/w03/README.md) · [W14](weeks/w14/README.md) |
+| [OLMo: Accelerating the Science of Language Models](https://arxiv.org/abs/2402.00838) · v4 | [§2, §5](https://arxiv.org/html/2402.00838v4) | 가중치 외에 데이터·코드·체크포인트·로그를 공개하면 어떤 학습 가설을 검증할 수 있는가? | [W01](weeks/w01/README.md) · [W03](weeks/w03/README.md) |
+| [2 OLMo 2 Furious](https://arxiv.org/abs/2501.00656) · v3 | [§3–4](https://arxiv.org/html/2501.00656v3) | 정규화와 학습 설정은 안정성에 어떤 영향을 주는가? Mid-training의 데이터 구성과 학습률 변화는 어떻게 비교하는가? | [W03](weeks/w03/README.md) · [W15](weeks/w15/README.md) |
+| [DeepSeek LLM: Scaling Open-Source Language Models with Longtermism](https://arxiv.org/abs/2401.02954) · v1 | [§3](https://arxiv.org/html/2401.02954v1) | Batch size·learning rate의 경험식과 모델·데이터 배분은 어떻게 다른 문제인가? 데이터나 학습 조건이 달라져도 같은 scaling law를 쓸 수 있는가? | [W05](weeks/w05/README.md) · [W11](weeks/w11/README.md) |
 
 ### 사후학습과 RL
 
 | 보고서 | 먼저 볼 부분 | 확인할 질문 | 연결 주차 |
 | --- | --- | --- | --- |
-| [Tülu 3: Pushing Frontiers in Open Language Model Post-Training](https://arxiv.org/abs/2411.15124) · v5 | [§4–7](https://arxiv.org/html/2411.15124v5) | SFT·DPO·RLVR은 어떤 데이터와 학습 신호를 쓰는가? 개발용 평가와 미지 평가를 왜 나누는가? | [W03](weeks/w03/README.md) · [W06](weeks/w06/README.md) |
-| [DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models](https://arxiv.org/abs/2402.03300) · v3 | [§2, §4.1](https://arxiv.org/html/2402.03300v3) | GRPO는 PPO의 critic을 무엇으로 대체하는가? 결과 단위 보상과 과정 단위 보상은 advantage 계산을 어떻게 바꾸는가? | [W04](weeks/w04/README.md) · [W06](weeks/w06/README.md) · [W07](weeks/w07/README.md) |
-| [Nemotron-4 340B Technical Report](https://arxiv.org/abs/2406.11704) · v2 | [§3.1–3.3](https://arxiv.org/html/2406.11704v2) | 합성 prompt·응답 생성, 품질 필터링, 선호 순위화에서 생성 모델과 보상 모델은 각각 어떤 역할을 맡는가? | [W02](weeks/w02/README.md) · [W13](weeks/w13/README.md) |
+| [Tülu 3: Pushing Frontiers in Open Language Model Post-Training](https://arxiv.org/abs/2411.15124) · v5 | [§4–7](https://arxiv.org/html/2411.15124v5) | SFT·DPO·RLVR은 어떤 데이터와 학습 신호를 쓰는가? 개발용 평가와 미지 평가를 왜 나누는가? | [W04](weeks/w04/README.md) · [W07](weeks/w07/README.md) |
+| [DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models](https://arxiv.org/abs/2402.03300) · v3 | [§2, §4.1](https://arxiv.org/html/2402.03300v3) | GRPO는 PPO의 critic을 무엇으로 대체하는가? 결과 단위 보상과 과정 단위 보상은 advantage 계산을 어떻게 바꾸는가? | [W05](weeks/w05/README.md) · [W07](weeks/w07/README.md) · [W08](weeks/w08/README.md) |
+| [Nemotron-4 340B Technical Report](https://arxiv.org/abs/2406.11704) · v2 | [§3.1–3.3](https://arxiv.org/html/2406.11704v2) | 합성 prompt·응답 생성, 품질 필터링, 선호 순위화에서 생성 모델과 보상 모델은 각각 어떤 역할을 맡는가? | [W03](weeks/w03/README.md) · [W14](weeks/w14/README.md) |
 
 ## 모델 학습을 다룬 보충 논문
 
 | 논문 | 먼저 볼 부분 | 확인할 질문 | 연결 주차 |
 | --- | --- | --- | --- |
-| [Muon is Scalable for LLM Training](https://arxiv.org/abs/2502.16982) · v1 | [§2.1–2.3, §3.2–3.3](https://arxiv.org/html/2502.16982v1) | Muon과 AdamW의 업데이트·스케일 조정은 어떻게 다른가? 분산 Muon의 연산·통신과 Moonlight 학습 실험은 무엇을 보여주는가? | [W09](weeks/w09/README.md) · [W10](weeks/w10/README.md) · [W15](weeks/w15/README.md) |
+| [Muon is Scalable for LLM Training](https://arxiv.org/abs/2502.16982) · v1 | [§2.1–2.3, §3.2–3.3](https://arxiv.org/html/2502.16982v1) | Muon과 AdamW의 업데이트·스케일 조정은 어떻게 다른가? 분산 Muon의 연산·통신과 Moonlight 학습 실험은 무엇을 보여주는가? | [W10](weeks/w10/README.md) · [W11](weeks/w11/README.md) · [W15](weeks/w15/README.md) |
 
 Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모델 보고서와 구분했습니다.
 
@@ -74,7 +74,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 
 ## Technical Reports
 
-정규 스터디와 추가 읽기 후보를 모델명·보고서 제목 기준 알파벳순으로 정리했습니다. 이 표의 주차는 이번 시즌 편성입니다. arXiv 링크를 우선하고, 공식 PDF로 수집한 자료는 해당 링크를 유지합니다.
+정규 스터디와 추가 읽기 후보를 모델명·보고서 제목 기준 알파벳순으로 정리했습니다. 이 표의 주차는 이번 시즌 편성입니다. Qwen1.5는 공식 출시 자료를 사용하는 예외여서 이 논문 목록 대신 [주차 문서](weeks/w03/README.md)에 연결합니다. arXiv 링크를 우선하고, 공식 PDF로 수집한 자료는 해당 링크를 유지합니다.
 
 | 보고서 | 원문 | 스터디 |
 | --- | --- | --- |
@@ -82,11 +82,11 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Apertus | [arXiv](https://arxiv.org/abs/2509.14233) | — |
 | Apple Foundation Models 2025 | [arXiv](https://arxiv.org/abs/2507.13575) | — |
 | Command A | [arXiv](https://arxiv.org/abs/2504.00698) | — |
-| DeepSeek-R1 | [arXiv](https://arxiv.org/abs/2501.12948) | [W06](weeks/w06/README.md) |
-| DeepSeek-V2 | [arXiv](https://arxiv.org/abs/2405.04434) | [W04](weeks/w04/README.md) |
-| DeepSeek-V3 | [arXiv](https://arxiv.org/abs/2412.19437) | [W05](weeks/w05/README.md) |
-| DeepSeek-V3.2: Pushing the Frontier of Open Large Language Models | [arXiv](https://arxiv.org/abs/2512.02556) | [W08](weeks/w08/README.md) |
-| DeepSeek-V4 | [arXiv](https://arxiv.org/abs/2606.19348) | [W09](weeks/w09/README.md) |
+| DeepSeek-R1 | [arXiv](https://arxiv.org/abs/2501.12948) | [W07](weeks/w07/README.md) |
+| DeepSeek-V2 | [arXiv](https://arxiv.org/abs/2405.04434) | [W05](weeks/w05/README.md) |
+| DeepSeek-V3 | [arXiv](https://arxiv.org/abs/2412.19437) | [W06](weeks/w06/README.md) |
+| DeepSeek-V3.2: Pushing the Frontier of Open Large Language Models | [arXiv](https://arxiv.org/abs/2512.02556) | [W09](weeks/w09/README.md) |
+| DeepSeek-V4 | [arXiv](https://arxiv.org/abs/2606.19348) | [W10](weeks/w10/README.md) |
 | DeepSeekMath-V2: Towards Self-Verifiable Mathematical Reasoning | [arXiv](https://arxiv.org/abs/2511.22570) | — |
 | dots.llm1 Technical Report | [arXiv](https://arxiv.org/abs/2506.05767) | — |
 | ERNIE 4.5 Technical Report | [공식 논문 PDF](https://ernie.baidu.com/blog/publication/ERNIE_Technical_Report.pdf) | — |
@@ -97,8 +97,8 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Falcon-H1 | [arXiv](https://arxiv.org/abs/2507.22448) | — |
 | Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities | [arXiv](https://arxiv.org/abs/2507.06261) | — |
 | Gemma 3 Technical Report | [arXiv](https://arxiv.org/abs/2503.19786) | — |
-| GLM-4.5: Agentic, Reasoning, and Coding Foundation Models | [arXiv](https://arxiv.org/abs/2508.06471) | [W11](weeks/w11/README.md) |
-| GLM-5: from Vibe Coding to Agentic Engineering | [arXiv](https://arxiv.org/abs/2602.15763) | [W12](weeks/w12/README.md) |
+| GLM-4.5: Agentic, Reasoning, and Coding Foundation Models | [arXiv](https://arxiv.org/abs/2508.06471) | [W12](weeks/w12/README.md) |
+| GLM-5: from Vibe Coding to Agentic Engineering | [arXiv](https://arxiv.org/abs/2602.15763) | [W13](weeks/w13/README.md) |
 | Hermes 4 Technical Report | [arXiv](https://arxiv.org/abs/2508.18255) | — |
 | Hunyuan-A13B Technical Report | [공식 논문 PDF](https://github.com/Tencent-Hunyuan/Hunyuan-A13B/blob/main/report/Hunyuan_A13B_Technical_Report.pdf) | — |
 | Hunyuan-Large: An Open-Source MoE Model with 52 Billion Activated Parameters by Tencent | [arXiv](https://arxiv.org/abs/2411.02265) | — |
@@ -109,13 +109,13 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | K-EXAONE Technical Report | [arXiv](https://arxiv.org/abs/2601.01739) | — |
 | Kimi K2: Open Agentic Intelligence | [arXiv](https://arxiv.org/abs/2507.20534) | — |
 | KORMo: Korean Open Reasoning Model for Everyone | [arXiv](https://arxiv.org/abs/2510.09426) | — |
-| LFM2 Technical Report | [arXiv](https://arxiv.org/abs/2511.23404) | [W14](weeks/w14/README.md) |
+| LFM2 Technical Report | [arXiv](https://arxiv.org/abs/2511.23404) | — |
 | LLaMA 1 | [arXiv](https://arxiv.org/abs/2302.13971) | [W01](weeks/w01/README.md) |
-| Llama 2 | [arXiv](https://arxiv.org/abs/2307.09288) | [W01](weeks/w01/README.md) |
+| Llama 2 | [arXiv](https://arxiv.org/abs/2307.09288) | [W02](weeks/w02/README.md) |
 | Magistral | [arXiv](https://arxiv.org/abs/2506.10910) | — |
 | Mellum2 Technical Report | [arXiv](https://arxiv.org/abs/2605.31268) | — |
-| MiMo | [arXiv](https://arxiv.org/abs/2505.07608) | [W07](weeks/w07/README.md) |
-| MiMo-V2-Flash | [arXiv](https://arxiv.org/abs/2601.02780) | [W07](weeks/w07/README.md) |
+| MiMo | [arXiv](https://arxiv.org/abs/2505.07608) | [W08](weeks/w08/README.md) |
+| MiMo-V2-Flash | [arXiv](https://arxiv.org/abs/2601.02780) | [W08](weeks/w08/README.md) |
 | MiniCPM4 | [arXiv](https://arxiv.org/abs/2506.07900) | — |
 | MiniMax-M1: Scaling Test-Time Compute Efficiently with Lightning Attention | [arXiv](https://arxiv.org/abs/2506.13585) | — |
 | MiniMax-M2 Series | [arXiv](https://arxiv.org/abs/2605.26494) | — |
@@ -129,11 +129,11 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Phi-4-reasoning Technical Report | [arXiv](https://arxiv.org/abs/2504.21318) | — |
 | PLaMo 2 | [arXiv](https://arxiv.org/abs/2509.04897) | — |
 | Qwen Technical Report | [arXiv](https://arxiv.org/abs/2309.16609) | — |
-| Qwen2 Technical Report | [arXiv](https://arxiv.org/abs/2407.10671) | [W02](weeks/w02/README.md) |
-| Qwen2.5 Technical Report | [arXiv](https://arxiv.org/abs/2412.15115) | [W02](weeks/w02/README.md) |
-| Qwen3 Technical Report | [arXiv](https://arxiv.org/abs/2505.09388) | [W03](weeks/w03/README.md) |
+| Qwen2 Technical Report | [arXiv](https://arxiv.org/abs/2407.10671) | [W03](weeks/w03/README.md) |
+| Qwen2.5 Technical Report | [arXiv](https://arxiv.org/abs/2412.15115) | [W04](weeks/w04/README.md) |
+| Qwen3 Technical Report | [arXiv](https://arxiv.org/abs/2505.09388) | [W04](weeks/w04/README.md) |
 | Qwen3-Coder-Next Technical Report | [arXiv](https://arxiv.org/abs/2603.00729) | — |
-| Qwen3.8-Next | [arXiv](https://arxiv.org/abs/2608.30320) | [W10](weeks/w10/README.md) |
+| Qwen3.8-Next | [arXiv](https://arxiv.org/abs/2608.30320) | [W11](weeks/w11/README.md) |
 | Ruyi2 Technical Report | [arXiv](https://arxiv.org/abs/2602.22543) | — |
 | Salamandra | [arXiv](https://arxiv.org/abs/2502.08489) | — |
 | Skywork-OR1 | [arXiv](https://arxiv.org/abs/2505.22312) | — |
@@ -143,8 +143,8 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Solar Open Technical Report | [arXiv](https://arxiv.org/abs/2601.07022) | [W16](weeks/w16/README.md) |
 | Step 3.5 Flash: Open Frontier-Level Intelligence with 11B Active Parameters | [arXiv](https://arxiv.org/abs/2602.10604) | — |
 | Technical Report of TeleChat2, TeleChat2.5 and T1 | [arXiv](https://arxiv.org/abs/2507.18013) | — |
-| Tiny Model, Big Logic: Diversity-Driven Optimization Elicits Large-Model Reasoning Ability in VibeThinker-1.5B | [arXiv](https://arxiv.org/abs/2511.06221) | [W13](weeks/w13/README.md) |
-| VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W13](weeks/w13/README.md) |
+| Tiny Model, Big Logic: Diversity-Driven Optimization Elicits Large-Model Reasoning Ability in VibeThinker-1.5B | [arXiv](https://arxiv.org/abs/2511.06221) | [W14](weeks/w14/README.md) |
+| VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W14](weeks/w14/README.md) |
 | Yi-Lightning Technical Report | [arXiv](https://arxiv.org/abs/2412.01253) | — |
 
 ## 참고한 공개 목록
