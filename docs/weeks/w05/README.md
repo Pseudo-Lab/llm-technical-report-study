@@ -2,6 +2,8 @@
 
 [주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
 
+> 목표에 앞서 [W05 구성요소 배경 가이드](../../background/w05.md)를 읽는다. V3가 실제로 다루는 routing, packing/FIM/tokenizer, DualPipe/all-to-all, FP8 수치 설계, R1 distillation·reward·GRPO를 세 목표와 별개로 추적한다.
+
 ## 논문 정보
 
 - 논문: DeepSeek-V3

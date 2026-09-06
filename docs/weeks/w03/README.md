@@ -2,6 +2,8 @@
 
 [주차 목록](../README.md) · [배경 개념과 읽기 순서](../../background/README.md) · [주간 템플릿](../../../templates/week.md)
 
+> 목표에 앞서 [W03 구성요소 배경 가이드](../../background/w03.md)를 읽는다. 이 가이드는 QK-Norm·MoE shared-expert 제거·global-batch balance, data annotation/mixture, cold start·general RL처럼 아래 세 목표 밖에서 본문이 전제하는 구성요소를 원전 범위와 함께 연결한다.
+
 ## 논문 정보
 
 - 논문: Qwen3

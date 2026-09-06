@@ -176,7 +176,8 @@ LLaMA 1·Llama 2 기초 읽기를 포함해 22편을 16주 동안 읽습니다.
 
 ## 📚 참고 자료
 
-- [주차별 논문과 공동 문서](docs/weeks/README.md): 16주 문서 틀을 준비했으며, 매주 분석과 토론 내용을 채워갑니다.
+- [주차별 논문과 공동 문서](docs/weeks/README.md): 16주 학습목표와 읽기 범위를 확인하고, 매주 분석과 토론 내용을 채워갑니다.
+- [주차별 Background 읽기 지도](docs/background/README.md#week-map): 본문 구성요소별 필요한 개념, 배경 원전과 읽을 범위, 이전 방법과의 차이를 확인합니다.
 - [Awesome LLM Technical Reports](docs/awesome-technical-reports.md): 함께 읽는 보고서와 추가 읽기 후보를 모은 목록입니다.
 
 ## 🤝 GitHub Collaboration
