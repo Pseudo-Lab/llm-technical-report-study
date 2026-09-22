@@ -6,7 +6,7 @@ arXiv 사전공개 논문과 저자·기관이 공개한 독립 논문 PDF를 �
 
 논문을 추가하려면 [복사용 Markdown 행](../templates/awesome-entry.md)을 사용해 PR을 올려주세요. 추천만 하고 싶다면 [Awesome 추가 제안 Issue](https://github.com/Pseudo-Lab/llm-technical-report-study/issues/new?template=technical-report.yml)만 작성해도 됩니다.
 
-[배경·비교 읽기](#배경지식과-비교를-위한-technical-reports) · [학습 보충 논문](#모델-학습을-다룬-보충-논문) · [추가 비교 읽기](#추가-비교-읽기) · [정규 스터디와 후보](#technical-reports) · [참고한 공개 목록](#참고한-공개-목록) · [16주 스터디](weeks/README.md)
+[배경·비교 읽기](#배경지식과-비교를-위한-technical-reports) · [학습 보충 논문](#모델-학습을-다룬-보충-논문) · [추가 비교 읽기](#추가-비교-읽기) · [정규 스터디와 추가 읽기](#technical-reports) · [관련 공개 목록](#관련-공개-목록) · [16주 스터디](weeks/README.md)
 
 ## 배경지식과 비교를 위한 Technical Reports
 
@@ -48,7 +48,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 
 ## 추가 비교 읽기
 
-공개 GitHub 목록에서 찾고 논문 원문을 확인한 추가 후보입니다. 최신 보고서를 이해하는 데 도움이 되는 이전 세대도 포함하며, 이번 시즌의 필독 논문이나 주차 편성을 추가한 것은 아닙니다.
+정규 스터디와 별도로 비교를 위해 읽을 논문입니다. 최신 보고서를 이해하는 데 도움이 되는 이전 세대도 포함하며, 이번 시즌 주차 편성에는 넣지 않습니다.
 
 ### 구조와 장문맥
 
@@ -74,7 +74,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 
 ## Technical Reports
 
-정규 스터디와 추가 읽기 후보를 모델명·보고서 제목 기준 알파벳순으로 정리했습니다. 이 표의 주차는 이번 시즌 편성입니다. Qwen1.5는 공식 출시 자료를 사용하는 예외여서 이 논문 목록 대신 [주차 문서](weeks/w03/README.md)에 연결합니다. arXiv 링크를 우선하고, 공식 PDF로 수집한 자료는 해당 링크를 유지합니다.
+정규 스터디와 추가 읽기 자료를 모델명·보고서 제목 기준 알파벳순으로 정리한 표입니다. 이 표의 주차는 이번 시즌 편성입니다. Qwen1.5는 공식 출시 자료를 사용하는 예외여서 이 논문 목록 대신 [주차 문서](weeks/w03/README.md)에 연결합니다. arXiv 링크를 우선하고, 공식 PDF로 수록한 자료는 해당 링크를 유지합니다.
 
 | 보고서 | 원문 | 스터디 |
 | --- | --- | --- |
@@ -87,6 +87,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | DeepSeek-V3 | [arXiv](https://arxiv.org/abs/2412.19437) | [W06](weeks/w06/README.md) |
 | DeepSeek-V3.2: Pushing the Frontier of Open Large Language Models | [arXiv](https://arxiv.org/abs/2512.02556) | [W09](weeks/w09/README.md) |
 | DeepSeek-V4 | [arXiv](https://arxiv.org/abs/2606.19348) | [W10](weeks/w10/README.md) |
+| DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression | [arXiv](https://arxiv.org/abs/2609.19969) | — |
 | DeepSeekMath-V2: Towards Self-Verifiable Mathematical Reasoning | [arXiv](https://arxiv.org/abs/2511.22570) | — |
 | dots.llm1 Technical Report | [arXiv](https://arxiv.org/abs/2506.05767) | — |
 | ERNIE 4.5 Technical Report | [공식 논문 PDF](https://ernie.baidu.com/blog/publication/ERNIE_Technical_Report.pdf) | — |
@@ -115,6 +116,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Magistral | [arXiv](https://arxiv.org/abs/2506.10910) | — |
 | Mellum2 Technical Report | [arXiv](https://arxiv.org/abs/2605.31268) | — |
 | MiMo | [arXiv](https://arxiv.org/abs/2505.07608) | [W08](weeks/w08/README.md) |
+| MiMo-V2.6 Technical Report | [공식 논문 PDF](https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/MiMo_V2_6_technical_report.pdf) | — |
 | MiMo-V2-Flash | [arXiv](https://arxiv.org/abs/2601.02780) | [W08](weeks/w08/README.md) |
 | MiniCPM4 | [arXiv](https://arxiv.org/abs/2506.07900) | — |
 | MiniMax-M1: Scaling Test-Time Compute Efficiently with Lightning Attention | [arXiv](https://arxiv.org/abs/2506.13585) | — |
@@ -147,12 +149,12 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W14](weeks/w14/README.md) |
 | Yi-Lightning Technical Report | [arXiv](https://arxiv.org/abs/2412.01253) | — |
 
-## 참고한 공개 목록
+## 관련 공개 목록
 
-아래 목록은 후보를 찾는 데 사용했습니다. 논문 제목·링크·읽을 내용은 각 논문 원문에서 확인했습니다.
+수록 항목을 찾을 때 참고한 공개 목록입니다. 각 행의 제목·원문 링크·읽을 범위는 연결한 논문을 기준으로 정리합니다.
 
 - [Hannibal046/Awesome-LLM](https://github.com/Hannibal046/Awesome-LLM): Pythia·BLOOM·OLMoE.
 - [ChenZiHong-Gavin/llm-tech-report](https://github.com/ChenZiHong-Gavin/llm-tech-report): Gemma·Gemma 2·Jamba·Jamba-1.5·MiniMax-01·Llama 3.
 - [HqWu-HITCS/Awesome-Chinese-LLM](https://github.com/HqWu-HITCS/Awesome-Chinese-LLM): Baichuan 2·Yi·OpenELM.
 
-배경·비교 읽기, 학습 보충 논문과 추가 비교 읽기는 2026-09-06에 초록과 관련 본문을 확인했습니다. ERNIE 4.5와 Hunyuan-A13B는 공식 PDF의 표지·초록·본문 구성을 확인했습니다. 기존 후보 전체를 다시 정독하거나 최신 판본까지 일괄 검증한 것은 아닙니다.
+배경·비교 읽기와 학습 보충 논문은 2026-09-06 기준으로 초록과 관련 본문을 읽고 정리했습니다. ERNIE 4.5와 Hunyuan-A13B는 공식 PDF를 기준으로 정리했습니다. 세부 판본과 근거는 각 항목의 링크에서 확인할 수 있습니다.
