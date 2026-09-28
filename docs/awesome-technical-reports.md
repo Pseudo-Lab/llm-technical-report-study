@@ -111,6 +111,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities | [arXiv](https://arxiv.org/abs/2507.06261) | — |
 | Gemma 3 Technical Report | [arXiv](https://arxiv.org/abs/2503.19786) | — |
 | Gemma 4 Technical Report | [arXiv](https://arxiv.org/abs/2607.02770) | — |
+| GLaM: Efficient Scaling of Language Models with Mixture-of-Experts | [arXiv](https://arxiv.org/abs/2112.06905) | — |
 | GLM-4.5: Agentic, Reasoning, and Coding Foundation Models | [arXiv](https://arxiv.org/abs/2508.06471) | [W12](weeks/w12/README.md) |
 | GLM-5: from Vibe Coding to Agentic Engineering | [arXiv](https://arxiv.org/abs/2602.15763) | [W13](weeks/w13/README.md) |
 | Hermes 3 Technical Report | [arXiv](https://arxiv.org/abs/2408.11857) | — |
