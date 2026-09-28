@@ -92,6 +92,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | CodeGen2: Lessons for Training LLMs on Programming and Natural Languages | [arXiv](https://arxiv.org/abs/2305.02309) | — |
 | CodeGen: An Open Large Language Model for Code with Multi-Turn Program Synthesis | [arXiv](https://arxiv.org/abs/2203.13474) | — |
 | Command A | [arXiv](https://arxiv.org/abs/2504.00698) | — |
+| Competition-Level Code Generation with AlphaCode | [arXiv](https://arxiv.org/abs/2203.07814) | — |
 | CPM-2: Large-scale Cost-effective Pre-trained Language Models | [arXiv](https://arxiv.org/abs/2106.10715) | — |
 | DeepSeek-Coder-V2: Breaking the Barrier of Closed-Source Models in Code Intelligence | [arXiv](https://arxiv.org/abs/2406.11931) | — |
 | DeepSeek-Coder: When the Large Language Model Meets Programming -- The Rise of Code Intelligence | [arXiv](https://arxiv.org/abs/2401.14196) | — |
