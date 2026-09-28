@@ -159,6 +159,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | NVIDIA Nemotron 3: Efficient and Open Intelligence | [arXiv](https://arxiv.org/abs/2512.20856) | — |
 | OLMo 3 | [arXiv](https://arxiv.org/abs/2512.13961) | — |
 | Orion-14B: Open-source Multilingual Large Language Models | [arXiv](https://arxiv.org/abs/2401.12246) | — |
+| PaLM 2 Technical Report | [arXiv](https://arxiv.org/abs/2305.10403) | — |
 | PaLM: Scaling Language Modeling with Pathways | [arXiv](https://arxiv.org/abs/2204.02311) | — |
 | Pangu Ultra MoE: How to Train Your Big MoE on Ascend NPUs | [arXiv](https://arxiv.org/abs/2505.04519) | — |
 | Phi-4-reasoning Technical Report | [arXiv](https://arxiv.org/abs/2504.21318) | — |
