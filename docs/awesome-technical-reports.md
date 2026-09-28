@@ -158,6 +158,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | NorwAI's Large Language Models: Technical Report | [arXiv](https://arxiv.org/abs/2601.03034) | — |
 | NVIDIA Nemotron 3: Efficient and Open Intelligence | [arXiv](https://arxiv.org/abs/2512.20856) | — |
 | OLMo 3 | [arXiv](https://arxiv.org/abs/2512.13961) | — |
+| OPT: Open Pre-trained Transformer Language Models | [arXiv](https://arxiv.org/abs/2205.01068) | — |
 | Orion-14B: Open-source Multilingual Large Language Models | [arXiv](https://arxiv.org/abs/2401.12246) | — |
 | PaLM 2 Technical Report | [arXiv](https://arxiv.org/abs/2305.10403) | — |
 | PaLM: Scaling Language Modeling with Pathways | [arXiv](https://arxiv.org/abs/2204.02311) | — |
