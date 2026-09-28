@@ -84,6 +84,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Arcee Trinity Large Technical Report | [arXiv](https://arxiv.org/abs/2602.17004) | — |
 | ChatGLM: A Family of Large Language Models from GLM-130B to GLM-4 All Tools | [arXiv](https://arxiv.org/abs/2406.12793) | — |
 | Command A | [arXiv](https://arxiv.org/abs/2504.00698) | — |
+| DeepSeek-Coder: When the Large Language Model Meets Programming -- The Rise of Code Intelligence | [arXiv](https://arxiv.org/abs/2401.14196) | — |
 | DeepSeek-R1 | [arXiv](https://arxiv.org/abs/2501.12948) | [W07](weeks/w07/README.md) |
 | DeepSeek-V2 | [arXiv](https://arxiv.org/abs/2405.04434) | [W05](weeks/w05/README.md) |
 | DeepSeek-V3 | [arXiv](https://arxiv.org/abs/2412.19437) | [W06](weeks/w06/README.md) |
