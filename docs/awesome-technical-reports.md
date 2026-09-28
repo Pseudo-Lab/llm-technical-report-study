@@ -131,6 +131,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | LongCat-Flash-Thinking-2601 Technical Report | [arXiv](https://arxiv.org/abs/2601.16725) | — |
 | Magistral | [arXiv](https://arxiv.org/abs/2506.10910) | — |
 | Mellum2 Technical Report | [arXiv](https://arxiv.org/abs/2605.31268) | — |
+| Mercury: Ultra-Fast Language Models Based on Diffusion | [arXiv](https://arxiv.org/abs/2506.17298) | — |
 | MiMo | [arXiv](https://arxiv.org/abs/2505.07608) | [W08](weeks/w08/README.md) |
 | MiMo-V2.6 Technical Report | [공식 논문 PDF](https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/MiMo_V2_6_technical_report.pdf) | — |
 | MiMo-V2-Flash | [arXiv](https://arxiv.org/abs/2601.02780) | [W08](weeks/w08/README.md) |
