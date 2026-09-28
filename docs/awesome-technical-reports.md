@@ -159,6 +159,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Pangu Ultra MoE: How to Train Your Big MoE on Ascend NPUs | [arXiv](https://arxiv.org/abs/2505.04519) | — |
 | Phi-4-reasoning Technical Report | [arXiv](https://arxiv.org/abs/2504.21318) | — |
 | PLaMo 2 | [arXiv](https://arxiv.org/abs/2509.04897) | — |
+| PolyLM: An Open Source Polyglot Large Language Model | [arXiv](https://arxiv.org/abs/2307.06018) | — |
 | Qwen Technical Report | [arXiv](https://arxiv.org/abs/2309.16609) | — |
 | Qwen2 Technical Report | [arXiv](https://arxiv.org/abs/2407.10671) | [W03](weeks/w03/README.md) |
 | Qwen2.5 Technical Report | [arXiv](https://arxiv.org/abs/2412.15115) | [W04](weeks/w04/README.md) |
