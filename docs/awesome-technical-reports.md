@@ -184,6 +184,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | TinyLlama: An Open-Source Small Language Model | [arXiv](https://arxiv.org/abs/2401.02385) | — |
 | VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W14](weeks/w14/README.md) |
 | Yi-Lightning Technical Report | [arXiv](https://arxiv.org/abs/2412.01253) | — |
+| YUAN 2.0: A Large Language Model with Localized Filtering-based Attention | [arXiv](https://arxiv.org/abs/2311.15786) | — |
 
 ## 관련 공개 목록
 
