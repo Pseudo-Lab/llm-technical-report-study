@@ -90,6 +90,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | DeepSeek-V4 | [arXiv](https://arxiv.org/abs/2606.19348) | [W10](weeks/w10/README.md) |
 | DeepSeek-V4.1-Flash: Pushing the Limits of KV Cache Compression | [arXiv](https://arxiv.org/abs/2609.19969) | — |
 | DeepSeekMath-V2: Towards Self-Verifiable Mathematical Reasoning | [arXiv](https://arxiv.org/abs/2511.22570) | — |
+| Devstral: Fine-tuning Language Models for Coding Agent Applications | [arXiv](https://arxiv.org/abs/2509.25193) | — |
 | dots.llm1 Technical Report | [arXiv](https://arxiv.org/abs/2506.05767) | — |
 | ERNIE 4.5 Technical Report | [공식 논문 PDF](https://ernie.baidu.com/blog/publication/ERNIE_Technical_Report.pdf) | — |
 | EuroLLM-22B: Technical Report | [arXiv](https://arxiv.org/abs/2602.05879) | — |
