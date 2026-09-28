@@ -131,6 +131,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Kimi K3: Open Frontier Intelligence | [arXiv](https://arxiv.org/abs/2607.24653) | — |
 | KORMo: Korean Open Reasoning Model for Everyone | [arXiv](https://arxiv.org/abs/2510.09426) | — |
 | Laguna M.1/XS.2 Technical Report | [arXiv](https://arxiv.org/abs/2605.27605) | — |
+| LaMDA: Language Models for Dialog Applications | [arXiv](https://arxiv.org/abs/2201.08239) | — |
 | Language Models are Few-Shot Learners (GPT-3) | [arXiv](https://arxiv.org/abs/2005.14165) | — |
 | LFM2 Technical Report | [arXiv](https://arxiv.org/abs/2511.23404) | — |
 | Ling and Ring 2.6 Technical Report: Efficient and Instant Agentic Intelligence at Trillion-Parameter Scale | [arXiv](https://arxiv.org/abs/2606.15079) | — |
