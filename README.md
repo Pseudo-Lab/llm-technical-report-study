@@ -116,17 +116,17 @@ Transformer와 LLM의 기본적인 학습 과정을 이해하고, 기술보고�
 - [주차별 논문과 공동 문서](docs/weeks/README.md): 16주 학습목표와 읽기 범위를 확인하고, 매주 분석과 토론 내용을 채워갑니다.
 - [읽기 가이드](docs/background/workload.md): 주차별 읽기 범위와 팀별 분담을 참고합니다.
 - [주차별 Background 읽기 지도](docs/background/README.md#week-map): 본문 구성요소별 필요한 개념, 배경 원전과 읽을 범위, 이전 방법과의 차이를 확인합니다.
-- [Awesome LLM Technical Reports](docs/awesome-technical-reports.md): 함께 읽는 보고서와 비교 읽기 자료를 모은 목록입니다.
+- [Awesome LLM Technical Reports](https://github.com/choco9966/Awesome-LLM-Technical-Reports): 스터디 보고서와 비교 읽기 자료를 포함한 LLM technical report 전체 목록입니다. 별도 레포에서 관리합니다.
 
 ## 🤝 GitHub Collaboration
 
-- 논문 제안, 문서 개선과 논의가 필요한 내용은 Issue로 관리합니다.
+- 문서 개선과 논의가 필요한 내용은 Issue로 관리합니다. Awesome 목록에 논문을 제안하려면 [Awesome LLM Technical Reports](https://github.com/choco9966/Awesome-LLM-Technical-Reports/issues)에 Issue를 올려주세요.
 - 주차별 문서는 각각의 Issue에서 작업합니다.
 - 작업 브랜치는 `feature/<issue-number>` 형식을 사용합니다.
 - 커밋 메시지에는 `[#<issue-number>]`를 포함합니다.
 - 변경 사항은 Pull Request에서 검토한 뒤 기본 브랜치에 반영합니다.
 
-처음 기여한다면 [Markdown 템플릿과 PR 작성 방법](templates/README.md#markdown을-수정해-pr-보내기)을 참고해주세요. 논문은 복사용 표 행으로 추가하고, 주간 문서는 준비된 소제목 아래에 자유롭게 작성하면 됩니다.
+처음 기여한다면 [Markdown 템플릿과 PR 작성 방법](templates/README.md#markdown을-수정해-pr-보내기)을 참고해주세요. 주간 문서는 준비된 소제목 아래에 자유롭게 작성하면 됩니다.
 
 ## Acknowledgement 🙏
 
