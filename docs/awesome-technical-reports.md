@@ -137,6 +137,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | MiMo-V2.6 Technical Report | [공식 논문 PDF](https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/MiMo_V2_6_technical_report.pdf) | — |
 | MiMo-V2-Flash | [arXiv](https://arxiv.org/abs/2601.02780) | [W08](weeks/w08/README.md) |
 | MiniCPM4 | [arXiv](https://arxiv.org/abs/2506.07900) | — |
+| MiniCPM: Unveiling the Potential of Small Language Models with Scalable Training Strategies | [arXiv](https://arxiv.org/abs/2404.06395) | — |
 | MiniMax-M1: Scaling Test-Time Compute Efficiently with Lightning Attention | [arXiv](https://arxiv.org/abs/2506.13585) | — |
 | MiniMax-M2 Series | [arXiv](https://arxiv.org/abs/2605.26494) | — |
 | Ministral 3 | [arXiv](https://arxiv.org/abs/2601.08584) | — |
