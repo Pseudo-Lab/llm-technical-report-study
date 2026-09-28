@@ -81,6 +81,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | A.X K1 Technical Report | [arXiv](https://arxiv.org/abs/2601.09200) | — |
 | Apertus | [arXiv](https://arxiv.org/abs/2509.14233) | — |
 | Apple Foundation Models 2025 | [arXiv](https://arxiv.org/abs/2507.13575) | — |
+| Arcee Trinity Large Technical Report | [arXiv](https://arxiv.org/abs/2602.17004) | — |
 | Command A | [arXiv](https://arxiv.org/abs/2504.00698) | — |
 | DeepSeek-R1 | [arXiv](https://arxiv.org/abs/2501.12948) | [W07](weeks/w07/README.md) |
 | DeepSeek-V2 | [arXiv](https://arxiv.org/abs/2405.04434) | [W05](weeks/w05/README.md) |
