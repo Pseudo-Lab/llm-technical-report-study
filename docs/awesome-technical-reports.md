@@ -96,6 +96,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | EuroLLM-22B: Technical Report | [arXiv](https://arxiv.org/abs/2602.05879) | — |
 | EuroLLM-9B | [arXiv](https://arxiv.org/abs/2506.04079) | — |
 | Every Activation Boosted: Scaling General Reasoner to 1 Trillion Open Language Foundation (Ling 2.0) | [arXiv](https://arxiv.org/abs/2510.22115) | — |
+| Every Attention Matters: An Efficient Hybrid Architecture for Long-Context Reasoning (Ring-linear) | [arXiv](https://arxiv.org/abs/2510.19338) | — |
 | EXAONE 4.0: Unified Large Language Models Integrating Non-reasoning and Reasoning Modes | [arXiv](https://arxiv.org/abs/2507.11407) | — |
 | EXAONE 4.5 Technical Report | [arXiv](https://arxiv.org/abs/2604.08644) | — |
 | Falcon-H1 | [arXiv](https://arxiv.org/abs/2507.22448) | — |
