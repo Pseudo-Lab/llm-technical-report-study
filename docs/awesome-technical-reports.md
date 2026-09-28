@@ -141,6 +141,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Ministral 3 | [arXiv](https://arxiv.org/abs/2601.08584) | — |
 | Motif 2 12.7B technical report | [arXiv](https://arxiv.org/abs/2511.07464) | [W15](weeks/w15/README.md) |
 | Motif 3: Technical Report | [arXiv](https://arxiv.org/abs/2608.09119) | [W15](weeks/w15/README.md) |
+| Nemotron 3 Nano: Open, Efficient Mixture-of-Experts Hybrid Mamba-Transformer Model for Agentic Reasoning | [arXiv](https://arxiv.org/abs/2512.20848) | — |
 | NorwAI's Large Language Models: Technical Report | [arXiv](https://arxiv.org/abs/2601.03034) | — |
 | NVIDIA Nemotron 3: Efficient and Open Intelligence | [arXiv](https://arxiv.org/abs/2512.20856) | — |
 | OLMo 3 | [arXiv](https://arxiv.org/abs/2512.13961) | — |
