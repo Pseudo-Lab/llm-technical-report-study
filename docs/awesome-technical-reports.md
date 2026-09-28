@@ -132,6 +132,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Ling and Ring 2.6 Technical Report: Efficient and Instant Agentic Intelligence at Trillion-Parameter Scale | [arXiv](https://arxiv.org/abs/2606.15079) | — |
 | LLaMA 1 | [arXiv](https://arxiv.org/abs/2302.13971) | [W01](weeks/w01/README.md) |
 | Llama 2 | [arXiv](https://arxiv.org/abs/2307.09288) | [W02](weeks/w02/README.md) |
+| Llama-Nemotron: Efficient Reasoning Models | [arXiv](https://arxiv.org/abs/2505.00949) | — |
 | LongCat-Flash Technical Report | [arXiv](https://arxiv.org/abs/2509.01322) | — |
 | LongCat-Flash-Thinking-2601 Technical Report | [arXiv](https://arxiv.org/abs/2601.16725) | — |
 | Magistral | [arXiv](https://arxiv.org/abs/2506.10910) | — |
