@@ -166,6 +166,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Qwen3-Coder-Next Technical Report | [arXiv](https://arxiv.org/abs/2603.00729) | — |
 | Qwen3.8-Next | [arXiv](https://arxiv.org/abs/2608.30320) | [W11](weeks/w11/README.md) |
 | Ruyi2 Technical Report | [arXiv](https://arxiv.org/abs/2602.22543) | — |
+| RWKV-7 "Goose" with Expressive Dynamic State Evolution | [arXiv](https://arxiv.org/abs/2503.14456) | — |
 | Salamandra | [arXiv](https://arxiv.org/abs/2502.08489) | — |
 | Seed1.5-Thinking: Advancing Superb Reasoning Models with Reinforcement Learning | [arXiv](https://arxiv.org/abs/2504.13914) | — |
 | Skywork-OR1 | [arXiv](https://arxiv.org/abs/2505.22312) | — |
