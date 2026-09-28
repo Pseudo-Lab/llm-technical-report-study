@@ -198,6 +198,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | SmolLM2 | [arXiv](https://arxiv.org/abs/2502.02737) | — |
 | Solar Open 2 Technical Report | [arXiv](https://arxiv.org/abs/2607.20062) | [W16](weeks/w16/README.md) |
 | Solar Open Technical Report | [arXiv](https://arxiv.org/abs/2601.07022) | [W16](weeks/w16/README.md) |
+| StarCoder: may the source be with you! | [arXiv](https://arxiv.org/abs/2305.06161) | — |
 | Step 3.5 Flash: Open Frontier-Level Intelligence with 11B Active Parameters | [arXiv](https://arxiv.org/abs/2602.10604) | — |
 | Technical Report of TeleChat2, TeleChat2.5 and T1 | [arXiv](https://arxiv.org/abs/2507.18013) | — |
 | TeleChat Technical Report | [arXiv](https://arxiv.org/abs/2401.03804) | — |
