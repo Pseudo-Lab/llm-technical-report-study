@@ -120,6 +120,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | KAT-Coder-V2 Technical Report | [arXiv](https://arxiv.org/abs/2603.27703) | — |
 | KAT-Coder-V2.5 Technical Report | [arXiv](https://arxiv.org/abs/2607.05471) | — |
 | Kimi K2: Open Agentic Intelligence | [arXiv](https://arxiv.org/abs/2507.20534) | — |
+| Kimi K3: Open Frontier Intelligence | [arXiv](https://arxiv.org/abs/2607.24653) | — |
 | KORMo: Korean Open Reasoning Model for Everyone | [arXiv](https://arxiv.org/abs/2510.09426) | — |
 | LFM2 Technical Report | [arXiv](https://arxiv.org/abs/2511.23404) | — |
 | LLaMA 1 | [arXiv](https://arxiv.org/abs/2302.13971) | [W01](weeks/w01/README.md) |
