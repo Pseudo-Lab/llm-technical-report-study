@@ -158,6 +158,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Qwen3.8-Next | [arXiv](https://arxiv.org/abs/2608.30320) | [W11](weeks/w11/README.md) |
 | Ruyi2 Technical Report | [arXiv](https://arxiv.org/abs/2602.22543) | — |
 | Salamandra | [arXiv](https://arxiv.org/abs/2502.08489) | — |
+| Seed1.5-Thinking: Advancing Superb Reasoning Models with Reinforcement Learning | [arXiv](https://arxiv.org/abs/2504.13914) | — |
 | Skywork-OR1 | [arXiv](https://arxiv.org/abs/2505.22312) | — |
 | Skywork-R1V3 Technical Report | [arXiv](https://arxiv.org/abs/2507.06167) | — |
 | SmolLM2 | [arXiv](https://arxiv.org/abs/2502.02737) | — |
