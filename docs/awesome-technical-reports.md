@@ -207,6 +207,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | UL2: Unifying Language Learning Paradigms | [arXiv](https://arxiv.org/abs/2205.05131) | — |
 | Using DeepSpeed and Megatron to Train Megatron-Turing NLG 530B, A Large-Scale Generative Language Model | [arXiv](https://arxiv.org/abs/2201.11990) | — |
 | VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W14](weeks/w14/README.md) |
+| What Changes Can Large-scale Language Models Bring? Intensive Study on HyperCLOVA: Billions-scale Korean Generative Pretrained Transformers | [arXiv](https://arxiv.org/abs/2109.04650) | — |
 | YAYI 2: Multilingual Open-Source Large Language Models | [arXiv](https://arxiv.org/abs/2312.14862) | — |
 | Yi-Lightning Technical Report | [arXiv](https://arxiv.org/abs/2412.01253) | — |
 | Yuan 1.0: Large-Scale Pre-trained Language Model in Zero-Shot and Few-Shot Learning | [arXiv](https://arxiv.org/abs/2110.04725) | — |
