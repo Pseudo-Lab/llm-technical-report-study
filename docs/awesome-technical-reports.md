@@ -113,6 +113,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Hunyuan-TurboS: Advancing Large Language Models through Mamba-Transformer Synergy and Adaptive Chain-of-Thought | [arXiv](https://arxiv.org/abs/2505.15431) | — |
 | Intern-S1 | [arXiv](https://arxiv.org/abs/2508.15763) | — |
 | InternLM2 Technical Report | [arXiv](https://arxiv.org/abs/2403.17297) | — |
+| Introducing LongCat-Flash-Thinking: A Technical Report | [arXiv](https://arxiv.org/abs/2509.18883) | — |
 | K-EXAONE 2.0 Technical Report | [arXiv](https://arxiv.org/abs/2608.04505) | — |
 | K-EXAONE Technical Report | [arXiv](https://arxiv.org/abs/2601.01739) | — |
 | Kimi K2: Open Agentic Intelligence | [arXiv](https://arxiv.org/abs/2507.20534) | — |
