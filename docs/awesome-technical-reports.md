@@ -112,6 +112,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Gemma 3 Technical Report | [arXiv](https://arxiv.org/abs/2503.19786) | — |
 | Gemma 4 Technical Report | [arXiv](https://arxiv.org/abs/2607.02770) | — |
 | GLaM: Efficient Scaling of Language Models with Mixture-of-Experts | [arXiv](https://arxiv.org/abs/2112.06905) | — |
+| GLM-130B: An Open Bilingual Pre-trained Model | [arXiv](https://arxiv.org/abs/2210.02414) | — |
 | GLM-4.5: Agentic, Reasoning, and Coding Foundation Models | [arXiv](https://arxiv.org/abs/2508.06471) | [W12](weeks/w12/README.md) |
 | GLM-5: from Vibe Coding to Agentic Engineering | [arXiv](https://arxiv.org/abs/2602.15763) | [W13](weeks/w13/README.md) |
 | GPT-NeoX-20B: An Open-Source Autoregressive Language Model | [arXiv](https://arxiv.org/abs/2204.06745) | — |
