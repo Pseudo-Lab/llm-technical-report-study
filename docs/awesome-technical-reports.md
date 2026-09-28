@@ -83,6 +83,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Apertus | [arXiv](https://arxiv.org/abs/2509.14233) | — |
 | Apple Foundation Models 2025 | [arXiv](https://arxiv.org/abs/2507.13575) | — |
 | Apple Intelligence Foundation Language Models | [arXiv](https://arxiv.org/abs/2407.21075) | — |
+| Aquila2 Technical Report | [arXiv](https://arxiv.org/abs/2408.07410) | — |
 | Arcee Trinity Large Technical Report | [arXiv](https://arxiv.org/abs/2602.17004) | — |
 | Aya 23: Open Weight Releases to Further Multilingual Progress | [arXiv](https://arxiv.org/abs/2405.15032) | — |
 | ChatGLM: A Family of Large Language Models from GLM-130B to GLM-4 All Tools | [arXiv](https://arxiv.org/abs/2406.12793) | — |
