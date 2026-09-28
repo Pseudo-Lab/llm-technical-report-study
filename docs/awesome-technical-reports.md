@@ -192,6 +192,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Step 3.5 Flash: Open Frontier-Level Intelligence with 11B Active Parameters | [arXiv](https://arxiv.org/abs/2602.10604) | — |
 | Technical Report of TeleChat2, TeleChat2.5 and T1 | [arXiv](https://arxiv.org/abs/2507.18013) | — |
 | TeleChat Technical Report | [arXiv](https://arxiv.org/abs/2401.03804) | — |
+| Textbooks Are All You Need (phi-1) | [arXiv](https://arxiv.org/abs/2306.11644) | — |
 | The Falcon Series of Open Language Models | [arXiv](https://arxiv.org/abs/2311.16867) | — |
 | TigerBot: An Open Multilingual Multitask LLM | [arXiv](https://arxiv.org/abs/2312.08688) | — |
 | Tiny Model, Big Logic: Diversity-Driven Optimization Elicits Large-Model Reasoning Ability in VibeThinker-1.5B | [arXiv](https://arxiv.org/abs/2511.06221) | [W14](weeks/w14/README.md) |
