@@ -108,7 +108,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | GLM-5: from Vibe Coding to Agentic Engineering | [arXiv](https://arxiv.org/abs/2602.15763) | [W13](weeks/w13/README.md) |
 | Hermes 3 Technical Report | [arXiv](https://arxiv.org/abs/2408.11857) | — |
 | Hermes 4 Technical Report | [arXiv](https://arxiv.org/abs/2508.18255) | — |
-| Hunyuan-A13B Technical Report | [공식 논문 PDF](https://github.com/Tencent-Hunyuan/Hunyuan-A13B/blob/main/report/Hunyuan_A13B_Technical_Report.pdf) | — |
+| Hunyuan-A13B Technical Report | [arXiv](https://arxiv.org/abs/2609.27284) | — |
 | Hunyuan-Large: An Open-Source MoE Model with 52 Billion Activated Parameters by Tencent | [arXiv](https://arxiv.org/abs/2411.02265) | — |
 | Hunyuan-TurboS: Advancing Large Language Models through Mamba-Transformer Synergy and Adaptive Chain-of-Thought | [arXiv](https://arxiv.org/abs/2505.15431) | — |
 | Intern-S1 | [arXiv](https://arxiv.org/abs/2508.15763) | — |
@@ -178,4 +178,4 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 - [ChenZiHong-Gavin/llm-tech-report](https://github.com/ChenZiHong-Gavin/llm-tech-report): Gemma·Gemma 2·Jamba·Jamba-1.5·MiniMax-01·Llama 3.
 - [HqWu-HITCS/Awesome-Chinese-LLM](https://github.com/HqWu-HITCS/Awesome-Chinese-LLM): Baichuan 2·Yi·OpenELM.
 
-배경·비교 읽기와 학습 보충 논문은 2026-09-06 기준으로 초록과 관련 본문을 읽고 정리했습니다. ERNIE 4.5와 Hunyuan-A13B는 공식 PDF를 기준으로 정리했습니다. 세부 판본과 근거는 각 항목의 링크에서 확인할 수 있습니다.
+배경·비교 읽기와 학습 보충 논문은 2026-09-06 기준으로 초록과 관련 본문을 읽고 정리했습니다. ERNIE 4.5는 공식 PDF를 기준으로 정리했습니다. 세부 판본과 근거는 각 항목의 링크에서 확인할 수 있습니다.
