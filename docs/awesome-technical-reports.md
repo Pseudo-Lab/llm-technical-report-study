@@ -78,6 +78,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 
 | 보고서 | 원문 | 스터디 |
 | --- | --- | --- |
+| 7B Fully Open Source Moxin-LLM/VLM -- From Pretraining to GRPO-based Reinforcement Learning Enhancement | [arXiv](https://arxiv.org/abs/2412.06845) | — |
 | A.X K1 Technical Report | [arXiv](https://arxiv.org/abs/2601.09200) | — |
 | Apertus | [arXiv](https://arxiv.org/abs/2509.14233) | — |
 | Apple Foundation Models 2025 | [arXiv](https://arxiv.org/abs/2507.13575) | — |
