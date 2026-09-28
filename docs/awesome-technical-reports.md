@@ -171,6 +171,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Seed1.5-Thinking: Advancing Superb Reasoning Models with Reinforcement Learning | [arXiv](https://arxiv.org/abs/2504.13914) | — |
 | Skywork-OR1 | [arXiv](https://arxiv.org/abs/2505.22312) | — |
 | Skywork-R1V3 Technical Report | [arXiv](https://arxiv.org/abs/2507.06167) | — |
+| Skywork: A More Open Bilingual Foundation Model | [arXiv](https://arxiv.org/abs/2310.19341) | — |
 | SmolLM2 | [arXiv](https://arxiv.org/abs/2502.02737) | — |
 | Solar Open 2 Technical Report | [arXiv](https://arxiv.org/abs/2607.20062) | [W16](weeks/w16/README.md) |
 | Solar Open Technical Report | [arXiv](https://arxiv.org/abs/2601.07022) | [W16](weeks/w16/README.md) |
