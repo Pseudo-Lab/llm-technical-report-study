@@ -126,6 +126,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | LFM2 Technical Report | [arXiv](https://arxiv.org/abs/2511.23404) | — |
 | LLaMA 1 | [arXiv](https://arxiv.org/abs/2302.13971) | [W01](weeks/w01/README.md) |
 | Llama 2 | [arXiv](https://arxiv.org/abs/2307.09288) | [W02](weeks/w02/README.md) |
+| LongCat-Flash Technical Report | [arXiv](https://arxiv.org/abs/2509.01322) | — |
 | Magistral | [arXiv](https://arxiv.org/abs/2506.10910) | — |
 | Mellum2 Technical Report | [arXiv](https://arxiv.org/abs/2605.31268) | — |
 | MiMo | [arXiv](https://arxiv.org/abs/2505.07608) | [W08](weeks/w08/README.md) |
