@@ -193,6 +193,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Tiny Model, Big Logic: Diversity-Driven Optimization Elicits Large-Model Reasoning Ability in VibeThinker-1.5B | [arXiv](https://arxiv.org/abs/2511.06221) | [W14](weeks/w14/README.md) |
 | TinyLlama: An Open-Source Small Language Model | [arXiv](https://arxiv.org/abs/2401.02385) | — |
 | Training Compute-Optimal Large Language Models (Chinchilla) | [arXiv](https://arxiv.org/abs/2203.15556) | — |
+| UL2: Unifying Language Learning Paradigms | [arXiv](https://arxiv.org/abs/2205.05131) | — |
 | Using DeepSpeed and Megatron to Train Megatron-Turing NLG 530B, A Large-Scale Generative Language Model | [arXiv](https://arxiv.org/abs/2201.11990) | — |
 | VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W14](weeks/w14/README.md) |
 | YAYI 2: Multilingual Open-Source Large Language Models | [arXiv](https://arxiv.org/abs/2312.14862) | — |
