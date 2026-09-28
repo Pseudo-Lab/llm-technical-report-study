@@ -108,6 +108,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | EXAONE 4.0: Unified Large Language Models Integrating Non-reasoning and Reasoning Modes | [arXiv](https://arxiv.org/abs/2507.11407) | — |
 | EXAONE 4.5 Technical Report | [arXiv](https://arxiv.org/abs/2604.08644) | — |
 | Falcon-H1 | [arXiv](https://arxiv.org/abs/2507.22448) | — |
+| Galactica: A Large Language Model for Science | [arXiv](https://arxiv.org/abs/2211.09085) | — |
 | Gemini 2.5: Pushing the Frontier with Advanced Reasoning, Multimodality, Long Context, and Next Generation Agentic Capabilities | [arXiv](https://arxiv.org/abs/2507.06261) | — |
 | Gemma 3 Technical Report | [arXiv](https://arxiv.org/abs/2503.19786) | — |
 | Gemma 4 Technical Report | [arXiv](https://arxiv.org/abs/2607.02770) | — |
