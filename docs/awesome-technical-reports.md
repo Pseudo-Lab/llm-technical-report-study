@@ -116,6 +116,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Introducing LongCat-Flash-Thinking: A Technical Report | [arXiv](https://arxiv.org/abs/2509.18883) | — |
 | K-EXAONE 2.0 Technical Report | [arXiv](https://arxiv.org/abs/2608.04505) | — |
 | K-EXAONE Technical Report | [arXiv](https://arxiv.org/abs/2601.01739) | — |
+| KAT-Coder Technical Report | [arXiv](https://arxiv.org/abs/2510.18779) | — |
 | Kimi K2: Open Agentic Intelligence | [arXiv](https://arxiv.org/abs/2507.20534) | — |
 | KORMo: Korean Open Reasoning Model for Everyone | [arXiv](https://arxiv.org/abs/2510.09426) | — |
 | LFM2 Technical Report | [arXiv](https://arxiv.org/abs/2511.23404) | — |
