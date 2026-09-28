@@ -183,6 +183,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Tiny Model, Big Logic: Diversity-Driven Optimization Elicits Large-Model Reasoning Ability in VibeThinker-1.5B | [arXiv](https://arxiv.org/abs/2511.06221) | [W14](weeks/w14/README.md) |
 | TinyLlama: An Open-Source Small Language Model | [arXiv](https://arxiv.org/abs/2401.02385) | — |
 | VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W14](weeks/w14/README.md) |
+| YAYI 2: Multilingual Open-Source Large Language Models | [arXiv](https://arxiv.org/abs/2312.14862) | — |
 | Yi-Lightning Technical Report | [arXiv](https://arxiv.org/abs/2412.01253) | — |
 | YUAN 2.0: A Large Language Model with Localized Filtering-based Attention | [arXiv](https://arxiv.org/abs/2311.15786) | — |
 | YuLan-Mini: An Open Data-efficient Language Model | [arXiv](https://arxiv.org/abs/2412.17743) | — |
