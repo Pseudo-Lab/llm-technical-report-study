@@ -88,6 +88,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Arcee Trinity Large Technical Report | [arXiv](https://arxiv.org/abs/2602.17004) | — |
 | Aya 23: Open Weight Releases to Further Multilingual Progress | [arXiv](https://arxiv.org/abs/2405.15032) | — |
 | ChatGLM: A Family of Large Language Models from GLM-130B to GLM-4 All Tools | [arXiv](https://arxiv.org/abs/2406.12793) | — |
+| CodeGen: An Open Large Language Model for Code with Multi-Turn Program Synthesis | [arXiv](https://arxiv.org/abs/2203.13474) | — |
 | Command A | [arXiv](https://arxiv.org/abs/2504.00698) | — |
 | CPM-2: Large-scale Cost-effective Pre-trained Language Models | [arXiv](https://arxiv.org/abs/2106.10715) | — |
 | DeepSeek-Coder-V2: Breaking the Barrier of Closed-Source Models in Code Intelligence | [arXiv](https://arxiv.org/abs/2406.11931) | — |
