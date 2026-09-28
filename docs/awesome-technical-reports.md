@@ -106,6 +106,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Gemma 4 Technical Report | [arXiv](https://arxiv.org/abs/2607.02770) | — |
 | GLM-4.5: Agentic, Reasoning, and Coding Foundation Models | [arXiv](https://arxiv.org/abs/2508.06471) | [W12](weeks/w12/README.md) |
 | GLM-5: from Vibe Coding to Agentic Engineering | [arXiv](https://arxiv.org/abs/2602.15763) | [W13](weeks/w13/README.md) |
+| Hermes 3 Technical Report | [arXiv](https://arxiv.org/abs/2408.11857) | — |
 | Hermes 4 Technical Report | [arXiv](https://arxiv.org/abs/2508.18255) | — |
 | Hunyuan-A13B Technical Report | [공식 논문 PDF](https://github.com/Tencent-Hunyuan/Hunyuan-A13B/blob/main/report/Hunyuan_A13B_Technical_Report.pdf) | — |
 | Hunyuan-Large: An Open-Source MoE Model with 52 Billion Activated Parameters by Tencent | [arXiv](https://arxiv.org/abs/2411.02265) | — |
