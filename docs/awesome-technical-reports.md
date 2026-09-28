@@ -169,6 +169,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | PaLM 2 Technical Report | [arXiv](https://arxiv.org/abs/2305.10403) | — |
 | PaLM: Scaling Language Modeling with Pathways | [arXiv](https://arxiv.org/abs/2204.02311) | — |
 | Pangu Ultra MoE: How to Train Your Big MoE on Ascend NPUs | [arXiv](https://arxiv.org/abs/2505.04519) | — |
+| PanGu-α: Large-scale Autoregressive Pretrained Chinese Language Models with Auto-parallel Computation | [arXiv](https://arxiv.org/abs/2104.12369) | — |
 | Phi-4-reasoning Technical Report | [arXiv](https://arxiv.org/abs/2504.21318) | — |
 | PLaMo 2 | [arXiv](https://arxiv.org/abs/2509.04897) | — |
 | PolyLM: An Open Source Polyglot Large Language Model | [arXiv](https://arxiv.org/abs/2307.06018) | — |
