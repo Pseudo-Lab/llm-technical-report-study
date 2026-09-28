@@ -209,6 +209,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | VibeThinker-3B | [arXiv](https://arxiv.org/abs/2606.16140) | [W14](weeks/w14/README.md) |
 | YAYI 2: Multilingual Open-Source Large Language Models | [arXiv](https://arxiv.org/abs/2312.14862) | — |
 | Yi-Lightning Technical Report | [arXiv](https://arxiv.org/abs/2412.01253) | — |
+| Yuan 1.0: Large-Scale Pre-trained Language Model in Zero-Shot and Few-Shot Learning | [arXiv](https://arxiv.org/abs/2110.04725) | — |
 | YUAN 2.0: A Large Language Model with Localized Filtering-based Attention | [arXiv](https://arxiv.org/abs/2311.15786) | — |
 | YuLan-Mini: An Open Data-efficient Language Model | [arXiv](https://arxiv.org/abs/2412.17743) | — |
 | YuLan: An Open-source Large Language Model | [arXiv](https://arxiv.org/abs/2406.19853) | — |
