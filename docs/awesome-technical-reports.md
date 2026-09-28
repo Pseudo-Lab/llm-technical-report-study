@@ -152,6 +152,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Qwen Technical Report | [arXiv](https://arxiv.org/abs/2309.16609) | — |
 | Qwen2 Technical Report | [arXiv](https://arxiv.org/abs/2407.10671) | [W03](weeks/w03/README.md) |
 | Qwen2.5 Technical Report | [arXiv](https://arxiv.org/abs/2412.15115) | [W04](weeks/w04/README.md) |
+| Qwen2.5-Coder Technical Report | [arXiv](https://arxiv.org/abs/2409.12186) | — |
 | Qwen3 Technical Report | [arXiv](https://arxiv.org/abs/2505.09388) | [W04](weeks/w04/README.md) |
 | Qwen3-Coder-Next Technical Report | [arXiv](https://arxiv.org/abs/2603.00729) | — |
 | Qwen3.8-Next | [arXiv](https://arxiv.org/abs/2608.30320) | [W11](weeks/w11/README.md) |
