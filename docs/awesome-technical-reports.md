@@ -129,6 +129,7 @@ Moonlight를 실증 모델로 포함하는 옵티마이저 연구이므로 모�
 | Hunyuan-A13B Technical Report | [arXiv](https://arxiv.org/abs/2609.27284) | — |
 | Hunyuan-Large: An Open-Source MoE Model with 52 Billion Activated Parameters by Tencent | [arXiv](https://arxiv.org/abs/2411.02265) | — |
 | Hunyuan-TurboS: Advancing Large Language Models through Mamba-Transformer Synergy and Adaptive Chain-of-Thought | [arXiv](https://arxiv.org/abs/2505.15431) | — |
+| InCoder: A Generative Model for Code Infilling and Synthesis | [arXiv](https://arxiv.org/abs/2204.05999) | — |
 | Intern-S1 | [arXiv](https://arxiv.org/abs/2508.15763) | — |
 | InternLM2 Technical Report | [arXiv](https://arxiv.org/abs/2403.17297) | — |
 | Introducing LongCat-Flash-Thinking: A Technical Report | [arXiv](https://arxiv.org/abs/2509.18883) | — |
