@@ -25,4 +25,6 @@
 | [W15](w15/README.md) | Motif 2 → Motif 3 | GDA→GDLA의 신호·잡음 분리와 latent KV · Parallel Muon · seven-teacher MOPD |
 | [W16](w16/README.md) | Solar Open → Solar Open 2 | 저자원 언어 데이터·tokenizer·curriculum · NoPE 상태 · 선택적 weight transfer |
 
-[주간 템플릿](../../templates/week.md) · [프로젝트 소개](../../README.md)
+정규 주차 사이에는 계열의 이전 보고서와 후속 버전을 함께 보는 [보충 세션](supplementary.md)을 정규 모임 다음 주에 엽니다.
+
+[보충 세션](supplementary.md) · [주간 템플릿](../../templates/week.md) · [프로젝트 소개](../../README.md)

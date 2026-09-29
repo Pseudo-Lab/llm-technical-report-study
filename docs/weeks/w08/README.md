@@ -43,6 +43,8 @@
 
 ## 참고 자료
 
+- 보충: [S6 — MiMo-V2.5-Pro 비교 (W08 다음 주)](../supplementary.md#s6)
+- 보충: [S7 — MiMo-V2.6 비교 (W09 다음 주)](../supplementary.md#s7)
 - [MiMo](https://arxiv.org/abs/2505.07608v2)
 - [MiMo-V2-Flash](https://arxiv.org/abs/2601.02780v2)
 - [Longformer](https://arxiv.org/abs/2004.05150v2)

@@ -43,6 +43,7 @@
 
 ## 참고 자료
 
+- 보충: [자율 참고 — DeepSeek-V3.1](../supplementary.md#self-study)
 - [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556v1)
 - [DeepSeek-V2](https://arxiv.org/abs/2405.04434v5)
 - [Fast Transformer Decoding / MQA](https://arxiv.org/abs/1911.02150v1)

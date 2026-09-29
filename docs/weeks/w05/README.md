@@ -41,6 +41,8 @@
 
 ## 참고 자료
 
+- 보충: [S3 — DeepSeekMoE 선행, 구조팀 필독 (W04 다음 주)](../supplementary.md#s3)
+- 보충: [S4 — DeepSeek LLM 비교 (W05 다음 주)](../supplementary.md#s4)
 - [DeepSeek-V2](https://arxiv.org/abs/2405.04434v5)
 - [Grouped-Query Attention](https://arxiv.org/abs/2305.13245v3)
 - [Fast Transformer Decoding (MQA)](https://arxiv.org/abs/1911.02150v1)

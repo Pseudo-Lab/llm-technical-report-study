@@ -12,6 +12,8 @@
 
 ## 학습목표
 
+> RLHF 두 목표는 정규 모임에서 §3.2의 RM → rejection sampling → PPO 흐름 위주로 핵심만 발췌해 읽고, 세부 비교는 [보충 S1](../supplementary.md#s1)에서 Llama 3의 후학습과 함께 다룹니다.
+
 - [ ] **Llama 2에서 유지된 LLaMA 1 recipe와 실제 구조 변화인 2K→4K context 및 large-model GQA를 분리하여, GQA가 KV cache와 inference scalability를 어떻게 바꾸는지 설명할 수 있다.**
   - **짚고 갈 개념:** causal MHA, KV cache, MQA, GQA, KV head 수, context length, inference throughput, retained BPE/RMSNorm/SwiGLU/RoPE/AdamW. context length·GQA는 Llama 2의 명시적 변화지만 tokenizer와 기본 block recipe는 계승 항목이다.
   - **함께 읽을 자료와 범위:** [LLaMA 가이드의 Llama 2 delta](../../background/w02.md#llama2-delta)에서 유지/변경/data-scale을 먼저 나눈다. 이어 [GQA §2.1–§2.2](https://arxiv.org/abs/2305.13245v3)와 Llama 2 Appendix A.2.1의 MHA·MQA·8-KV-projection GQA 비교, Figure 24만 읽는다. LLaMA 1의 BPE·RMSNorm·SwiGLU·RoPE 원전은 W01에서 읽었으므로 여기서는 “유지”를 확인하는 데만 재방문한다.
@@ -43,4 +45,5 @@
 
 ## 참고 자료
 
+- 보충: [S1 — Llama 3 Herd 비교 (W02 다음 주)](../supplementary.md#s1)
 - [Llama 2: Open Foundation and Fine-Tuned Chat Models](https://arxiv.org/abs/2307.09288v2)

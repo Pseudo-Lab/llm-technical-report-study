@@ -43,4 +43,5 @@
 
 ## 참고 자료
 
+- 보충: [S10 — GLM-4.7 선행 (W12 다음 주)](../supplementary.md#s10)
 - [GLM-5 원문](https://arxiv.org/abs/2602.15763v2)

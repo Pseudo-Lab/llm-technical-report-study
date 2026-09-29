@@ -43,6 +43,7 @@
 
 ## 참고 자료
 
+- 보충: [자율 참고 — Qwen Technical Report](../supplementary.md#self-study)
 - [Qwen1.5 공식 출시 글](https://qwenlm.github.io/blog/qwen1.5/)
 - [Qwen1.5-7B 고정 config](https://huggingface.co/Qwen/Qwen1.5-7B/blob/831096e3a59a0789a541415da25ef195ceb802fe/config.json)
 - [Qwen2 Technical Report](https://arxiv.org/abs/2407.10671v4)

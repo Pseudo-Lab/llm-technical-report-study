@@ -41,5 +41,7 @@
 
 ## 참고 자료
 
+- 보충: [S2 — QwQ-32B 선행 (W03 다음 주)](../supplementary.md#s2)
+- 보충: [자율 참고 — Qwen2.5-Math](../supplementary.md#self-study)
 - [Qwen2.5 Technical Report](https://arxiv.org/abs/2412.15115v2)
 - [Qwen3 Technical Report](https://arxiv.org/abs/2505.09388v1)
