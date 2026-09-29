@@ -49,5 +49,6 @@
 
 ## 참고 자료
 
-- 보충: [S5 — Qwen3-Next · Qwen3.5 이전 버전 비교 (W10 다음 주)](../supplementary.md#s5)
+- 보충: [S8 — Qwen3-Next 선행 (W10 다음 주)](../supplementary.md#s8)
+- 보충: [자율 참고 — Qwen3.5](../supplementary.md#self-study)
 - [Qwen3.8-Next 원문](https://arxiv.org/abs/2608.30320v1)
