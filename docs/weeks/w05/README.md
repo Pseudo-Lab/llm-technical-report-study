@@ -41,6 +41,7 @@
 
 ## 참고 자료
 
+- 보충: [S2 — DeepSeek LLM 요약 · DeepSeekMoE 구조팀 필독 (W04 다음 주)](../supplementary.md#s2)
 - [DeepSeek-V2](https://arxiv.org/abs/2405.04434v5)
 - [Grouped-Query Attention](https://arxiv.org/abs/2305.13245v3)
 - [Fast Transformer Decoding (MQA)](https://arxiv.org/abs/1911.02150v1)

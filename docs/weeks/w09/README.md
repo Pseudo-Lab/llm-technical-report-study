@@ -43,6 +43,7 @@
 
 ## 참고 자료
 
+- 보충: [S4 — DeepSeek-V3.1 이전 버전 비교 (W08 다음 주)](../supplementary.md#s4)
 - [DeepSeek-V3.2](https://arxiv.org/abs/2512.02556v1)
 - [DeepSeek-V2](https://arxiv.org/abs/2405.04434v5)
 - [Fast Transformer Decoding / MQA](https://arxiv.org/abs/1911.02150v1)

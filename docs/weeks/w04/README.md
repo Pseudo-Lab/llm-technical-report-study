@@ -41,5 +41,6 @@
 
 ## 참고 자료
 
+- 보충: [S2 — Qwen2.5-Math · QwQ-32B 비교 (W04 다음 주)](../supplementary.md#s2)
 - [Qwen2.5 Technical Report](https://arxiv.org/abs/2412.15115v2)
 - [Qwen3 Technical Report](https://arxiv.org/abs/2505.09388v1)

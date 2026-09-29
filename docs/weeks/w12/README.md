@@ -43,4 +43,6 @@
 
 ## 참고 자료
 
+- 보충: [S6 — ChatGLM 계열 선행 (W11 다음 주)](../supplementary.md#s6)
+- 보충: [S7 — GLM-4.7 변경점 비교 (W12 다음 주)](../supplementary.md#s7)
 - [GLM-4.5 원문](https://arxiv.org/abs/2508.06471v1)
