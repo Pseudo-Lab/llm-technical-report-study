@@ -43,5 +43,5 @@
 
 ## 참고 자료
 
-- 보충: [S9 — ChatGLM 선행 (W11 다음 주)](../supplementary.md#s9)
+- 보충: [S6 — ChatGLM 선행 (W11 다음 주)](../supplementary.md#s6)
 - [GLM-4.5 원문](https://arxiv.org/abs/2508.06471v1)

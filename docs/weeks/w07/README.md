@@ -41,7 +41,7 @@
 
 ## 참고 자료
 
-- 보충: [S5 — DeepSeekMath 선행 (W06 다음 주)](../supplementary.md#s5)
+- 보충: [S4 — DeepSeekMath 선행 (W06 다음 주)](../supplementary.md#s4)
 - [DeepSeek-R1](https://arxiv.org/abs/2501.12948v2)
 - [DeepSeekMath](https://arxiv.org/abs/2402.03300v3)
 - [Proximal Policy Optimization](https://arxiv.org/abs/1707.06347v2)

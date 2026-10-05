@@ -15,17 +15,13 @@
 아래 자료와 시점은 초안입니다. 후속 보고서와 팀원 제안에 따라 조정합니다.
 
 | 보충 | 여는 시점 | 자료 | 연결 주차 | 성격 |
-| --- | --- | --- | --- |
+| --- | --- | --- | --- | --- |
 | [S1](#s1) | W02 다음 주 | Llama 3 Herd | W02 | 비교 |
-| [S2](#s2) | W03 다음 주 | QwQ-32B 📝 | W04 | 선행 |
-| [S3](#s3) | W04 다음 주 | DeepSeekMoE | W05 | 선행 |
-| [S4](#s4) | W05 다음 주 | DeepSeek LLM | W05 | 비교 |
-| [S5](#s5) | W06 다음 주 | DeepSeekMath | W07 | 선행 |
-| [S6](#s6) | W08 다음 주 | MiMo-V2.5-Pro 📝 | W08 | 비교 |
-| [S7](#s7) | W09 다음 주 | MiMo-V2.6 📄 | W08 | 비교 |
-| [S8](#s8) | W10 다음 주 | Qwen3-Next 📝 | W11 | 선행 |
-| [S9](#s9) | W11 다음 주 | ChatGLM | W12 | 선행 |
-| [S10](#s10) | W12 다음 주 | GLM-4.7 📝 | W13 | 선행 |
+| [S2](#s2) | W04 다음 주 | DeepSeekMoE | W05 | 선행 |
+| [S3](#s3) | W05 다음 주 | DeepSeek LLM | W05 | 비교 |
+| [S4](#s4) | W06 다음 주 | DeepSeekMath | W07 | 선행 |
+| [S5](#s5) | W09 다음 주 | MiMo-V2.6 📄 | W08 | 비교 |
+| [S6](#s6) | W11 다음 주 | ChatGLM | W12 | 선행 |
 
 <a id="s1"></a>
 
@@ -36,66 +32,38 @@
 
 <a id="s2"></a>
 
-## S2 — W03 다음 주: QwQ-32B
-
-- 자료: 📝 [QwQ-32B: Embracing the Power of Reinforcement Learning](https://qwenlm.github.io/blog/qwq-32b/)
-- W04에서 Qwen3의 thinking/non-thinking 통합을 읽기 전에, Qwen 계열의 reasoning 특화 RL 모델을 먼저 확인합니다.
-
-<a id="s3"></a>
-
-## S3 — W04 다음 주: DeepSeekMoE
+## S2 — W04 다음 주: DeepSeekMoE
 
 - 자료: [DeepSeekMoE: Towards Ultimate Expert Specialization in Mixture-of-Experts Language Models](https://arxiv.org/abs/2401.06066v1)
 - W05 DeepSeek-V2가 쓰는 MoE 구조의 출발점입니다.
 
-<a id="s4"></a>
+<a id="s3"></a>
 
-## S4 — W05 다음 주: DeepSeek LLM
+## S3 — W05 다음 주: DeepSeek LLM
 
 - 자료: [DeepSeek LLM: Scaling Open-Source Language Models with Longtermism](https://arxiv.org/abs/2401.02954v1)
 - DeepSeek 계열의 초기 설계를 요약하고, W05에서 읽은 V2의 MoE·MLA 설계와 비교합니다.
 
-<a id="s5"></a>
+<a id="s4"></a>
 
-## S5 — W06 다음 주: DeepSeekMath
+## S4 — W06 다음 주: DeepSeekMath
 
 - 자료: [DeepSeekMath: Pushing the Limits of Mathematical Reasoning in Open Language Models](https://arxiv.org/abs/2402.03300v3)
 - W07에서 R1의 GRPO를 읽기 전에, GRPO의 원전과 수학 데이터 선별 파이프라인을 먼저 확인합니다.
 
-<a id="s6"></a>
+<a id="s5"></a>
 
-## S6 — W08 다음 주: MiMo-V2.5-Pro
-
-- 자료: 📝 [Xiaomi MiMo-V2.5-Pro](https://mimo.xiaomi.com/mimo-v2-5-pro/)
-- 중간 단계인 📝 [MiMo-V2-Pro](https://mimo.xiaomi.com/mimo-v2-pro)는 따로 읽지 않고, V2-Flash → V2-Pro → V2.5-Pro 변경점 표로 정리합니다.
-
-<a id="s7"></a>
-
-## S7 — W09 다음 주: MiMo-V2.6
+## S5 — W09 다음 주: MiMo-V2.6
 
 - 자료: 📄 [MiMo-V2.6 Technical Report](https://huggingface.co/XiaomiMiMo/MiMo-V2.6-Pro-RL/blob/main/MiMo_V2_6_technical_report.pdf)
-- S6의 V2.5-Pro 교사 통합 방식과 비교합니다. MiMo 읽기 순서는 MiMo → V2-Flash(W08) → V2-Pro → V2.5-Pro(S6) → V2.6(S7)이며, 모든 단계가 앞 모델의 가중치를 이어받았다는 뜻은 아닙니다.
+- W08에서 읽은 MiMo·MiMo-V2-Flash와 비교하며 후속 보고서의 변경점을 살펴봅니다.
 
-<a id="s8"></a>
+<a id="s6"></a>
 
-## S8 — W10 다음 주: Qwen3-Next
-
-- 자료: 📝 [Qwen3-Next: Towards Ultimate Training & Inference Efficiency](https://qwen.ai/blog?id=qwen3-next)
-- W11의 Qwen3.8-Next를 읽기 전에 비교 기준이 되는 hybrid 구조를 잡습니다.
-
-<a id="s9"></a>
-
-## S9 — W11 다음 주: ChatGLM
+## S6 — W11 다음 주: ChatGLM
 
 - 자료: [ChatGLM: A Family of Large Language Models from GLM-130B to GLM-4 All Tools](https://arxiv.org/abs/2406.12793v2)
 - W12 GLM-4.5 이전의 GLM 계열 역사를 정리합니다.
-
-<a id="s10"></a>
-
-## S10 — W12 다음 주: GLM-4.7
-
-- 자료: 📝 [GLM-4.7: Advancing the Coding Capability](https://z.ai/blog/glm-4.7)
-- W12 GLM-4.5에서 W13 GLM-5로 넘어가기 전의 변경점을 봅니다. 블로그의 Tech Report 링크는 GLM-4.5 보고서로 연결되며, GLM-4.7만 다루는 별도 보고서는 없습니다.
 
 <a id="self-study"></a>
 
