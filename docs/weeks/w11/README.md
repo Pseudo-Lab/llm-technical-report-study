@@ -49,5 +49,4 @@
 
 ## 참고 자료
 
-- 보충: [자율 참고 — Qwen3.5](../supplementary.md#self-study)
 - [Qwen3.8-Next 원문](https://arxiv.org/abs/2608.30320v1)

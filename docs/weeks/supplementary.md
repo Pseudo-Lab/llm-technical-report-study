@@ -8,7 +8,7 @@
 
 - **선행**: 다음 정규 주차 전에 읽어 두면 좋은 자료입니다.
 - **비교**: 방금 읽은 정규 보고서와 이전·후속 버전을 비교하는 자료입니다.
-- 📝는 논문이 없어 공식 블로그로 읽는 항목, 📄는 arXiv가 아닌 공식 PDF입니다.
+- 📄는 arXiv가 아닌 공식 PDF입니다.
 
 ## 보충 주제와 시점 초안
 
@@ -75,5 +75,3 @@
 | --- | --- |
 | [Qwen Technical Report](https://arxiv.org/abs/2309.16609v1) | W03 |
 | [Qwen2.5-Math Technical Report](https://arxiv.org/abs/2409.12122v1) | W04 |
-| 📝 [DeepSeek-V3.1 Release](https://api-docs.deepseek.com/news/news250821/) | W09 |
-| 📝 [Qwen3.5: Towards Native Multimodal Agents](https://qwen.ai/blog?id=qwen3.5) | W11 |
