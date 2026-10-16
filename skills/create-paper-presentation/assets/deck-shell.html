@@ -116,6 +116,12 @@ sub,sup{font-size:.72em;line-height:0}sub{vertical-align:-.25em}sup{vertical-ali
 .src a,.slide-source a{color:var(--muted)}
 .src a:hover,.slide-source a:hover{color:var(--blue)}
 .speaker-notes{display:none}
+html.show-notes .slide.on .speaker-notes{display:block;position:fixed;left:50%;transform:translateX(-50%);bottom:76px;width:min(1080px,94vw);max-height:36vh;overflow:auto;background:#1F2329;color:#F3F4F6;padding:16px 22px;border-radius:12px;font-size:16px;line-height:1.75;white-space:pre-wrap;z-index:60;box-shadow:0 8px 28px rgba(0,0,0,.28)}
+html.show-notes .slide.on .speaker-notes:empty::before{content:"이 장은 아직 대본이 없습니다";color:#9AA1AB}
+.notes-btn{position:fixed;right:18px;bottom:18px;z-index:61;border:1px solid #C9CDD3;background:#fff;color:#1F2329;border-radius:999px;padding:8px 14px;font:600 13px system-ui,sans-serif;cursor:pointer}
+html.show-notes .notes-btn{background:#1F2329;color:#fff;border-color:#1F2329}
+@media (max-width:1180px){.notes-btn{display:none}}
+@media print{.notes-btn{display:none}}
 .nav{display:flex;align-items:center;justify-content:center;gap:12px;flex:none;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg)}
 html:not(.fit) .nav{position:sticky;bottom:0;z-index:10;border-top:1px solid var(--line)}
 .btn{height:42px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);font-size:15px;font-weight:500}
@@ -531,5 +537,11 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 })();
 </script>
+<button class="notes-btn" type="button" aria-pressed="false" title="대본 보기 (N)">대본 · N</button>
+<script>(()=>{const r=document.documentElement,b=document.querySelector('.notes-btn');
+const set=v=>{r.classList.toggle('show-notes',v);b.setAttribute('aria-pressed',v);try{localStorage.setItem('deck-notes',v?'1':'0')}catch(e){}};
+try{set(localStorage.getItem('deck-notes')==='1')}catch(e){}
+b.addEventListener('click',()=>set(!r.classList.contains('show-notes')));
+addEventListener('keydown',e=>{if((e.key==='n'||e.key==='N')&&!e.metaKey&&!e.ctrlKey&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))set(!r.classList.contains('show-notes'))});})();</script>
 </body>
 </html>
