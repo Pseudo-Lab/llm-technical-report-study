@@ -1,0 +1,629 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1"><style>:root{color-scheme:light}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Llama 2 §3–§3.2.1 — SFT와 선호 데이터</title>
+<style>
+/* Paper-study presentation shell. Visual principles adapted from research-idea-deck;
+   its research-proposal narrative and example content are deliberately not included. */
+:root{
+  color-scheme:light;
+  --bg:#E9ECF0;--card:#F7F8FA;--box:#FFFFFF;--ink:#1A1D23;--ink2:#2F343C;
+  --muted:#5D6570;--faint:#959BA5;--line:#CDD2D9;--wire:#4A505A;
+  --blue:#2E55A5;--blue-s:#EEF2FA;--green:#2B7858;--green-s:#ECF5F0;
+  --orange:#A65A2E;--orange-s:#F9F0E8;--red:#AE3A33;--red-s:#FAEDEB;--gray-s:#F0F2F5;
+  --f:Pretendard,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  --s:1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
+body{font-family:var(--f);-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+button,select{font:inherit}
+button,a,select{touch-action:manipulation}
+a{color:var(--blue);text-underline-offset:3px;text-decoration-thickness:1px}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+html.fit,html.fit body{height:100%;overflow:hidden}
+.app{display:flex;flex-direction:column;min-height:100vh}
+html.fit .app{height:100%;min-height:0}
+.top{padding:18px 32px 12px;flex:none}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px 24px;flex-wrap:wrap}
+.ttl{font-size:19px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin:0}
+.sub{font-size:13px;line-height:1.5;color:var(--muted)}
+.prog{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap;margin-top:12px}
+.psec{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
+.psec .lab{font-size:12px;font-weight:500;color:var(--muted);margin-right:5px;white-space:nowrap}
+.dot{position:relative;display:grid;place-items:center;width:24px;height:24px;border:0;background:transparent;padding:0;border-radius:50%}
+.dot::after{content:"";width:10px;height:10px;border:1.5px solid var(--faint);border-radius:50%;background:transparent}
+.dot.seen::after{background:var(--faint)}
+.dot.cur::after{background:var(--blue);border-color:var(--blue)}
+.stage{position:relative;padding:0 18px 18px;isolation:isolate}
+html.fit .stage{flex:1;min-height:0;padding:0;overflow:hidden;display:grid;place-items:center}
+.slide{display:none;min-width:0}
+.slide.on{display:block}
+html.fit .slide.on{width:1280px;height:720px;zoom:var(--s)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px #141C280D,0 10px 28px -16px #141C2829;overflow:hidden}
+html.fit .card{height:720px;display:flex;flex-direction:column}
+.inner{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:30px 24px}
+html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+.inner.wide{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:24px}
+.txt{display:flex;flex-direction:column;gap:18px;min-width:0}
+.ey{font-size:14px;line-height:1.4;font-weight:500;color:var(--muted)}
+.txt h2,.slide h2{margin:0;font-size:32px;font-weight:700;line-height:1.35;letter-spacing:-.035em;text-wrap:balance}
+.txt p{margin:0;font-size:20px;line-height:1.7;color:var(--ink2)}
+.txt p.lead{font-size:23px;line-height:1.6}
+.txt p.small,.small{font-size:16px;line-height:1.6}
+.txt p.note,.note{font-size:15px;line-height:1.6;color:var(--muted)}
+.txt ul,.txt ol{font-size:19px;line-height:1.7;margin:0;padding-left:1.3em;color:var(--ink2)}
+.txt li+li{margin-top:8px}
+.txt b,.txt strong{color:var(--ink)}
+.vis{display:flex;flex-direction:column;gap:14px;min-width:0}
+.g{display:grid;gap:14px;min-width:0}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bx{position:relative;min-width:0;display:flex;flex-direction:column;gap:7px;padding:18px 20px;border:1.5px solid var(--line);border-radius:12px;background:var(--box)}
+.bx.blue{border-color:var(--blue);background:var(--blue-s)}
+.bx.green{border-color:var(--green);background:var(--green-s)}
+.bx.orange{border-color:var(--orange);background:var(--orange-s)}
+.bx.red{border-color:var(--red);background:var(--red-s)}
+.bx.gray{background:var(--gray-s)}
+.bx.dash{border-style:dashed}
+.bx.thick{border-width:2px}
+.bx.ctr{align-items:center;justify-content:center;text-align:center}
+.bx.pill{border-radius:999px}
+.bx .t{font-size:19px;line-height:1.45;font-weight:700;color:var(--ink)}
+.bx .d{font-size:17px;line-height:1.6;color:var(--ink2)}
+.bx .m{font-size:14px;line-height:1.55;color:var(--muted)}
+.bx .k{font-size:13px;font-weight:700;line-height:1.45}
+.bx .gap{flex:1;min-height:8px}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.tag{display:inline-flex;align-items:center;align-self:flex-start;gap:5px;font-size:12px;line-height:1.5;font-weight:600;padding:3px 9px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted)}
+.tag.blue{color:var(--blue);border-color:var(--blue);background:var(--blue-s)}
+.tag.green{color:var(--green);border-color:var(--green);background:var(--green-s)}
+.tag.orange{color:var(--orange);border-color:var(--orange);background:var(--orange-s)}
+.tb{color:var(--blue)!important}.tg{color:var(--green)!important}.to{color:var(--orange)!important}.tr{color:var(--red)!important}
+.muted{color:var(--muted)!important}.bold{font-weight:700}.nw{white-space:nowrap}
+.lab{font-size:15px;line-height:1.5;font-weight:700}
+.cap{margin:0;font-size:14px;line-height:1.6;color:var(--muted);text-align:center}
+.rule{height:1px;background:var(--line);margin:4px 0}
+.num{display:inline-grid;place-items:center;flex:none;width:27px;height:27px;border:1.5px solid currentColor;border-radius:50%;font-size:13px;font-weight:700}
+.step{flex-direction:row;align-items:center;gap:14px}
+.flow{display:flex;align-items:stretch;gap:12px;min-width:0}
+.flow>.bx{flex:1}
+.arrow{flex:none;align-self:center;font-size:24px;color:var(--wire);font-weight:500}
+.flow.vertical{flex-direction:column;align-items:stretch}
+.flow.vertical>.arrow{line-height:1}
+.tbl{border-collapse:collapse;width:100%;font-size:16px;line-height:1.5;table-layout:fixed;background:var(--box)}
+.tbl th,.tbl td{text-align:left;vertical-align:top;padding:13px 14px;border-bottom:1px solid var(--line);overflow-wrap:break-word}
+.tbl th{font-size:14px;font-weight:600;color:var(--muted);background:var(--gray-s)}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl .numcol{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl .em{background:var(--blue-s);font-weight:650}
+.table-wrap{overflow:hidden;border:1px solid var(--line);border-radius:12px}
+.figure{margin:0}
+.figure img,.vis>img,.vis>svg{display:block;max-width:100%;height:auto}
+.figure figcaption{font-size:14px;color:var(--muted);line-height:1.5;margin-top:9px}
+.metric{font-size:46px;line-height:1.15;font-weight:700;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.metric small{font-size:19px;letter-spacing:0}
+.equation{font-size:22px;line-height:1.7;text-align:center;padding:20px;background:var(--box);border:1px solid var(--line);border-radius:12px}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em}
+sub,sup{font-size:.72em;line-height:0}sub{vertical-align:-.25em}sup{vertical-align:.45em}
+.src,.slide-source{font-size:13px;line-height:1.65;color:var(--muted)}
+.card>.src,.card>.slide-source{flex:none;margin:0;padding:13px 54px 15px;border-top:1px solid var(--line);background:#FFFFFF60;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 24px;min-height:52px}
+.src a,.slide-source a{color:var(--muted)}
+.src a:hover,.slide-source a:hover{color:var(--blue)}
+.speaker-notes{display:none}
+.nav{display:flex;align-items:center;justify-content:center;gap:12px;flex:none;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+html:not(.fit) .nav{position:sticky;bottom:0;z-index:10;border-top:1px solid var(--line)}
+.btn{height:42px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);font-size:15px;font-weight:500}
+.btn.next{background:var(--ink);color:white;border-color:var(--ink)}
+.btn.mode{height:36px;padding:0 14px;font-size:13px;color:var(--muted)}
+.nav select{height:42px;min-width:0;width:330px;max-width:34vw;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:var(--box);color:var(--ink);font-size:14px}
+.count{font-size:14px;font-variant-numeric:tabular-nums;min-width:54px;text-align:center;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:819px){
+  .top{padding:16px 18px 12px}.prog{gap:8px 15px}.sub{font-size:12px}
+  .inner{padding:28px 22px}.txt h2,.slide h2{font-size:28px}.txt p{font-size:18px}
+  .card>.src,.card>.slide-source{padding:12px 22px;font-size:12px}
+  .nav{gap:8px;flex-wrap:wrap}.nav select{flex:1;width:auto;max-width:none}.btn{padding:0 15px}
+}
+@media(max-width:520px){
+  .c3{grid-template-columns:minmax(0,1fr)}.flow:not(.vertical){flex-direction:column}
+  .flow:not(.vertical)>.arrow{transform:rotate(90deg)}
+  .table-wrap{overflow-x:auto}.tbl{min-width:520px}.count{min-width:46px}
+  .btn.mode{flex-basis:100%;max-width:160px}.psec .lab{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media print{
+  @page{size:338.667mm 190.5mm;margin:0}
+  html,html.fit,body,html.fit body{height:auto!important;min-height:0!important;overflow:visible!important;background:white!important}
+  .app,html.fit .app{display:block;height:auto!important;min-height:0}.top,.nav{display:none!important}
+  .stage,html.fit .stage{display:block;padding:0;overflow:visible}
+  .slide,.slide.on,html.fit .slide.on{display:block!important;width:1280px;height:720px;zoom:1!important;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .card,html.fit .card{height:720px;display:flex;flex-direction:column;border:0;border-radius:0;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .inner,html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+  .inner.wide{grid-template-columns:minmax(0,1fr)!important}.speaker-notes{display:none!important}
+  .c3{grid-template-columns:repeat(3,minmax(0,1fr))}.flow:not(.vertical){flex-direction:row}.flow:not(.vertical)>.arrow{transform:none}
+  a{text-decoration:none}.card>.src,.card>.slide-source{padding:13px 54px 15px}
+}
+</style>
+<style>
+/* Four information layouts: narrative overview, processes, quantitative comparison,
+   and full-width references. Charts use fixed, explicitly labelled scales. */
+.txt h2,.slide h2{font-size:34px;line-height:1.28;letter-spacing:-.035em}
+.txt p{font-size:19px;line-height:1.65}
+.txt .ey{font-size:14px;letter-spacing:.02em}
+.layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr);gap:44px}
+.layout-quantitative .vis{gap:18px}
+.layout-quantitative .txt h2{font-size:36px}
+.layout-overview .inner,.layout-process .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:26px}
+.layout-overview .txt,.layout-process .txt,.layout-reference .txt{display:grid;grid-template-columns:420px minmax(0,1fr);gap:8px 46px;align-items:start}
+.layout-overview .txt .ey,.layout-process .txt .ey,.layout-reference .txt .ey{grid-column:1/-1;margin-bottom:7px}
+.layout-overview .txt h2,.layout-process .txt h2,.layout-reference .txt h2{grid-column:1;grid-row:2/4;font-size:34px}
+.layout-overview .txt p,.layout-process .txt p,.layout-reference .txt p{grid-column:2;font-size:18px;line-height:1.65}
+.layout-reference .vis{gap:16px}
+.layout-reference .tbl th{font-size:16px}
+.layout-reference .tbl td{font-size:18px;padding:13px 18px}
+.layout-reference .tbl th:first-child,.layout-reference .tbl td:first-child{width:35%}
+.layout-reference .tbl th{padding:13px 18px}
+.layout-overview .vis>.g{gap:22px}
+.layout-overview .vis>.g .bx{padding:23px 26px}
+.layout-overview .vis>.g .t{font-size:22px}
+.layout-overview .vis>.g .d{font-size:18px}
+.layout-cover .inner{grid-template-columns:1fr 1fr;gap:55px}
+.layout-cover .txt h2{font-size:44px;line-height:1.27;letter-spacing:-.045em}
+.layout-cover .txt p{font-size:20px}
+.cover-graphic{padding:25px 0 25px 36px;border-left:1px solid var(--line)}
+.overline{font-size:14px;font-weight:700;letter-spacing:.15em;color:var(--blue)}
+.family-range{display:flex;align-items:center;justify-content:space-between;font-size:79px;line-height:1.2;font-weight:750;letter-spacing:-.05em;margin:25px 0 36px;color:var(--blue)}
+.family-range>span{font-size:45px;color:var(--faint);font-weight:400}
+.family-models{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center}
+.family-models span{padding:16px 0;background:var(--box);border:1px solid var(--line);border-radius:10px;font-weight:650;font-size:24px}
+.token-brackets{display:grid;grid-template-columns:1fr 1fr;gap:15px;font-size:17px;color:var(--green);text-align:center;margin-top:12px}
+.token-brackets span{border-top:2px solid var(--green);padding-top:8px}
+.cover-graphic p{font-size:23px;font-weight:650;line-height:1.5;margin:38px 0 14px}
+.cover-graphic small{font-size:15px;color:var(--muted);line-height:1.7}
+.recipe-map{display:grid;grid-template-columns:1fr 38px 1.15fr 38px 1.1fr;align-items:center;gap:10px;padding:28px 0 20px}
+.recipe-step{align-self:stretch;border-top:3px solid var(--blue);padding:24px 10px 12px 0;display:flex;flex-direction:column;align-items:flex-start}
+.step-index{font-size:44px;font-weight:600;line-height:1;color:var(--blue)}
+.recipe-step h3{font-size:27px;line-height:1.4;letter-spacing:-.03em;margin:23px 0 10px}
+.recipe-step p{font-size:19px;line-height:1.65;color:var(--ink2);margin:0 0 20px}
+.recipe-step .tag{margin-top:auto}
+.recipe-arrow{font-size:30px;color:var(--faint);text-align:center}
+.recipe-outcomes{display:flex;flex-direction:column;border-left:3px solid var(--green);padding-left:22px;gap:22px}
+.recipe-outcomes strong{display:block;font-size:23px;line-height:1.4;color:var(--green)}
+.recipe-outcomes span{display:block;font-size:16px;margin-top:5px;color:var(--muted)}
+.annotation{display:flex;flex-direction:column;gap:5px;border-left:3px solid var(--orange);padding:13px 18px;background:var(--orange-s);border-radius:0 8px 8px 0}
+.annotation strong{font-size:17px;line-height:1.5;color:var(--orange)}
+.annotation span{font-size:16px;line-height:1.6;color:var(--ink2)}
+.annotation.green{border-color:var(--green);background:var(--green-s)}
+.annotation.green strong{color:var(--green)}
+.annotation.blue{border-color:var(--blue);background:var(--blue-s)}
+.annotation.blue strong{color:var(--blue)}
+.data-chart{display:flex;flex-direction:column;gap:12px;padding:8px 0 14px}
+.data-chart-head,.data-row{display:grid;grid-template-columns:122px minmax(0,1fr) 44px 66px;gap:12px;align-items:center}
+.data-chart-head{font-size:12px;line-height:1.5;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--line)}
+.data-chart-head>:nth-child(n+3){text-align:right}
+.data-name{font-size:16px;font-weight:600;line-height:1.3}
+.data-row>strong,.epoch{font-size:16px;text-align:right;font-variant-numeric:tabular-nums}
+.data-track{height:25px;position:relative;background:linear-gradient(to right,transparent 49.8%,#CBD2DD 49.8%,#CBD2DD 50.2%,transparent 50.2%),#EDF0F4;border-left:1px solid var(--faint)}
+.data-track i{height:100%;display:block;min-width:2px;border-radius:0 4px 4px 0}
+.data-track .blue,.hbar-fill.blue,.v-bar.blue{background:var(--blue)}
+.data-track .green,.hbar-fill.green,.v-bar.green{background:var(--green)}
+.epoch.green{color:var(--green);font-weight:700}
+.diagram-scroll{min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.diagram-scroll>svg{display:block;width:100%;height:auto;overflow:visible;font-family:var(--f)}
+.sv-label{font-family:var(--f);font-size:20px;fill:var(--ink);font-weight:550}
+.sv-note{font-family:var(--f);font-size:17px;fill:var(--muted)}
+.norm-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.diagram-panel{background:var(--box);border:1px solid var(--line);border-radius:12px;padding:22px 18px 18px;min-width:0}
+.diagram-panel.emphasized{border-color:var(--blue)}
+.diagram-title{display:flex;flex-direction:column;gap:4px;padding:0 5px}
+.diagram-title span{font-size:15px;color:var(--muted)}
+.diagram-title strong{font-size:23px;font-weight:650;line-height:1.4}
+.diagram-panel .formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:16px;line-height:1.5;text-align:center;white-space:nowrap;letter-spacing:-.04em}
+.block-stack{display:flex;flex-direction:column;gap:7px}
+.block-diagram h3{display:flex;align-items:center;gap:13px;margin:0;font-size:18px;font-weight:600;line-height:1.5}
+.block-diagram .diagram-scroll>svg{max-height:188px}
+.block-diagram .sv-label{font-size:19px}
+.block-diagram .sv-note{font-size:17px}
+.layout-process .block-stack+.cap{font-size:13px;margin-top:-5px}
+.chart-line{stroke:var(--faint);stroke-width:1.5}
+.chart-grid{stroke:var(--line);stroke-dasharray:4 5;stroke-width:1}
+.recipe-settings{display:grid;grid-template-columns:1.15fr .7fr 1.4fr;gap:14px;border-top:1px solid var(--line);padding-top:16px}
+.recipe-settings span{font-size:14px;color:var(--muted);line-height:1.65}
+.recipe-settings b{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+.delta-header{display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line);padding-bottom:15px}
+.delta-header strong{font-size:21px;line-height:1.4}.delta-header span{font-size:14px;color:var(--muted)}
+.delta-chart{display:flex;flex-direction:column;gap:14px;padding:0 0 8px}
+.delta-row{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;align-items:center;gap:14px;min-height:35px}
+.delta-name{font-size:16px;font-weight:600;line-height:1.3}
+.delta-name small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:4px;white-space:nowrap}
+.delta-track{height:28px;position:relative;background:linear-gradient(to right,transparent 19.8%,#959BA5 19.8%,#959BA5 20.2%,transparent 20.2%),#EDF0F4}
+.delta-track i{position:absolute;top:3px;height:22px;min-width:2px;display:block;border-radius:3px}
+.delta-track .blue{background:var(--blue)}.delta-track .orange{background:var(--orange)}
+.delta-value{font-size:17px;text-align:right;font-variant-numeric:tabular-nums}.delta-value.blue{color:var(--blue)}.delta-value.orange{color:var(--orange)}
+.delta-axis{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;gap:14px;font-size:12px;color:var(--muted);margin-top:1px}
+.delta-axis>div{position:relative;height:20px}.delta-axis>div span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.delta-axis>div span:first-child{transform:none}.delta-axis>div span:last-child{transform:translateX(-100%)}
+.condition-panels{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.compare-panel{min-width:0;background:var(--box);border:1px solid var(--line);border-radius:12px;padding:23px 27px}
+.compare-panel h3{font-size:24px;font-weight:650;line-height:1.4;margin:0}
+.panel-sub{font-size:14px;line-height:1.5;color:var(--muted);margin:6px 0 24px}
+.hbar-chart{display:flex;flex-direction:column;gap:22px;padding:8px 0}
+.hbar-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;font-size:18px;line-height:1.5}
+.hbar-head strong{font-size:23px;font-weight:650;font-variant-numeric:tabular-nums}.hbar-head small{font-size:14px;margin-left:2px}
+.hbar-track{height:28px;background:repeating-linear-gradient(to right,transparent 0,transparent calc(25% - 1px),#CCD3DD calc(25% - 1px),#CCD3DD 25%),#EEF0F4;border-left:1px solid var(--faint)}
+.hbar-fill{height:100%;border-radius:0 4px 4px 0}.hbar-fill.gray{background:#8A98AE}
+.chart-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:-10px;font-variant-numeric:tabular-nums}
+.chart-heading{display:flex;flex-direction:column;gap:10px}.chart-heading>strong{font-size:22px}
+.before-after{display:grid;grid-template-columns:1.2fr 1fr;gap:70px;align-items:center;padding:15px 30px 8px 5px}
+.vertical-chart{display:grid;grid-template-columns:40px minmax(0,1fr);gap:15px;min-width:0}
+.v-axis{height:240px;display:flex;flex-direction:column;justify-content:space-between;text-align:right;font-size:13px;color:var(--muted)}
+.v-columns{display:grid;grid-template-columns:1fr 1fr;gap:55px;background:linear-gradient(to bottom,#CDD2D9 1px,transparent 1px,transparent 119px,#E1E4E9 119px,#E1E4E9 120px,transparent 120px,transparent 239px,#959BA5 239px,#959BA5 240px,transparent 240px)}
+.v-column{text-align:center;min-width:0}.v-track{height:240px;position:relative;display:flex;align-items:flex-end;justify-content:center}
+.v-bar{width:90px;max-width:80%;position:relative;border-radius:6px 6px 0 0}
+.v-bar strong{position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:25px;font-weight:650;white-space:nowrap}
+.v-column>span{display:block;font-size:17px;font-weight:600;line-height:1.5;margin-top:12px}
+.change-summary{padding-left:25px;border-left:1px solid var(--line)}
+.change-value{font-size:79px;font-weight:700;letter-spacing:-.04em;color:var(--orange);line-height:1.2;margin:12px 0 16px}
+.change-value small{font-size:25px;margin-left:9px;letter-spacing:0}
+.change-summary h3{font-size:24px;font-weight:650;line-height:1.45;margin:0 0 12px}
+.change-summary p{font-size:16px;line-height:1.7;color:var(--muted);margin:0}
+.scroll-hint{font-size:12px;line-height:1.5;color:var(--blue);margin:4px 0 0;padding:7px 10px;background:var(--blue-s);border-radius:5px}
+.scroll-hint[hidden]{display:none!important}
+.formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:20px;line-height:1.7;letter-spacing:-.04em;white-space:nowrap}
+.metric span{font-size:22px;margin-left:5px}
+html:not(.fit) .layout-quantitative .inner,html:not(.fit) .layout-cover .inner{grid-template-columns:minmax(0,1fr)}
+html:not(.fit) .layout-process .txt,html:not(.fit) .layout-overview .txt,html:not(.fit) .layout-reference .txt{display:flex;flex-direction:column;gap:15px}
+html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid var(--line)}
+@media(max-width:819px){
+ .layout-quantitative .txt h2,.txt h2,.slide h2,.layout-process .txt h2,.layout-overview .txt h2,.layout-reference .txt h2{font-size:28px;line-height:1.35}
+ .layout-cover .txt h2{font-size:34px}.layout-cover .txt p,.txt p{font-size:18px}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{gap:27px}
+ .layout-overview .vis>.g .bx{padding:20px}.layout-overview .vis>.g .t{font-size:20px}.layout-overview .vis>.g .d{font-size:16px}
+ .norm-pair,.condition-panels{grid-template-columns:1fr;gap:18px}.diagram-panel{padding:17px 14px}
+ .diagram-panel .diagram-scroll>svg{min-width:570px}.block-diagram .diagram-scroll>svg{min-width:960px;max-height:none}
+ .layout-quantitative .diagram-scroll>svg{min-width:600px}
+ .block-diagram h3{flex-wrap:wrap;font-size:16px;gap:7px}.block-stack{gap:24px}
+ .diagram-panel .formula{font-size:13px;white-space:normal}.diagram-title strong{font-size:21px}
+ .recipe-map{grid-template-columns:1fr;gap:18px;padding:6px 0}.recipe-step{padding:18px 0 0}.recipe-arrow{transform:rotate(90deg)}
+ .recipe-step h3{margin-top:12px}.recipe-step p{font-size:18px}.recipe-outcomes{gap:18px;padding:5px 0 5px 20px}
+ .before-after{grid-template-columns:1fr;gap:30px;padding:25px 0 5px}.change-summary{padding:20px 0 0;border-left:0;border-top:1px solid var(--line)}
+ .change-value{font-size:60px}.change-summary h3{font-size:22px}.change-summary h3 br{display:none}
+ .v-columns{gap:24px}.v-bar strong{font-size:22px}.v-column>span{font-size:14px}
+ .family-range{font-size:62px;margin:20px 0 26px}.family-range>span{font-size:33px}.family-models span{font-size:19px;padding:12px 0}
+ .token-brackets{font-size:14px}.cover-graphic p{font-size:20px;margin-top:28px}
+ .data-chart-head,.data-row{grid-template-columns:90px minmax(0,1fr) 35px 44px;gap:7px}
+ .data-chart-head{font-size:10px}.data-name{font-size:13px}.data-row>strong,.epoch{font-size:13px}.data-track{height:21px}
+ .data-chart-head>:nth-child(2){font-size:10px}.data-chart{gap:13px}
+ .annotation span{font-size:14px}.annotation strong{font-size:16px}
+ .delta-row{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}.delta-axis{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}
+ .delta-name{font-size:13px}.delta-name small{font-size:10px}.delta-value{font-size:14px}.delta-header strong{font-size:18px}
+ .compare-panel{padding:20px}.compare-panel h3{font-size:21px}.hbar-head{font-size:16px}.hbar-head strong{font-size:20px}
+ .recipe-settings{grid-template-columns:1fr 1fr}.recipe-settings span:last-child{grid-column:1/-1}.cap{font-size:12px;line-height:1.65}
+ .layout-reference .tbl th,.layout-reference .tbl td{font-size:15px;padding:12px 14px}.table-wrap{max-width:100%;overscroll-behavior-x:contain}
+}
+@media(max-width:520px){.c2{grid-template-columns:minmax(0,1fr)}.tbl{min-width:520px}.formula{font-size:14px;white-space:normal}}
+@media print{
+ .layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr)!important}
+ .layout-cover .inner{grid-template-columns:1fr 1fr!important}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important}
+ .layout-process .txt,.layout-overview .txt,.layout-reference .txt{display:grid!important;grid-template-columns:420px minmax(0,1fr);gap:8px 46px}
+ .cover-graphic{padding:25px 0 25px 36px!important;border-left:1px solid var(--line)!important;border-top:0!important}
+ .scroll-hint{display:none!important}.diagram-scroll{overflow:visible}.table-wrap{overflow:visible}.tbl{min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-row"><h1 class="ttl">Llama 2 §3–§3.2.1 — SFT와 선호 데이터</h1><span class="sub">W02 Post-training · 송용우 · 검토용 초안</span></div>
+    <nav class="prog" id="prog" aria-label="발표 구간과 슬라이드"></nav>
+  </header>
+  <main class="stage" id="stage" aria-label="논문 발표자료">
+<section class="slide layout-overview" data-sec="0" data-section-label="§3 도입" data-nav="§3–§3.2는 사람 선호를 모델 개선으로 바꾸는 과정입니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>§3–§3.2는 사람 선호를<br>모델 개선으로 바꾸는 과정입니다</h2><p>Llama 2-Chat의 후학습은 사람이 만든 데이터 두 종류로 시작합니다. 사람이 <b>직접 쓴 답</b>(SFT)과 사람이 <b>두 답 중 고른 결과</b>(선호)입니다.</p><p>Meta는 직접 쓴 답을 2.7만 건에서 멈추고, 나머지 예산을 141만 건의 비교로 돌렸습니다. 그 비교로 reward model 두 개를 학습하고, Rejection Sampling과 PPO로 모델을 다섯 번 고쳤습니다.</p></div>
+<div class="vis"><div class="g c2"><div class="bx blue"><div class="t">§3.1 SFT 데이터</div><div class="d">사람이 쓴 prompt + 답</div><div class="m"><span class="metric">27,540<small>건</small></span></div></div><div class="bx green"><div class="t">§3.2.1 선호 데이터</div><div class="d">두 응답 중 하나 고르기 + 강도</div><div class="m"><span class="metric">1,418,091<small>비교</small></span></div></div></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=9">Llama 2 · §3.1 · Table 6</a></span><span></span></footer></div>
+<aside class="speaker-notes">오늘 맡은 부분은 3절 도입부터 3.2절 끝까지입니다. 한 문장으로 줄이면, 사람 선호를 모델 개선으로 바꾸는 과정입니다. 사람이 직접 답을 쓰는 데이터는 2만 7천 건에서 멈추고, 두 답 중 하나를 고르는 비교 데이터 141만 건을 모았습니다. 이 비교로 reward model을 만들고, 그 점수로 모델을 고칩니다. 두 숫자의 단위가 다르다는 점도 먼저 짚고 가겠습니다.</aside></section>
+<section class="slide layout-process" data-sec="0" data-section-label="§3 도입" data-nav="Llama 2-Chat은 SFT 한 번 뒤 RLHF를 여러 번 반복해 만들었습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Llama 2-Chat은 SFT 한 번 뒤<br>RLHF를 여러 번 반복해 만들었습니다</h2><p>§3 도입은 전체 그림(Fig. 4)을 보여 줍니다. 사전학습 모델에 SFT를 한 번 하고, 이후 선호 수집 → reward model → 정책 갱신을 V1부터 V5까지 반복합니다.</p><p>오늘은 이 중 SFT와 선호 수집까지 봅니다.</p></div>
+<div class="vis"><figure style="width:100%;max-width:1040px;margin:0 auto"><svg viewBox="0 0 1120 360" style="width:100%;height:auto" role="img" aria-label="Llama 2 → SFT 후, 선호 수집 → RM → 정책 갱신 루프를 V1부터 V5까지 반복해 Llama 2-Chat"><defs><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5B6578"/></marker><marker id="ahb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2E55A5"/></marker></defs><rect x="395" y="18" width="560" height="324" rx="28" fill="#2E55A5" fill-opacity="0.05" stroke="#2E55A5" stroke-dasharray="7 6" stroke-width="1.5"/><text x="675" y="335" text-anchor="middle" font-size="16" fill="#2E55A5" font-weight="700">RLHF 루프 · V1 → V5 (5번)</text><rect x="10" y="140" width="150" height="80" rx="12" fill="#F1F3F6" stroke="#C9D1DE" stroke-width="2"/><text x="85.0" y="176.0" text-anchor="middle" font-size="22" font-weight="700" fill="#1B2230">Llama 2</text><text x="85.0" y="202.0" text-anchor="middle" font-size="16" fill="#5B6578">사전학습</text><rect x="205" y="140" width="150" height="80" rx="12" fill="#EEF3FC" stroke="#2E55A5" stroke-width="3"/><text x="280.0" y="176.0" text-anchor="middle" font-size="22" font-weight="700" fill="#1B2230">SFT</text><text x="280.0" y="202.0" text-anchor="middle" font-size="16" fill="#5B6578">§3.1 · 한 번</text><rect x="425" y="50" width="210" height="84" rx="12" fill="#EEF3FC" stroke="#2E55A5" stroke-width="2"/><text x="530.0" y="88.0" text-anchor="middle" font-size="22" font-weight="700" fill="#1B2230">선호 수집</text><text x="530.0" y="114.0" text-anchor="middle" font-size="16" fill="#5B6578">§3.2.1 · 매주</text><rect x="715" y="50" width="210" height="84" rx="12" fill="#EEF3FC" stroke="#2E55A5" stroke-width="2"/><text x="820.0" y="88.0" text-anchor="middle" font-size="22" font-weight="700" fill="#1B2230">Reward model</text><text x="820.0" y="114.0" text-anchor="middle" font-size="16" fill="#5B6578">§3.2.2 · 도움/안전</text><rect x="555" y="222" width="240" height="84" rx="12" fill="#EEF3FC" stroke="#2E55A5" stroke-width="2"/><text x="675.0" y="260.0" text-anchor="middle" font-size="22" font-weight="700" fill="#1B2230">정책 갱신</text><text x="675.0" y="286.0" text-anchor="middle" font-size="16" fill="#5B6578">Rejection Sampling → PPO</text><rect x="985" y="222" width="125" height="84" rx="12" fill="#EAF5EF" stroke="#2B7A57" stroke-width="2"/><text x="1047.5" y="260.0" text-anchor="middle" font-size="22" font-weight="700" fill="#1B2230">Llama 2</text><text x="1047.5" y="286.0" text-anchor="middle" font-size="16" fill="#5B6578">-Chat</text><line x1="160" y1="180" x2="203" y2="180" stroke="#5B6578" stroke-width="2.5" marker-end="url(#ah2)"/><path d="M355,180 C390,180 395,92 423,92" fill="none" stroke="#5B6578" stroke-width="2.5" marker-end="url(#ah2)"/><line x1="635" y1="92" x2="713" y2="92" stroke="#2E55A5" stroke-width="3" marker-end="url(#ahb)"/><path d="M820,136 C820,185 750,180 740,220" fill="none" stroke="#2E55A5" stroke-width="3" marker-end="url(#ahb)"/><path d="M553,264 C520,264 500,200 520,136" fill="none" stroke="#2E55A5" stroke-width="3" marker-end="url(#ahb)"/><text x="470" y="215" text-anchor="middle" font-size="15" fill="#2E55A5">새 모델로</text><text x="470" y="234" text-anchor="middle" font-size="15" fill="#2E55A5">다시 수집</text><text x="675" y="170" text-anchor="middle" font-size="40" fill="#2E55A5">↻</text><line x1="795" y1="264" x2="983" y2="264" stroke="#2B7A57" stroke-width="2.5" marker-end="url(#ah2)"/><text x="880" y="290" text-anchor="middle" font-size="14" fill="#5B6578">V5 완료</text></svg></figure></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=8">Llama 2 · §3 · Fig. 4</a></span><span></span></footer></div>
+<aside class="speaker-notes">3절은 Llama 2에서 Llama 2-Chat을 만드는 과정 전체입니다. SFT는 한 번만 하고, 그 뒤로 선호 데이터 수집, reward model 학습, 정책 갱신을 한 바퀴로 해서 여러 번 돕니다. 오늘은 이 중 SFT와 선호 데이터 수집까지 봅니다.</aside></section>
+<section class="slide layout-process" data-sec="1" data-section-label="§3.1 SFT" data-nav="SFT는 고품질 데이터 2.7만 건이면 충분했습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>SFT는 고품질 데이터 2.7만 건이면<br>충분했습니다</h2><p>공개 instruction 데이터(수백만 건)는 다양성 · 품질이 부족해 빼고, vendor가 만든 고품질 데이터로 바꿨습니다. 절 제목이 <b>Quality Is All You Need</b>입니다.</p><p>180건을 검토해 보니 SFT 모델의 답이 사람이 쓴 답과 비슷했고, <b>27,540건</b>에서 멈춘 뒤 남은 예산을 선호 데이터로 옮겼습니다.</p></div>
+<div class="vis"><div class="flow"><div class="bx gray"><div class="t">공개 데이터</div><div class="d">수백만 건 · 품질 부족</div><div class="m">→ 제외</div></div><div class="arrow">→</div><div class="bx blue thick"><div class="t">vendor 데이터</div><div class="d">수천 → 27,540건</div><div class="m">결과가 눈에 띄게 좋아짐</div></div><div class="arrow">→</div><div class="bx orange"><div class="t">180건 검토</div><div class="d">모델 답 ≈ 사람 답</div><div class="m">→ 예산을 선호 데이터로</div></div></div><div class="annotation "><strong>통제 실험은 아닙니다</strong><span>양 · 출처 · 품질이 한꺼번에 바뀌었습니다. vendor마다 성능이 크게 달랐다고도 적습니다. 같은 시기 LIMA(1,000건)도 같은 방향입니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=9">Llama 2 · §3.1</a> · <a href="https://arxiv.org/abs/2305.11206">LIMA</a></span><span></span></footer></div>
+<aside class="speaker-notes">SFT 데이터는 공개 데이터로 시작했다가, 수백만 건짜리 제3자 데이터 대신 vendor가 만든 고품질 데이터로 바꿨습니다. 수천 건만으로도 결과가 좋아졌고, 180건을 직접 비교해 보니 모델이 쓴 답이 사람이 쓴 답과 비슷했습니다. 사람이 더 써 줘도 나아지기 어렵다고 보고 2만 7천 건에서 멈춘 뒤, 예산을 두 답 중 고르는 선호 데이터로 옮겼습니다. 다만 양과 출처와 품질이 동시에 바뀌어서 통제된 비교는 아닙니다.</aside></section>
+<section class="slide layout-process" data-sec="1" data-section-label="§3.1 SFT" data-nav="SFT는 답 토큰에만 loss를 주고 2 epoch만 학습했습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>SFT는 답 토큰에만 loss를 주고<br>2 epoch만 학습했습니다</h2><p>prompt와 답을 이어 붙여 4,096 토큰을 채우고(packing), <b>prompt 토큰의 loss는 0</b>으로 둡니다. 질문 말투가 아니라 답하는 방식을 배우게 하려는 설정입니다.</p><p>학습률 2e-5(7B 사전학습 peak의 약 1/15) · cosine · weight decay 0.1 · batch 64 × 4,096 · <b>2 epoch</b>입니다.</p></div>
+<div class="vis"><div class="figure" style="width:100%;max-width:820px;margin:0 auto"><svg xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto" viewBox="0 0 760 210" role="img" aria-label="packing된 시퀀스에서 prompt 토큰은 loss 0, 답 토큰만 loss 계산">
+<g font-size="18" text-anchor="middle">
+<rect x="10" y="40" width="130" height="56" rx="8" fill="#FFFFFF" stroke="#959BA5" stroke-width="1.6"/><text x="75" y="75" class="sv-label">prompt₁</text>
+<rect x="146" y="40" width="44" height="56" rx="8" fill="#EEF0F4" stroke="#959BA5"/><text x="168" y="75" class="sv-label">S</text>
+<rect x="196" y="40" width="190" height="56" rx="8" fill="#EEF2FA" stroke="#2E55A5" stroke-width="1.6"/><text x="291" y="75" class="sv-label">답₁</text>
+<rect x="392" y="40" width="110" height="56" rx="8" fill="#FFFFFF" stroke="#959BA5" stroke-width="1.6"/><text x="447" y="75" class="sv-label">prompt₂</text>
+<rect x="508" y="40" width="44" height="56" rx="8" fill="#EEF0F4" stroke="#959BA5"/><text x="530" y="75" class="sv-label">S</text>
+<rect x="558" y="40" width="160" height="56" rx="8" fill="#EEF2FA" stroke="#2E55A5" stroke-width="1.6"/><text x="638" y="75" class="sv-label">답₂</text>
+<text x="740" y="75" class="sv-label">…</text>
+<text x="75" y="132" class="sv-note">loss 0</text><text x="291" y="132" class="sv-note" fill="#2E55A5">loss ✓</text>
+<text x="447" y="132" class="sv-note">loss 0</text><text x="638" y="132" class="sv-note" fill="#2E55A5">loss ✓</text>
+<path d="M10 170H718" stroke="#5D6570" stroke-width="2"/><text x="364" y="198" class="sv-note">한 시퀀스 = 4,096 토큰까지 이어 붙임 (packing)</text>
+</g></svg></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=9">Llama 2 · §3.1 Fine-Tuning Details</a></span><span></span></footer></div>
+<aside class="speaker-notes">학습 방식은 사전학습과 같은 다음 토큰 예측인데, prompt 부분은 loss를 0으로 두고 답 부분에서만 loss를 계산합니다. 여러 샘플을 4,096 토큰으로 이어 붙여 학습했고, 학습률은 사전학습의 15분의 1 정도인 2e-5로 2 epoch만 돌렸습니다.</aside></section>
+<section class="slide layout-split" data-sec="2" data-section-label="§3.2 RLHF" data-nav="RLHF는 InstructGPT의 3단계를 따르되 반복과 분리를 더했습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>RLHF는 InstructGPT의 3단계를<br>따르되 반복과 분리를 더했습니다</h2><p>§3.2는 RLHF를 "이미 SFT된 모델을 사람 선호와 지시 따르기에 더 맞추는 절차"로 정의합니다.</p><p>골격은 InstructGPT와 같습니다. 바뀐 것은 선호 형식, RM 개수, 수집 방식, 정책 갱신 방법입니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl"><thead><tr><th scope="col"></th><th scope="col">InstructGPT (2022)</th><th scope="col">Llama 2-Chat (2023)</th></tr></thead><tbody><tr><td>선호 형식</td><td>prompt당 4–9개 순위</td><td>이진 비교 + 강도 4단계</td></tr><tr><td>RM</td><td>6B 하나</td><td>도움 · 안전 두 개</td></tr><tr><td class="em">수집</td><td class="em">대부분 SFT 모델 출력으로</td><td class="em">매주 batch · 최신 모델로</td></tr><tr><td>정책 갱신</td><td>PPO · 사실상 한 차례</td><td>V1–V5 반복 · Rejection Sampling → PPO</td></tr></tbody></table></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=10">Llama 2 · §3.2</a> · <a href="https://arxiv.org/abs/2203.02155">InstructGPT</a></span><span></span></footer></div>
+<aside class="speaker-notes">3.2절은 짧은 도입입니다. RLHF는 이미 SFT된 모델을 사람 선호에 더 맞추는 과정이라고 정의합니다. 골격은 InstructGPT와 같고, 표의 오른쪽 열이 Llama 2가 바꾼 부분입니다. 오늘은 이 중 선호 형식과 수집 방식을 3.2.1절에서 자세히 봅니다.</aside></section>
+<section class="slide layout-process" data-sec="3" data-section-label="§3.2.1 선호 데이터" data-nav="선호는 두 답 중 하나를 고르고 얼마나 나은지 표시해 모았습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>선호는 두 답 중 하나를 고르고<br>얼마나 나은지 표시해 모았습니다</h2><p>annotator가 질문을 쓰면, 서로 다른 모델 변형이 temperature를 바꿔 답 두 개를 냅니다.</p><p>annotator는 기준(도움 또는 안전)에 따라 하나를 고르고, 얼마나 나은지 <b>4단계</b> 중 하나로 표시합니다. 이것이 비교 1건입니다.</p></div>
+<div class="vis"><div class="bx gray"><div class="t">Prompt (Table 5 · SFT 예시)</div><div class="d">주기율표의 처음 10개 원소를 외우기 쉽게, 원소마다 한 줄씩 시로 써 줘</div></div><div class="g c2"><div class="bx blue thick"><div class="t">응답 A ✓ 선택</div><div class="d">수소는 맨 앞, 가장 가볍게 / 헬륨은 풍선 띄우며 둘째로 … (한 줄씩 10개)</div></div><div class="bx gray"><div class="t">응답 B</div><div class="d">수소, 헬륨, 리튬, … 네온 (이름만 나열)</div></div></div><div class="flow"><div class="bx gray ctr"><div class="t">significantly better</div></div><div class="bx blue thick ctr"><div class="t">better</div><div class="d">✓ 이번 선택</div></div><div class="bx gray ctr"><div class="t">slightly better</div></div><div class="bx gray ctr"><div class="t">negligibly better / unsure</div></div></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=10">Llama 2 · §3.2.1</a></span><span></span></footer></div>
+<aside class="speaker-notes">논문 표 5에 나온 질문으로 예를 들어 보겠습니다. 주기율표 원소 10개를 한 줄씩 시로 써 달라는 요청에 서로 다른 모델이 답 두 개를 냈습니다. A는 요청대로 한 줄씩 시를 썼고, B는 이름만 나열했습니다. annotator는 A를 고르고 better를 표시합니다. 질문은 논문 것이고 두 답은 설명을 위해 만든 것입니다. 이게 선호 데이터 한 건입니다.</aside></section>
+<section class="slide layout-split" data-sec="3" data-section-label="§3.2.1 선호 데이터" data-nav="이진 비교는 prompt당 정보 대신 prompt 다양성을 택한 선택입니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>이진 비교는 prompt당 정보 대신<br>prompt 다양성을 택한 선택입니다</h2><p>저자들은 이진 비교를 고른 이유로 <b>수집할 수 있는 prompt의 다양성</b>을 듭니다.</p><p>K개 응답 순위는 한 prompt에서 여러 쌍을 얻지만, 같은 시간에 볼 수 있는 prompt 수는 줄어듭니다.</p></div>
+<div class="vis"><div class="g c2"><div class="bx gray"><div class="t">InstructGPT: K개 순위</div><div class="d">prompt 하나에 4–9개 응답 순위</div><div class="m">한 prompt에서 6–36쌍 (K개 중 2개 조합)</div></div><div class="bx blue thick"><div class="t">Llama 2: 이진 비교</div><div class="d">prompt 하나에 응답 2개</div><div class="m">한 prompt에서 1쌍 + 강도</div></div></div><div class="annotation "><strong>트레이드오프 (해석)</strong><span>모델이 좋아져 두 응답이 비슷해질수록 이진 비교의 판정이 어려워집니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=10">Llama 2 · §3.2.1</a> · <a href="https://arxiv.org/abs/2203.02155">InstructGPT §3.5</a></span><span></span></footer></div>
+<aside class="speaker-notes">왜 여러 개 순위를 매기지 않고 두 개만 비교했을까요. 저자들은 prompt 다양성을 이유로 듭니다. 순위 방식은 한 질문에서 많은 쌍을 얻지만, 그만큼 다양한 질문을 덜 보게 됩니다. 대신 이진 비교는 두 응답이 비슷해지면 고르기 어려워진다는 약점이 있습니다.</aside></section>
+<section class="slide layout-split" data-sec="3" data-section-label="§3.2.1 선호 데이터" data-nav="도움과 안전은 기준이 충돌해서 지침을 나눠 따로 모았습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>도움과 안전은 기준이 충돌해서<br>지침을 나눠 따로 모았습니다</h2><p>도움됨은 요청을 얼마나 잘 들어주고 정보를 주는가, 안전은 응답이 안전 지침에 비추어 위험한가입니다.</p><p>"폭탄 만드는 법을 자세히"는 도움은 되지만 안전하지 않습니다. 그래서 지침을 나눠 따로 모았습니다. 안전 annotator는 적대적 prompt에 집중합니다.</p><p>안전 단계에서는 응답마다 <b>안전 / 위험 label</b>도 따로 받았습니다(둘 다 안전 47% · 둘 다 위험 35% · 고른 쪽만 안전 18% · 고른 쪽만 위험은 제외).</p></div>
+<div class="vis"><div class="g c2"><div class="bx blue"><div class="t">도움됨 (helpfulness)</div><div class="d">요청을 잘 들어주고 정보를 주는가</div></div><div class="bx green"><div class="t">안전 (safety)</div><div class="d">안전 지침에 비추어 위험한가</div></div></div><div class="annotation "><strong>예: 폭탄 제조법 상세 안내</strong><span>도움됨 ↑ · 안전 ↓ → 하나의 점수로는 표현하기 어려움</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=10">Llama 2 · §3.2.1</a></span><span></span></footer></div>
+<aside class="speaker-notes">선호는 두 기준으로 따로 모았습니다. 도움이 되는지와 안전한지입니다. 폭탄 제조법을 자세히 알려 주는 답은 도움은 되지만 안전하지 않습니다. 이렇게 두 기준이 부딪히니까 처음부터 지침을 나눴고, 이 분리가 나중에 RM 두 개로 이어집니다.</aside></section>
+<section class="slide layout-quantitative" data-sec="3" data-section-label="§3.2.1 선호 데이터" data-nav="Meta가 모은 비교는 141만 건, 공개 데이터와 합치면 292만 건입니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Meta가 모은 비교는 141만 건,<br>공개 데이터와 합치면 292만 건입니다</h2><p>Table 6은 RM 학습에 쓴 선호 데이터입니다. Meta 데이터는 평균 3.9턴, 예시당 798.5토큰으로 공개 데이터보다 길고 대화가 깁니다.</p><p>공개 데이터는 RM을 처음 띄우는 데 쓰고 이후에도 혼합에 남겼습니다. 공개 데이터의 69%는 StackExchange 한 곳입니다(추출자 계산).</p></div>
+<div class="vis"><div class="hbar-chart" role="img" aria-label="Table 6 데이터셋별 비교 수"><div class="hbar-row" data-value="1418091"><div class="hbar-head"><span>Meta (직접 수집)</span><strong>1,418,091<small></small></strong></div><div class="hbar-track"><div class="hbar-fill blue" style="width:94.5%"></div></div></div><div class="hbar-row" data-value="1038480"><div class="hbar-head"><span>StackExchange</span><strong>1,038,480<small></small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:69.2%"></div></div></div><div class="hbar-row" data-value="176625"><div class="hbar-head"><span>OpenAI Summarize</span><strong>176,625<small></small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:11.8%"></div></div></div><div class="hbar-row" data-value="165320"><div class="hbar-head"><span>나머지 4종 합</span><strong>165,320<small></small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:11.0%"></div></div></div><div class="hbar-row" data-value="122387"><div class="hbar-head"><span>Anthropic Helpful</span><strong>122,387<small></small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:8.2%"></div></div></div></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=11">Llama 2 · Table 6</a></span><span></span></footer></div>
+<aside class="speaker-notes">규모를 보면 Meta가 직접 모은 비교가 141만 건이고, 공개 데이터 여섯 종을 더하면 약 292만 건입니다. 공개 데이터는 대부분 StackExchange이고 단일 턴입니다. Meta 데이터는 평균 3.9턴으로 대화가 더 깁니다.</aside></section>
+<section class="slide layout-quantitative" data-sec="3" data-section-label="§3.2.1 선호 데이터" data-nav="매주 최신 모델로 다시 모았고, 갈수록 두 응답이 비슷해졌습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>매주 최신 모델로 다시 모았고,<br>갈수록 두 응답이 비슷해졌습니다</h2><p>모델이 좋아지면 출력이 바뀌고, 옛 출력만 본 RM은 새 출력을 잘 못 가립니다. 그래서 선호를 <b>매주</b>, 그 시점 <b>최신 모델</b>의 응답으로 다시 모았습니다(14 batch).</p><p>batch가 갈수록 커지고(45배), prompt가 어려워지고, <b>두 응답이 비슷해져</b> "negligibly better / unsure"가 늘었습니다. 이 마지막 변화가 RM을 점점 어렵게 만듭니다.</p></div>
+<div class="vis"><div class="hbar-chart" role="img" aria-label="주간 batch별 비교 수"><div class="hbar-row" data-value="5561"><div class="hbar-head"><span>batch 1</span><strong>5,561<small></small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:2.2%"></div></div></div><div class="hbar-row" data-value="84388"><div class="hbar-head"><span>batch 7</span><strong>84,388<small></small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:33.8%"></div></div></div><div class="hbar-row" data-value="249356"><div class="hbar-head"><span>batch 14</span><strong>249,356<small></small></strong></div><div class="hbar-track"><div class="hbar-fill blue" style="width:99.7%"></div></div></div></div><div class="g c3"><div class="bx gray"><div class="t">규모 ↑</div><div class="d">5,561 → 249,356</div></div><div class="bx orange"><div class="t">난이도 ↑</div><div class="d">쉬운 → 복잡한 prompt</div></div><div class="bx blue thick"><div class="t">비슷한 응답 ↑</div><div class="d">negligibly / unsure 증가</div></div></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=10">Llama 2 · §3.2.1</a> · <a href="https://arxiv.org/pdf/2307.09288v2#page=52">Llama 2 · Table 26 · Fig. 25–26</a></span><span></span></footer></div>
+<aside class="speaker-notes">선호 데이터는 한 번에 모으지 않고 매주 최신 모델 답으로 다시 모았습니다. 모델이 바뀌면 출력도 바뀌는데, 예전 출력만 본 RM은 새 출력을 잘 평가하지 못하기 때문입니다. batch가 갈수록 세 가지가 변했습니다. 커졌고, 질문이 어려워졌고, 두 답이 점점 비슷해졌습니다. 마지막 변화 때문에 RM이 가려야 할 문제가 점점 어려워집니다.</aside></section>
+<section class="slide layout-split" data-sec="7" data-section-label="논문 밖 · Llama 3" data-nav="Llama 3는 같은 선호 수집 틀에 편집 단계를 더하고 비슷한 쌍을 뺐습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Llama 3는 같은 선호 수집 틀에<br>편집 단계를 더하고 비슷한 쌍을 뺐습니다</h2><p>논문 밖 내용입니다. 사람이 prompt를 쓰고 두 응답 중 하나를 고른 뒤 강도를 4단계로 표시하는 틀, 그리고 <b>최신 모델로 다시 모은다</b>는 원칙은 그대로입니다.</p><p>달라진 핵심은 두 가지입니다. 고른 답을 사람이 직접 고치는 <b>편집 단계</b>로 edited &gt; chosen &gt; rejected 순위를 만들고, 비슷한 쌍은 학습에서 <b>뺐습니다</b>.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl"><thead><tr><th scope="col"></th><th scope="col">Llama 2 (2023)</th><th scope="col">Llama 3 (2024)</th></tr></thead><tbody><tr><td>수집 주기</td><td>매주 batch (14개)</td><td>라운드마다 (6라운드)</td></tr><tr><td>응답 두 개</td><td>서로 다른 모델 변형 · temperature</td><td>그 라운드에 배포한 여러 모델 중 두 개</td></tr><tr><td>강도 4단계</td><td>… slightly / negligibly · unsure</td><td>… slightly / marginally better</td></tr><tr><td class="em">편집 단계</td><td class="em">없음</td><td class="em">고른 답을 사람이 고침 → edited &gt; chosen &gt; rejected</td></tr><tr><td class="em">비슷한 쌍</td><td class="em">margin 0으로 학습에 남김</td><td class="em">significantly · better만 쓰고 제외</td></tr><tr><td>RM margin</td><td>사용</td><td>제거</td></tr></tbody></table></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/2407.21783">Llama 3 Herd §4.2.1</a></span><span></span></footer></div>
+<aside class="speaker-notes">마지막은 논문 밖 내용으로, 1년 뒤 Llama 3가 선호 데이터를 어떻게 모았는지입니다. 사람이 질문을 쓰고 두 답 중 하나를 고르고 강도를 표시하는 틀, 그리고 최신 모델로 계속 다시 모은다는 원칙은 같습니다. 달라진 건 두 가지입니다. 첫째, 고른 답을 사람이 직접 더 낫게 고치는 편집 단계를 넣어서, 고친 답, 고른 답, 버린 답 세 단계 순위를 만들었습니다. 둘 다 별로일 때 덜 나쁜 걸 고를 수밖에 없는 이진 비교의 한계를 보완한 겁니다. 둘째, 비슷한 쌍은 학습에서 뺐습니다. Llama 2에서 비슷한 쌍은 reward model도 거의 찍는 수준이었다는 결과와 맞닿아 있습니다.</aside></section>
+  </main>
+  <nav class="nav" aria-label="슬라이드 이동">
+    <button class="btn" id="prev" type="button" aria-label="이전 슬라이드">이전</button>
+    <select id="jump" aria-label="슬라이드 선택"></select>
+    <span class="count" id="count" aria-live="polite" aria-atomic="true"></span>
+    <button class="btn next" id="next" type="button" aria-label="다음 슬라이드">다음</button>
+    <button class="btn mode" id="mode" type="button" aria-pressed="false">읽기 모드</button>
+  </nav>
+</div>
+<script>
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  const slides = [...document.querySelectorAll('.slide')];
+  const stage = document.getElementById('stage');
+  const jump = document.getElementById('jump');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const modeButton = document.getElementById('mode');
+  const prog = document.getElementById('prog');
+  const sections = {};
+  slides.forEach(slide => {
+    const key = slide.dataset.sec || '1';
+    sections[key] ||= slide.dataset.sectionLabel || key;
+  });
+  const storageKey = 'paper-study-' + document.title;
+  const mq = window.matchMedia('(min-width:820px) and (min-height:540px)');
+  let mode = 'auto';
+  try { mode = localStorage.getItem(storageKey + '-mode') || 'auto'; } catch (_) {}
+  if (!['auto','slide','read'].includes(mode)) mode = 'auto';
+  const groups = new Map();
+  const dots = [];
+  let current = 0;
+  const scrollRegions = [...document.querySelectorAll('.table-wrap,.diagram-scroll')];
+  scrollRegions.forEach(region => {
+    region.tabIndex = 0;
+    region.setAttribute('role','region');
+    const isTable = region.classList.contains('table-wrap');
+    if (!region.hasAttribute('aria-label')) region.setAttribute('aria-label',isTable ? '근거 표 · 가로 스크롤 가능' : '설명 도식 · 가로 스크롤 가능');
+    const hint = document.createElement('p');
+    hint.className = 'scroll-hint';
+    hint.textContent = isTable ? '↔ 표를 좌우로 밀면 나머지 열을 볼 수 있습니다.' : '↔ 도식을 좌우로 밀어 연결 경로를 확인하세요.';
+    hint.hidden = true;
+    region.insertAdjacentElement('afterend',hint);
+    region._scrollHint = hint;
+  });
+  function scrollHints() {
+    scrollRegions.forEach(region => {
+      region._scrollHint.hidden = !region.offsetWidth || region.scrollWidth <= region.clientWidth + 2;
+    });
+  }
+  slides.forEach((slide, index) => {
+    const key = slide.dataset.sec || '1';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(index);
+    slide.id ||= 'slide-' + (index + 1);
+    slide.setAttribute('role','group');
+    slide.setAttribute('aria-roledescription','슬라이드');
+    slide.setAttribute('aria-label',(index + 1) + ' / ' + slides.length + ': ' + (slide.dataset.nav || ''));
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = (index + 1) + '. ' + (slide.dataset.nav || '슬라이드');
+    jump.append(option);
+  });
+  groups.forEach((indices, key) => {
+    const group = document.createElement('div');
+    group.className = 'psec';
+    const label = document.createElement('span');
+    label.className = 'lab';
+    label.textContent = sections[key] || key;
+    group.append(label);
+    indices.forEach((index, sectionIndex) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dot';
+      dot.setAttribute('aria-label',(index + 1) + '. ' + slides[index].dataset.nav);
+      dot.setAttribute('aria-controls',slides[index].id);
+      dot.addEventListener('click',() => show(index));
+      dots[index] = dot;
+      group.append(dot);
+      const eyebrow = slides[index].querySelector('.ey');
+      if (eyebrow && !eyebrow.textContent.trim()) {
+        eyebrow.textContent = (sections[key] || key) + ' · ' + (sectionIndex + 1) + ' / ' + indices.length;
+      }
+    });
+    prog.append(group);
+  });
+  function scale() {
+    if (!root.classList.contains('fit')) return;
+    const rect = stage.getBoundingClientRect();
+    const ratio = Math.min((rect.width - 36) / 1280,(rect.height - 12) / 720,1);
+    root.style.setProperty('--s',Math.max(.1,ratio).toFixed(4));
+  }
+  function show(index, updateHistory = true) {
+    if (!slides.length) {
+      prev.disabled = next.disabled = jump.disabled = true;
+      count.textContent = '0 / 0';
+      return;
+    }
+    current = Math.max(0,Math.min(slides.length - 1,index));
+    slides.forEach((slide,i) => {
+      const active = i === current;
+      slide.classList.toggle('on',active);
+      slide.inert = !active;
+      slide.setAttribute('aria-hidden',String(!active));
+    });
+    dots.forEach((dot,i) => {
+      dot.classList.toggle('cur',i === current);
+      dot.classList.toggle('seen',i < current);
+      if (i === current) dot.setAttribute('aria-current','step');
+      else dot.removeAttribute('aria-current');
+    });
+    jump.value = String(current);
+    count.textContent = (current + 1) + ' / ' + slides.length;
+    prev.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+    if (updateHistory) {
+      try { history.replaceState(null,'','#s' + (current + 1)); } catch (_) {}
+      if (!root.classList.contains('fit')) window.scrollTo({top:0,behavior:'instant'});
+    }
+    scrollHints();
+  }
+  function layout() {
+    const fit = mq.matches && (mode === 'slide' || mode === 'auto');
+    root.classList.toggle('fit',fit);
+    modeButton.hidden = !mq.matches;
+    modeButton.textContent = fit ? '읽기 모드' : '슬라이드 모드';
+    modeButton.setAttribute('aria-pressed',String(!fit));
+    scale();
+    scrollHints();
+  }
+  function readHash() {
+    const match = /^#s(\d+)$/.exec(location.hash);
+    return match ? Number(match[1]) - 1 : 0;
+  }
+  prev.addEventListener('click',() => show(current - 1));
+  next.addEventListener('click',() => show(current + 1));
+  jump.addEventListener('change',() => show(Number(jump.value)));
+  modeButton.addEventListener('click',() => {
+    mode = root.classList.contains('fit') ? 'read' : 'slide';
+    try { localStorage.setItem(storageKey + '-mode',mode); } catch (_) {}
+    layout();
+  });
+  document.addEventListener('keydown',event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const tag = event.target.tagName;
+    if (['INPUT','TEXTAREA','SELECT'].includes(tag) || event.target.isContentEditable) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2 && ['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    let target;
+    if (event.key === 'ArrowRight' || event.key === 'PageDown') target = current + 1;
+    else if (event.key === 'ArrowLeft' || event.key === 'PageUp') target = current - 1;
+    else if (event.key === 'Home') target = 0;
+    else if (event.key === 'End') target = slides.length - 1;
+    else if (event.key === ' ' && root.classList.contains('fit') && tag !== 'BUTTON' && tag !== 'A') target = current + 1;
+    if (target !== undefined) { event.preventDefault(); show(target); }
+  });
+  window.addEventListener('hashchange',() => show(readHash(),false));
+  let raf;
+  window.addEventListener('resize',() => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(layout);
+  });
+  if (mq.addEventListener) mq.addEventListener('change',layout);
+  let touchStart = null;
+  stage.addEventListener('touchstart',event => {
+    touchStart = null;
+    // Reading mode is a vertically scrolling document; use navigation buttons there.
+    if (!root.classList.contains('fit') || event.touches.length !== 1) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2) return;
+    touchStart = {x:event.touches[0].clientX,y:event.touches[0].clientY};
+  },{passive:true});
+  stage.addEventListener('touchend',event => {
+    if (!touchStart) return;
+    const dx = event.changedTouches[0].clientX - touchStart.x;
+    const dy = event.changedTouches[0].clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1));
+  },{passive:true});
+  stage.addEventListener('touchcancel',() => { touchStart = null; },{passive:true});
+  // Read-only diagnostics for authoring. No automatic shrinking of dense slides.
+  window.deckCheck = () => {
+    const saved = current;
+    const results = slides.map((slide,index) => {
+      show(index,false);
+      const inner = slide.querySelector('.inner');
+      const card = slide.querySelector('.card');
+      return {
+        slide:index + 1,title:slide.dataset.nav,
+        innerOverflow:!!inner && (inner.scrollHeight > inner.clientHeight + 2 || inner.scrollWidth > inner.clientWidth + 2),
+        cardOverflow:!!card && (card.scrollHeight > card.clientHeight + 2 || card.scrollWidth > card.clientWidth + 2),
+        hasSource:!!slide.querySelector('.src,.slide-source')
+      };
+    });
+    show(saved,false);
+    return results;
+  };
+  show(readHash(),false);
+  layout();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+})();
+</script>
+<style>
+html.show-notes .slide.on .speaker-notes{display:block!important;position:fixed;left:50%;transform:translateX(-50%);bottom:76px;width:min(1080px,94vw);max-height:36vh;overflow:auto;background:#1F2329;color:#F3F4F6;padding:16px 22px;border-radius:12px;font-size:16px;line-height:1.75;white-space:pre-wrap;z-index:60;box-shadow:0 8px 28px rgba(0,0,0,.28)}
+html.show-notes .slide.on .speaker-notes:empty::before{content:"이 장은 아직 대본이 없습니다";color:#9AA1AB}
+.w2-notes-btn{position:fixed;right:18px;bottom:18px;z-index:61;border:1px solid #C9CDD3;background:#fff;color:#1F2329;border-radius:999px;padding:8px 14px;font:600 13px system-ui,sans-serif;cursor:pointer}
+html.show-notes .w2-notes-btn{background:#1F2329;color:#fff;border-color:#1F2329}
+@media (max-width:1180px){.w2-notes-btn{display:none}}
+</style>
+<button class="w2-notes-btn" type="button" aria-pressed="false" title="대본 보기 (N)">대본 · N</button>
+<script>(()=>{const r=document.documentElement,b=document.querySelector('.w2-notes-btn');
+const set=v=>{r.classList.toggle('show-notes',v);b.setAttribute('aria-pressed',v);try{localStorage.setItem('w02-pt-notes',v?'1':'0')}catch(e){}};
+try{set(localStorage.getItem('w02-pt-notes')==='1')}catch(e){}
+b.addEventListener('click',()=>set(!r.classList.contains('show-notes')));
+addEventListener('keydown',e=>{if((e.key==='n'||e.key==='N')&&!e.metaKey&&!e.ctrlKey&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))set(!r.classList.contains('show-notes'))});})();</script>
+
+</body>
+</html>
+
+</body></html>

@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="light" name="color-scheme"/>
+<title>Llama 2 — Data Collection &amp; Synthesis (English Terminology)</title>
+<style>
+/* Paper-study presentation shell. Visual principles adapted from research-idea-deck;
+   its research-proposal narrative and example content are deliberately not included. */
+:root{
+  color-scheme:light;
+  --bg:#E9ECF0;--card:#F7F8FA;--box:#FFFFFF;--ink:#1A1D23;--ink2:#2F343C;
+  --muted:#5D6570;--faint:#959BA5;--line:#CDD2D9;--wire:#4A505A;
+  --blue:#2E55A5;--blue-s:#EEF2FA;--green:#2B7858;--green-s:#ECF5F0;
+  --orange:#A65A2E;--orange-s:#F9F0E8;--red:#AE3A33;--red-s:#FAEDEB;--gray-s:#F0F2F5;
+  --f:Pretendard,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  --s:1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
+body{font-family:var(--f);-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+button,select{font:inherit}
+button,a,select{touch-action:manipulation}
+a{color:var(--blue);text-underline-offset:3px;text-decoration-thickness:1px}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+html.fit,html.fit body{height:100%;overflow:hidden}
+.app{display:flex;flex-direction:column;min-height:100vh}
+html.fit .app{height:100%;min-height:0}
+.top{padding:18px 32px 12px;flex:none}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px 24px;flex-wrap:wrap}
+.ttl{font-size:19px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin:0}
+.sub{font-size:13px;line-height:1.5;color:var(--muted)}
+.prog{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap;margin-top:12px}
+.psec{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
+.psec .lab{font-size:12px;font-weight:500;color:var(--muted);margin-right:5px;white-space:nowrap}
+.dot{position:relative;display:grid;place-items:center;width:24px;height:24px;border:0;background:transparent;padding:0;border-radius:50%}
+.dot::after{content:"";width:10px;height:10px;border:1.5px solid var(--faint);border-radius:50%;background:transparent}
+.dot.seen::after{background:var(--faint)}
+.dot.cur::after{background:var(--blue);border-color:var(--blue)}
+.stage{position:relative;padding:0 18px 18px;isolation:isolate}
+html.fit .stage{flex:1;min-height:0;padding:0;overflow:hidden;display:grid;place-items:center}
+.slide{display:none;min-width:0}
+.slide.on{display:block}
+html.fit .slide.on{width:1280px;height:720px;zoom:var(--s)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px #141C280D,0 10px 28px -16px #141C2829;overflow:hidden}
+html.fit .card{height:720px;display:flex;flex-direction:column}
+.inner{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:30px 24px}
+html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+.inner.wide{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:24px}
+.txt{display:flex;flex-direction:column;gap:18px;min-width:0}
+.ey{font-size:14px;line-height:1.4;font-weight:500;color:var(--muted)}
+.txt h2,.slide h2{margin:0;font-size:32px;font-weight:700;line-height:1.35;letter-spacing:-.035em;text-wrap:balance}
+.txt p{margin:0;font-size:20px;line-height:1.7;color:var(--ink2)}
+.txt p.lead{font-size:23px;line-height:1.6}
+.txt p.small,.small{font-size:16px;line-height:1.6}
+.txt p.note,.note{font-size:15px;line-height:1.6;color:var(--muted)}
+.txt ul,.txt ol{font-size:19px;line-height:1.7;margin:0;padding-left:1.3em;color:var(--ink2)}
+.txt li+li{margin-top:8px}
+.txt b,.txt strong{color:var(--ink)}
+.vis{display:flex;flex-direction:column;gap:14px;min-width:0}
+.g{display:grid;gap:14px;min-width:0}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bx{position:relative;min-width:0;display:flex;flex-direction:column;gap:7px;padding:18px 20px;border:1.5px solid var(--line);border-radius:12px;background:var(--box)}
+.bx.blue{border-color:var(--blue);background:var(--blue-s)}
+.bx.green{border-color:var(--green);background:var(--green-s)}
+.bx.orange{border-color:var(--orange);background:var(--orange-s)}
+.bx.red{border-color:var(--red);background:var(--red-s)}
+.bx.gray{background:var(--gray-s)}
+.bx.dash{border-style:dashed}
+.bx.thick{border-width:2px}
+.bx.ctr{align-items:center;justify-content:center;text-align:center}
+.bx.pill{border-radius:999px}
+.bx .t{font-size:19px;line-height:1.45;font-weight:700;color:var(--ink)}
+.bx .d{font-size:17px;line-height:1.6;color:var(--ink2)}
+.bx .m{font-size:14px;line-height:1.55;color:var(--muted)}
+.bx .k{font-size:13px;font-weight:700;line-height:1.45}
+.bx .gap{flex:1;min-height:8px}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.tag{display:inline-flex;align-items:center;align-self:flex-start;gap:5px;font-size:12px;line-height:1.5;font-weight:600;padding:3px 9px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted)}
+.tag.blue{color:var(--blue);border-color:var(--blue);background:var(--blue-s)}
+.tag.green{color:var(--green);border-color:var(--green);background:var(--green-s)}
+.tag.orange{color:var(--orange);border-color:var(--orange);background:var(--orange-s)}
+.tb{color:var(--blue)!important}.tg{color:var(--green)!important}.to{color:var(--orange)!important}.tr{color:var(--red)!important}
+.muted{color:var(--muted)!important}.bold{font-weight:700}.nw{white-space:nowrap}
+.lab{font-size:15px;line-height:1.5;font-weight:700}
+.cap{margin:0;font-size:14px;line-height:1.6;color:var(--muted);text-align:center}
+.rule{height:1px;background:var(--line);margin:4px 0}
+.num{display:inline-grid;place-items:center;flex:none;width:27px;height:27px;border:1.5px solid currentColor;border-radius:50%;font-size:13px;font-weight:700}
+.step{flex-direction:row;align-items:center;gap:14px}
+.flow{display:flex;align-items:stretch;gap:12px;min-width:0}
+.flow>.bx{flex:1}
+.arrow{flex:none;align-self:center;font-size:24px;color:var(--wire);font-weight:500}
+.flow.vertical{flex-direction:column;align-items:stretch}
+.flow.vertical>.arrow{line-height:1}
+.tbl{border-collapse:collapse;width:100%;font-size:16px;line-height:1.5;table-layout:fixed;background:var(--box)}
+.tbl th,.tbl td{text-align:left;vertical-align:top;padding:13px 14px;border-bottom:1px solid var(--line);overflow-wrap:break-word}
+.tbl th{font-size:14px;font-weight:600;color:var(--muted);background:var(--gray-s)}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl .numcol{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl .em{background:var(--blue-s);font-weight:650}
+.table-wrap{overflow:hidden;border:1px solid var(--line);border-radius:12px}
+.figure{margin:0}
+.figure img,.vis>img,.vis>svg{display:block;max-width:100%;height:auto}
+.figure figcaption{font-size:14px;color:var(--muted);line-height:1.5;margin-top:9px}
+.metric{font-size:46px;line-height:1.15;font-weight:700;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.metric small{font-size:19px;letter-spacing:0}
+.equation{font-size:22px;line-height:1.7;text-align:center;padding:20px;background:var(--box);border:1px solid var(--line);border-radius:12px}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em}
+sub,sup{font-size:.72em;line-height:0}sub{vertical-align:-.25em}sup{vertical-align:.45em}
+.src,.slide-source{font-size:13px;line-height:1.65;color:var(--muted)}
+.card>.src,.card>.slide-source{flex:none;margin:0;padding:13px 54px 15px;border-top:1px solid var(--line);background:#FFFFFF60;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 24px;min-height:52px}
+.src a,.slide-source a{color:var(--muted)}
+.src a:hover,.slide-source a:hover{color:var(--blue)}
+.speaker-notes{display:none}
+.nav{display:flex;align-items:center;justify-content:center;gap:12px;flex:none;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+html:not(.fit) .nav{position:sticky;bottom:0;z-index:10;border-top:1px solid var(--line)}
+.btn{height:42px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);font-size:15px;font-weight:500}
+.btn.next{background:var(--ink);color:white;border-color:var(--ink)}
+.btn.mode{height:36px;padding:0 14px;font-size:13px;color:var(--muted)}
+.nav select{height:42px;min-width:0;width:330px;max-width:34vw;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:var(--box);color:var(--ink);font-size:14px}
+.count{font-size:14px;font-variant-numeric:tabular-nums;min-width:54px;text-align:center;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:819px){
+  .top{padding:16px 18px 12px}.prog{gap:8px 15px}.sub{font-size:12px}
+  .inner{padding:28px 22px}.txt h2,.slide h2{font-size:28px}.txt p{font-size:18px}
+  .card>.src,.card>.slide-source{padding:12px 22px;font-size:12px}
+  .nav{gap:8px;flex-wrap:wrap}.nav select{flex:1;width:auto;max-width:none}.btn{padding:0 15px}
+}
+@media(max-width:520px){
+  .c3{grid-template-columns:minmax(0,1fr)}.flow:not(.vertical){flex-direction:column}
+  .flow:not(.vertical)>.arrow{transform:rotate(90deg)}
+  .table-wrap{overflow-x:auto}.tbl{min-width:520px}.count{min-width:46px}
+  .btn.mode{flex-basis:100%;max-width:160px}.psec .lab{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media print{
+  @page{size:338.667mm 190.5mm;margin:0}
+  html,html.fit,body,html.fit body{height:auto!important;min-height:0!important;overflow:visible!important;background:white!important}
+  .app,html.fit .app{display:block;height:auto!important;min-height:0}.top,.nav{display:none!important}
+  .stage,html.fit .stage{display:block;padding:0;overflow:visible}
+  .slide,.slide.on,html.fit .slide.on{display:block!important;width:1280px;height:720px;zoom:1!important;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .card,html.fit .card{height:720px;display:flex;flex-direction:column;border:0;border-radius:0;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .inner,html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+  .inner.wide{grid-template-columns:minmax(0,1fr)!important}.speaker-notes{display:none!important}
+  .c3{grid-template-columns:repeat(3,minmax(0,1fr))}.flow:not(.vertical){flex-direction:row}.flow:not(.vertical)>.arrow{transform:none}
+  a{text-decoration:none}.card>.src,.card>.slide-source{padding:13px 54px 15px}
+}
+</style>
+<style>
+/* Four information layouts: narrative overview, processes, quantitative comparison,
+   and full-width references. Charts use fixed, explicitly labelled scales. */
+.txt h2,.slide h2{font-size:34px;line-height:1.28;letter-spacing:-.035em}
+.txt p{font-size:19px;line-height:1.65}
+.txt .ey{font-size:14px;letter-spacing:.02em}
+.layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr);gap:44px}
+.layout-quantitative .vis{gap:18px}
+.layout-quantitative .txt h2{font-size:36px}
+.layout-overview .inner,.layout-process .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:26px}
+.layout-overview .txt,.layout-process .txt,.layout-reference .txt{display:grid;grid-template-columns:420px minmax(0,1fr);gap:8px 46px;align-items:start}
+.layout-overview .txt .ey,.layout-process .txt .ey,.layout-reference .txt .ey{grid-column:1/-1;margin-bottom:7px}
+.layout-overview .txt h2,.layout-process .txt h2,.layout-reference .txt h2{grid-column:1;grid-row:2/4;font-size:34px}
+.layout-overview .txt p,.layout-process .txt p,.layout-reference .txt p{grid-column:2;font-size:18px;line-height:1.65}
+.layout-reference .vis{gap:16px}
+.layout-reference .tbl th{font-size:16px}
+.layout-reference .tbl td{font-size:18px;padding:13px 18px}
+.layout-reference .tbl th:first-child,.layout-reference .tbl td:first-child{width:35%}
+.layout-reference .tbl th{padding:13px 18px}
+.layout-overview .vis>.g{gap:22px}
+.layout-overview .vis>.g .bx{padding:23px 26px}
+.layout-overview .vis>.g .t{font-size:22px}
+.layout-overview .vis>.g .d{font-size:18px}
+.layout-cover .inner{grid-template-columns:1fr 1fr;gap:55px}
+.layout-cover .txt h2{font-size:44px;line-height:1.27;letter-spacing:-.045em}
+.layout-cover .txt p{font-size:20px}
+.cover-graphic{padding:25px 0 25px 36px;border-left:1px solid var(--line)}
+.overline{font-size:14px;font-weight:700;letter-spacing:.15em;color:var(--blue)}
+.family-range{display:flex;align-items:center;justify-content:space-between;font-size:79px;line-height:1.2;font-weight:750;letter-spacing:-.05em;margin:25px 0 36px;color:var(--blue)}
+.family-range>span{font-size:45px;color:var(--faint);font-weight:400}
+.family-models{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center}
+.family-models span{padding:16px 0;background:var(--box);border:1px solid var(--line);border-radius:10px;font-weight:650;font-size:24px}
+.token-brackets{display:grid;grid-template-columns:1fr 1fr;gap:15px;font-size:17px;color:var(--green);text-align:center;margin-top:12px}
+.token-brackets span{border-top:2px solid var(--green);padding-top:8px}
+.cover-graphic p{font-size:23px;font-weight:650;line-height:1.5;margin:38px 0 14px}
+.cover-graphic small{font-size:15px;color:var(--muted);line-height:1.7}
+.recipe-map{display:grid;grid-template-columns:1fr 38px 1.15fr 38px 1.1fr;align-items:center;gap:10px;padding:28px 0 20px}
+.recipe-step{align-self:stretch;border-top:3px solid var(--blue);padding:24px 10px 12px 0;display:flex;flex-direction:column;align-items:flex-start}
+.step-index{font-size:44px;font-weight:600;line-height:1;color:var(--blue)}
+.recipe-step h3{font-size:27px;line-height:1.4;letter-spacing:-.03em;margin:23px 0 10px}
+.recipe-step p{font-size:19px;line-height:1.65;color:var(--ink2);margin:0 0 20px}
+.recipe-step .tag{margin-top:auto}
+.recipe-arrow{font-size:30px;color:var(--faint);text-align:center}
+.recipe-outcomes{display:flex;flex-direction:column;border-left:3px solid var(--green);padding-left:22px;gap:22px}
+.recipe-outcomes strong{display:block;font-size:23px;line-height:1.4;color:var(--green)}
+.recipe-outcomes span{display:block;font-size:16px;margin-top:5px;color:var(--muted)}
+.annotation{display:flex;flex-direction:column;gap:5px;border-left:3px solid var(--orange);padding:13px 18px;background:var(--orange-s);border-radius:0 8px 8px 0}
+.annotation strong{font-size:17px;line-height:1.5;color:var(--orange)}
+.annotation span{font-size:16px;line-height:1.6;color:var(--ink2)}
+.annotation.green{border-color:var(--green);background:var(--green-s)}
+.annotation.green strong{color:var(--green)}
+.annotation.blue{border-color:var(--blue);background:var(--blue-s)}
+.annotation.blue strong{color:var(--blue)}
+.data-chart{display:flex;flex-direction:column;gap:12px;padding:8px 0 14px}
+.data-chart-head,.data-row{display:grid;grid-template-columns:122px minmax(0,1fr) 44px 66px;gap:12px;align-items:center}
+.data-chart-head{font-size:12px;line-height:1.5;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--line)}
+.data-chart-head>:nth-child(n+3){text-align:right}
+.data-name{font-size:16px;font-weight:600;line-height:1.3}
+.data-row>strong,.epoch{font-size:16px;text-align:right;font-variant-numeric:tabular-nums}
+.data-track{height:25px;position:relative;background:linear-gradient(to right,transparent 49.8%,#CBD2DD 49.8%,#CBD2DD 50.2%,transparent 50.2%),#EDF0F4;border-left:1px solid var(--faint)}
+.data-track i{height:100%;display:block;min-width:2px;border-radius:0 4px 4px 0}
+.data-track .blue,.hbar-fill.blue,.v-bar.blue{background:var(--blue)}
+.data-track .green,.hbar-fill.green,.v-bar.green{background:var(--green)}
+.epoch.green{color:var(--green);font-weight:700}
+.diagram-scroll{min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.diagram-scroll>svg{display:block;width:100%;height:auto;overflow:visible;font-family:var(--f)}
+.sv-label{font-family:var(--f);font-size:20px;fill:var(--ink);font-weight:550}
+.sv-note{font-family:var(--f);font-size:17px;fill:var(--muted)}
+.norm-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.diagram-panel{background:var(--box);border:1px solid var(--line);border-radius:12px;padding:22px 18px 18px;min-width:0}
+.diagram-panel.emphasized{border-color:var(--blue)}
+.diagram-title{display:flex;flex-direction:column;gap:4px;padding:0 5px}
+.diagram-title span{font-size:15px;color:var(--muted)}
+.diagram-title strong{font-size:23px;font-weight:650;line-height:1.4}
+.diagram-panel .formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:16px;line-height:1.5;text-align:center;white-space:nowrap;letter-spacing:-.04em}
+.block-stack{display:flex;flex-direction:column;gap:7px}
+.block-diagram h3{display:flex;align-items:center;gap:13px;margin:0;font-size:18px;font-weight:600;line-height:1.5}
+.block-diagram .diagram-scroll>svg{max-height:188px}
+.block-diagram .sv-label{font-size:19px}
+.block-diagram .sv-note{font-size:17px}
+.layout-process .block-stack+.cap{font-size:13px;margin-top:-5px}
+.chart-line{stroke:var(--faint);stroke-width:1.5}
+.chart-grid{stroke:var(--line);stroke-dasharray:4 5;stroke-width:1}
+.recipe-settings{display:grid;grid-template-columns:1.15fr .7fr 1.4fr;gap:14px;border-top:1px solid var(--line);padding-top:16px}
+.recipe-settings span{font-size:14px;color:var(--muted);line-height:1.65}
+.recipe-settings b{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+.delta-header{display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line);padding-bottom:15px}
+.delta-header strong{font-size:21px;line-height:1.4}.delta-header span{font-size:14px;color:var(--muted)}
+.delta-chart{display:flex;flex-direction:column;gap:14px;padding:0 0 8px}
+.delta-row{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;align-items:center;gap:14px;min-height:35px}
+.delta-name{font-size:16px;font-weight:600;line-height:1.3}
+.delta-name small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:4px;white-space:nowrap}
+.delta-track{height:28px;position:relative;background:linear-gradient(to right,transparent 19.8%,#959BA5 19.8%,#959BA5 20.2%,transparent 20.2%),#EDF0F4}
+.delta-track i{position:absolute;top:3px;height:22px;min-width:2px;display:block;border-radius:3px}
+.delta-track .blue{background:var(--blue)}.delta-track .orange{background:var(--orange)}
+.delta-value{font-size:17px;text-align:right;font-variant-numeric:tabular-nums}.delta-value.blue{color:var(--blue)}.delta-value.orange{color:var(--orange)}
+.delta-axis{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;gap:14px;font-size:12px;color:var(--muted);margin-top:1px}
+.delta-axis>div{position:relative;height:20px}.delta-axis>div span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.delta-axis>div span:first-child{transform:none}.delta-axis>div span:last-child{transform:translateX(-100%)}
+.condition-panels{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.compare-panel{min-width:0;background:var(--box);border:1px solid var(--line);border-radius:12px;padding:23px 27px}
+.compare-panel h3{font-size:24px;font-weight:650;line-height:1.4;margin:0}
+.panel-sub{font-size:14px;line-height:1.5;color:var(--muted);margin:6px 0 24px}
+.hbar-chart{display:flex;flex-direction:column;gap:22px;padding:8px 0}
+.hbar-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;font-size:18px;line-height:1.5}
+.hbar-head strong{font-size:23px;font-weight:650;font-variant-numeric:tabular-nums}.hbar-head small{font-size:14px;margin-left:2px}
+.hbar-track{height:28px;background:repeating-linear-gradient(to right,transparent 0,transparent calc(25% - 1px),#CCD3DD calc(25% - 1px),#CCD3DD 25%),#EEF0F4;border-left:1px solid var(--faint)}
+.hbar-fill{height:100%;border-radius:0 4px 4px 0}.hbar-fill.gray{background:#8A98AE}
+.chart-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:-10px;font-variant-numeric:tabular-nums}
+.chart-heading{display:flex;flex-direction:column;gap:10px}.chart-heading>strong{font-size:22px}
+.before-after{display:grid;grid-template-columns:1.2fr 1fr;gap:70px;align-items:center;padding:15px 30px 8px 5px}
+.vertical-chart{display:grid;grid-template-columns:40px minmax(0,1fr);gap:15px;min-width:0}
+.v-axis{height:240px;display:flex;flex-direction:column;justify-content:space-between;text-align:right;font-size:13px;color:var(--muted)}
+.v-columns{display:grid;grid-template-columns:1fr 1fr;gap:55px;background:linear-gradient(to bottom,#CDD2D9 1px,transparent 1px,transparent 119px,#E1E4E9 119px,#E1E4E9 120px,transparent 120px,transparent 239px,#959BA5 239px,#959BA5 240px,transparent 240px)}
+.v-column{text-align:center;min-width:0}.v-track{height:240px;position:relative;display:flex;align-items:flex-end;justify-content:center}
+.v-bar{width:90px;max-width:80%;position:relative;border-radius:6px 6px 0 0}
+.v-bar strong{position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:25px;font-weight:650;white-space:nowrap}
+.v-column>span{display:block;font-size:17px;font-weight:600;line-height:1.5;margin-top:12px}
+.change-summary{padding-left:25px;border-left:1px solid var(--line)}
+.change-value{font-size:79px;font-weight:700;letter-spacing:-.04em;color:var(--orange);line-height:1.2;margin:12px 0 16px}
+.change-value small{font-size:25px;margin-left:9px;letter-spacing:0}
+.change-summary h3{font-size:24px;font-weight:650;line-height:1.45;margin:0 0 12px}
+.change-summary p{font-size:16px;line-height:1.7;color:var(--muted);margin:0}
+.scroll-hint{font-size:12px;line-height:1.5;color:var(--blue);margin:4px 0 0;padding:7px 10px;background:var(--blue-s);border-radius:5px}
+.scroll-hint[hidden]{display:none!important}
+.formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:20px;line-height:1.7;letter-spacing:-.04em;white-space:nowrap}
+.metric span{font-size:22px;margin-left:5px}
+html:not(.fit) .layout-quantitative .inner,html:not(.fit) .layout-cover .inner{grid-template-columns:minmax(0,1fr)}
+html:not(.fit) .layout-process .txt,html:not(.fit) .layout-overview .txt,html:not(.fit) .layout-reference .txt{display:flex;flex-direction:column;gap:15px}
+html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid var(--line)}
+@media(max-width:819px){
+ .layout-quantitative .txt h2,.txt h2,.slide h2,.layout-process .txt h2,.layout-overview .txt h2,.layout-reference .txt h2{font-size:28px;line-height:1.35}
+ .layout-cover .txt h2{font-size:34px}.layout-cover .txt p,.txt p{font-size:18px}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{gap:27px}
+ .layout-overview .vis>.g .bx{padding:20px}.layout-overview .vis>.g .t{font-size:20px}.layout-overview .vis>.g .d{font-size:16px}
+ .norm-pair,.condition-panels{grid-template-columns:1fr;gap:18px}.diagram-panel{padding:17px 14px}
+ .diagram-panel .diagram-scroll>svg{min-width:570px}.block-diagram .diagram-scroll>svg{min-width:960px;max-height:none}
+ .layout-quantitative .diagram-scroll>svg{min-width:600px}
+ .block-diagram h3{flex-wrap:wrap;font-size:16px;gap:7px}.block-stack{gap:24px}
+ .diagram-panel .formula{font-size:13px;white-space:normal}.diagram-title strong{font-size:21px}
+ .recipe-map{grid-template-columns:1fr;gap:18px;padding:6px 0}.recipe-step{padding:18px 0 0}.recipe-arrow{transform:rotate(90deg)}
+ .recipe-step h3{margin-top:12px}.recipe-step p{font-size:18px}.recipe-outcomes{gap:18px;padding:5px 0 5px 20px}
+ .before-after{grid-template-columns:1fr;gap:30px;padding:25px 0 5px}.change-summary{padding:20px 0 0;border-left:0;border-top:1px solid var(--line)}
+ .change-value{font-size:60px}.change-summary h3{font-size:22px}.change-summary h3 br{display:none}
+ .v-columns{gap:24px}.v-bar strong{font-size:22px}.v-column>span{font-size:14px}
+ .family-range{font-size:62px;margin:20px 0 26px}.family-range>span{font-size:33px}.family-models span{font-size:19px;padding:12px 0}
+ .token-brackets{font-size:14px}.cover-graphic p{font-size:20px;margin-top:28px}
+ .data-chart-head,.data-row{grid-template-columns:90px minmax(0,1fr) 35px 44px;gap:7px}
+ .data-chart-head{font-size:10px}.data-name{font-size:13px}.data-row>strong,.epoch{font-size:13px}.data-track{height:21px}
+ .data-chart-head>:nth-child(2){font-size:10px}.data-chart{gap:13px}
+ .annotation span{font-size:14px}.annotation strong{font-size:16px}
+ .delta-row{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}.delta-axis{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}
+ .delta-name{font-size:13px}.delta-name small{font-size:10px}.delta-value{font-size:14px}.delta-header strong{font-size:18px}
+ .compare-panel{padding:20px}.compare-panel h3{font-size:21px}.hbar-head{font-size:16px}.hbar-head strong{font-size:20px}
+ .recipe-settings{grid-template-columns:1fr 1fr}.recipe-settings span:last-child{grid-column:1/-1}.cap{font-size:12px;line-height:1.65}
+ .layout-reference .tbl th,.layout-reference .tbl td{font-size:15px;padding:12px 14px}.table-wrap{max-width:100%;overscroll-behavior-x:contain}
+}
+@media(max-width:520px){.c2{grid-template-columns:minmax(0,1fr)}.tbl{min-width:520px}.formula{font-size:14px;white-space:normal}}
+@media print{
+ .layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr)!important}
+ .layout-cover .inner{grid-template-columns:1fr 1fr!important}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important}
+ .layout-process .txt,.layout-overview .txt,.layout-reference .txt{display:grid!important;grid-template-columns:420px minmax(0,1fr);gap:8px 46px}
+ .cover-graphic{padding:25px 0 25px 36px!important;border-left:1px solid var(--line)!important;border-top:0!important}
+ .scroll-hint{display:none!important}.diagram-scroll{overflow:visible}.table-wrap{overflow:visible}.tbl{min-width:0}
+}
+</style>
+<style>
+/* Supplementary components only; the supplied deck's spacing, palette and layouts are preserved. */
+.layout-cover .txt{gap:25px}.layout-cover .metric{font-size:65px}
+.layout-quantitative .condition-panels{gap:15px}.layout-quantitative .compare-panel{padding:18px 20px}
+.layout-quantitative .hbar-chart{gap:13px}.layout-quantitative .hbar-head{margin-bottom:4px;font-size:16px}
+.layout-quantitative .hbar-head strong{font-size:18px}.layout-quantitative .compare-panel h3{font-size:21px}
+.layout-process .bx .t,.layout-reference .bx .t{font-size:18px}
+.layout-process .bx .d,.layout-reference .bx .d{font-size:16px}
+.layout-process .bx .m,.layout-reference .bx .m{font-size:13px}
+.layout-process .vis{gap:10px}.layout-process .annotation{padding:10px 14px}
+.layout-process .flow{gap:8px}.layout-process .flow>.bx{padding:15px 16px}
+.layout-reference .tbl th,.layout-reference .tbl td{padding:7px 14px;font-size:16px;line-height:1.42}
+.layout-reference .txt p{font-size:17px}
+.layout-reference .vis{gap:11px}.layout-reference .annotation{padding:11px 16px}
+.layout-overview .tbl th,.layout-overview .tbl td{padding:9px 14px;font-size:16px}
+.layout-overview .vis>.g .bx{padding:18px 22px}
+.layout-overview .vis>.g .metric{font-size:35px}
+.layout-overview .vis>.g .metric small{font-size:14px}
+.layout-quantitative .metric{font-size:37px}
+.layout-quantitative .vis .tbl th,.layout-quantitative .vis .tbl td{font-size:15px;padding:8px 13px}
+.layout-quantitative .txt p{font-size:18px}
+.slide[data-sec="5"] .layout-reference .tbl{font-size:16px}
+@media print{.layout-cover .txt h2{font-size:44px}}
+</style>
+<style>
+/* Readability pass: same palette, card geometry and typography family. */
+.easy-down{text-align:center;font-size:21px;line-height:1;color:var(--muted);margin:0}
+.layout-reference .vis{gap:14px}
+.layout-reference .tbl th,.layout-reference .tbl td{font-size:17px;padding:12px 17px;line-height:1.5}
+.layout-overview .vis>.g .bx,.layout-process .vis>.g .bx{padding:18px 20px}
+.layout-quantitative .vis>.g .metric{font-size:52px}
+.layout-quantitative .vis>.g .bx .t{font-size:20px}
+.layout-quantitative .vis>.g .bx .m{font-size:14px}
+.layout-process .vis>.flow>.bx{padding:19px 19px}
+.layout-process .bx .t{font-size:20px}
+.layout-process .bx .d{font-size:17px}
+.layout-process .bx .m{font-size:14px}
+.annotation{padding:14px 18px}.annotation span{font-size:17px;line-height:1.6}
+.layout-reference .txt p,.layout-process .txt p,.layout-overview .txt p{font-size:19px;line-height:1.65}
+.layout-quantitative .txt p{font-size:19px}
+</style><style>
+/* Terminology restoration — original visual template remains unchanged. */
+.layout-process .txt h2,.layout-overview .txt h2,.layout-reference .txt h2{font-size:32px}
+.layout-quantitative .txt h2{font-size:34px}
+.layout-process .vis .bx .t{overflow-wrap:anywhere}
+.layout-process .vis .annotation span,.layout-reference .vis .annotation span{font-size:16px}
+</style></head>
+<body>
+<div class="app">
+<header class="top">
+<div class="top-row"><h1 class="ttl">Llama 2 — 데이터 수집 · 정제 · 합성</h1></div>
+<nav aria-label="발표 구간과 슬라이드" class="prog" id="prog"></nav>
+</header>
+<main aria-label="논문 발표자료" class="stage" id="stage">
+<section class="slide layout-cover" data-nav="Llama 2 Data Collection &amp; Synthesis" data-sec="0" data-section-label="도입">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">LLAMA 2 · DATA &amp; SYNTHESIS · PAPER STUDY</div>
+<h2>Llama 2<br/><span class="tb">Data Collection &amp; Synthesis</span></h2>
+<p class="lead">Pretraining → SFT → Preference Data → Synthetic Data</p>
+<div class="g c2"><div class="bx blue"><div class="t">중심 모델</div><div class="d">오늘 발표의 중심</div><div class="m">원논문의 데이터 관련 절 중심</div></div><div class="bx gray"><div class="t">비교 모델</div><div class="d">필요한 부분에서만 비교</div><div class="m">전처리의 배경과 후속 발전만 간략히</div></div></div></div>
+<div class="cover-graphic"><div class="overline">DATA PIPELINE</div><div class="family-range" style="font-size:55px">2T <span>→</span> 27.5K <span>→</span> 2.92M</div><div class="family-models" style="grid-template-columns:repeat(3,1fr)"><span style="font-size:17px">Pretraining</span><span style="font-size:17px">SFT</span><span style="font-size:17px">Preference</span></div><div class="token-brackets" style="grid-template-columns:repeat(3,1fr)"><span>토큰</span><span>어노테이션</span><span>비교 쌍</span></div><p>RQ1 → RQ2 → RQ3 → RQ4</p><small>출처: Llama 2 §2.1, §3.1, §3.2.1 · 서로 다른 집계 단위이므로 직접 비교하지 않음</small></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 원논문</a> · <a href="https://arxiv.org/html/2302.13971" rel="noopener noreferrer" target="_blank">LLaMA 1</a> · <a href="https://arxiv.org/html/2407.21783" rel="noopener noreferrer" target="_blank">Llama 3</a></span><span>도입 · 01</span></footer></div>
+<aside class="speaker-notes">오늘은 Llama 2의 데이터를 세 층위로 나눠 봅니다. 사전학습은 토큰, SFT는 사람이 작성한 예시, 선호 데이터는 두 응답을 비교한 쌍으로 셉니다. 이 숫자들은 단위가 달라 직접 크기를 비교할 수 없습니다. LLaMA 1은 전처리의 비교 대상으로만 설명하고, Llama 3는 이후 발전의 사례로 짧게 연결하겠습니다.</aside></section>
+<section class="slide layout-overview" data-nav="Llama 2의 세 가지 Training Data" data-sec="0" data-section-label="도입">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">OVERVIEW · DATA TYPES</div><h2>Llama 2의 세 가지<br/>Training Data</h2><p>먼저 <b>Pretraining</b>으로 대량의 텍스트를 학습하고, <b>SFT</b>로 답변 예시를 배우며, <b>Preference Data</b>로 좋은 답을 선택합니다.</p></div><div class="vis"><div class="g c3"><div class="bx gray"><div class="t">① Pretraining</div><div class="d">웹 문서 같은 글을 읽음</div><div class="m">2조 토큰(글을 잘게 나눈 단위)</div></div><div class="bx blue"><div class="t">② SFT</div><div class="d">질문과 모범 답변을 배움</div><div class="m">Human-annotated examples 27,540건</div></div><div class="bx green"><div class="t">③ Preference Data</div><div class="d">두 답 중 더 좋은 것을 배움</div><div class="m">Pairwise comparisons 약 292만 건</div></div></div><div class="annotation blue"><strong>발표에서 다룰 네 가지 질문</strong><span>RQ1 Pretraining → RQ2 SFT → RQ3 Preference &amp; Synthetic Data → RQ4 Llama 3</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">§2.1·§3.1·§3.2.1</a></span><span>도입 · 02</span></footer></div>
+<aside class="speaker-notes">처음 두 숫자는 각각 토큰 수와 사람이 작성한 SFT 어노테이션 수입니다. 약 292만은 비교 쌍의 수입니다. 발표는 네 질문 순서로 진행합니다.</aside></section>
+<section class="slide layout-reference" data-nav="RQ1. Pretraining Data는 어떻게 구성했나?" data-sec="1" data-section-label="RQ1 · 사전학습">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · PRETRAINING DATA</div><h2>RQ1. Pretraining Data는<br/>어떻게 구성했나?</h2><p>공개 웹 자료를 새롭게 혼합해 <b>2T Tokens</b>를 학습했습니다. 다만 사용한 데이터셋의 정확한 목록은 공개하지 않았습니다.</p></div><div class="vis"><div class="g c2"><div class="bx green"><div class="t">논문이 알려준 것</div><div class="d">Publicly available sources 사용</div><div class="m">Meta 서비스 데이터는 사용하지 않음</div></div><div class="bx orange"><div class="t">알 수 없는 것</div><div class="d">Data source별 이름·Mixing ratio</div><div class="m">Filtering 방법과 Threshold도 미공개</div></div></div><div class="g c2"><div class="bx"><div class="t">개인정보 관리</div><div class="d">개인정보가 많은 특정 사이트 제외</div></div><div class="bx"><div class="t">Up-sampling 대상</div><div class="d">Factual source의 Sampling 비중 확대</div></div></div><div class="annotation blue"><strong>핵심</strong><span>공개하지 않았다는 말은 실제로 사용하지 않았다는 뜻이 아닙니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">§2.1 · A.7 Table 52</a></span><span>RQ1 · 03</span></footer></div>
+<aside class="speaker-notes">Llama 2가 2조 토큰을 사용했지만 구체적 데이터셋 이름은 공개하지 않았다는 점이 중요합니다. 정제를 강화했다는 문장만 있고 구체적 방법은 없습니다. 시점은 부록 모델 카드에 2022년 9월로 적혀 있습니다.</aside></section>
+<section class="slide layout-reference" data-nav="LLaMA 1 vs Llama 2 Data Preprocessing" data-sec="1" data-section-label="RQ1 · 비교 기준">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · COMPARISON</div><h2>LLaMA 1 vs Llama 2<br/>Data Preprocessing</h2><p>LLaMA 1은 <b>Data Source와 Filtering 방법</b>을 비교적 구체적으로 공개했습니다. Llama 2는 개선 방향만 설명합니다.</p></div><div class="vis"><div class="table-wrap"><table class="tbl"><thead><tr><th>비교</th><th>LLaMA 1</th><th>Llama 2</th></tr></thead><tbody><tr><td>Training Tokens</td><td>최대 1.4조 토큰</td><td>2조 토큰</td></tr><tr><td>Data Sources</td><td>웹·책·코드 등 7개 공개</td><td>구체적인 Data Sources 미공개</td></tr><tr><td>Data Cleaning</td><td>Data Sources별 방법 설명</td><td>강화했다고만 설명</td></tr></tbody></table></div><div class="g c2"><div class="bx gray"><div class="t">LLaMA 1 Preprocessing</div><div class="d">CommonCrawl: 웹에서 모은 글</div><div class="m">CCNet을 이용해 정제</div></div><div class="bx blue"><div class="t">Llama 2 Changes</div><div class="d">Tokens 확대 + Up-sampling</div><div class="m">구체적인 구현은 확인할 수 없음</div></div></div><div class="annotation blue"><strong>다음 슬라이드</strong><span>LLaMA 1의 CCNet을 예시로 Data Preprocessing을 살펴봅니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2302.13971" rel="noopener noreferrer" target="_blank">LLaMA 1 §2.1 · Table 1</a></span><span>RQ1 · 04</span></footer></div>
+<aside class="speaker-notes">LLaMA 1은 웹, 코드, 논문 등 7개 데이터 소스를 공개했습니다. CommonCrawl이 가장 큰 비중이며, 소스마다 데이터 특성이 달라 전처리 방법이 다릅니다. 여기서 CCNet, fastText, KenLM으로 이어집니다.</aside></section>
+<section class="slide layout-process" data-nav="CCNet Data Preprocessing Pipeline" data-sec="1" data-section-label="RQ1 · 전처리 개념">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · CCNET</div><h2>CCNet<br/>Data Preprocessing Pipeline</h2><p>웹 데이터에는 중복된 문장, 다양한 언어, 잡음이 섞여 있습니다. <b>CCNet은 웹 텍스트를 정제하는 Pipeline</b>입니다.</p></div><div class="vis"><div class="flow"><div class="bx gray"><div class="t">Raw Web Text</div><div class="d">중복·잡음이 있음</div></div><div class="arrow">→</div><div class="bx"><div class="t">Deduplication</div><div class="d">중복 문장과 문단 제거</div></div><div class="arrow">→</div><div class="bx blue"><div class="t">fastText</div><div class="d">Language Identification</div></div></div><div class="easy-down">↓</div><div class="flow"><div class="bx blue"><div class="t">KenLM</div><div class="d">n-gram Language Model로 PPL 계산</div></div><div class="arrow">→</div><div class="bx green"><div class="t">Quality Classification</div><div class="d">Head / Middle / Tail로 구분</div></div></div><div class="annotation orange"><strong>관계 정리</strong><span>CCNet = 전체 Pipeline / fastText = Language Identification / KenLM = n-gram Language Model.<br/><b>Llama 2의 KenLM 사용은 확인되지 않습니다.</b></span></div></div></div>
+<footer class="src"><span>근거: <a href="https://aclanthology.org/2020.lrec-1.494/" rel="noopener noreferrer" target="_blank">CCNet §3</a> · <a href="https://github.com/facebookresearch/cc_net/blob/main/README.md" rel="noopener noreferrer" target="_blank">공식 구현</a> · <a href="https://arxiv.org/html/2302.13971" rel="noopener noreferrer" target="_blank">LLaMA 1 §2.1</a></span><span>RQ1 · 05</span></footer></div>
+<aside class="speaker-notes">CCNet은 전체 파이프라인 이름입니다. fastText는 언어 식별, KenLM은 그 언어에서 문서가 얼마나 예측 가능한지 평가합니다. CCNet 구현 README에 3단계 hashes, mine, regroup가 설명됩니다. 이 방법을 Llama 2에서도 그대로 썼다고 말하면 안 됩니다.</aside></section>
+<section class="slide layout-process" data-nav="fastText vs KenLM Language ID와 Perplexity" data-sec="1" data-section-label="RQ1 · 전처리 개념">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · CORE CONCEPTS</div><h2>fastText vs KenLM<br/>Language ID와 Perplexity</h2><p><b>fastText</b>는 문서의 언어를 분류하고, <b>KenLM</b>은 학습된 언어모델에서 문서가 얼마나 예측하기 어려운지 계산합니다.</p></div><div class="vis"><div class="g c2"><div class="bx blue"><div class="t">fastText: Language Identification</div><div class="d">“안녕하세요” → 한국어<br/>“Hello” → 영어</div><div class="m">언어별로 문서를 분류</div></div><div class="bx green"><div class="t">KenLM: Language Modeling</div><div class="d">“I like apples.”<br/>“Apples I like the.”</div><div class="m">학습한 n-gram 분포로 Perplexity 계산</div></div></div><div class="table-wrap"><table class="tbl"><thead><tr><th>Term</th><th>쉬운 설명</th></tr></thead><tbody><tr><td>n-gram</td><td>연속된 n개 Token의 묶음</td></tr><tr><td>Perplexity (PPL)</td><td>문장을 예측하기 얼마나 어려운지 나타내는 숫자</td></tr></tbody></table></div><div class="annotation orange"><strong>오해하면 안 되는 점</strong><span>PPL이 낮다고 내용이 반드시 사실이거나 좋은 글인 것은 아닙니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://aclanthology.org/2020.lrec-1.494/" rel="noopener noreferrer" target="_blank">CCNet</a> · <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §4.1 Table 10</a></span><span>RQ1 · 06</span></footer></div>
+<aside class="speaker-notes">두 도구가 완전히 같은 것이 아닙니다. fastText는 영어냐 한국어냐를 분류하고, KenLM은 Wikipedia 등으로 학습한 통계적 언어모델을 통해 PPL을 계산합니다. PPL은 참과 거짓을 판정하지 않는다는 점이 중요합니다.</aside></section>
+<section class="slide layout-process" data-sec="1" data-section-label="RQ1 · 전처리 예시" data-nav="fastText와 KenLM의 내부 처리 4단계">
+<div class="card"><div class="inner" style="gap:18px;padding-top:34px;padding-bottom:23px">
+<div class="txt" style="gap:6px 38px;grid-template-columns:390px minmax(0,1fr)">
+  <div class="ey">RQ1 · HOW IT WORKS</div>
+  <h2 style="font-size:32px">fastText와 KenLM은<br>어떻게 동작할까?</h2>
+  <p style="font-size:18px">같은 문서라도 <b>fastText는 문자 패턴으로 언어를 식별</b>하고, <b>KenLM은 앞선 토큰들의 확률로 Perplexity를 계산</b>합니다.</p>
+</div>
+<div class="vis" style="gap:10px">
+  <div class="g c2" style="gap:16px;align-items:stretch">
+    <div class="bx blue" style="padding:13px 17px 11px;gap:8px">
+      <div class="head"><div class="t" style="font-size:19px">fastText <span style="font-size:14px;font-weight:500">· Language Identification</span></div><span class="tag blue">언어 식별</span></div>
+      <div class="m" style="font-size:13.5px">입력 예: <b style="color:var(--ink)">The cat is on the mat.</b></div>
+      <div class="flow vertical" style="gap:6px">
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">1</span> Character n-gram 추출</div><div class="d" style="font-size:14px">문자 조각을 특징으로 사용: <code>cat → ca / at / cat</code></div></div>
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">2</span> Embedding 집계</div><div class="d" style="font-size:14px">문자 조각을 벡터로 바꿔 하나의 문서 표현으로 결합</div></div>
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">3</span> Hierarchical Softmax</div><div class="d" style="font-size:14px">학습된 분류기로 언어별 점수 산출: <b>en, ko, fr…</b></div></div>
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">4</span> Threshold 적용</div><div class="d" style="font-size:14px">최고 언어 점수 <b>&gt; 0.5</b> → 해당 언어 그룹으로 분류</div></div>
+      </div>
+    </div>
+    <div class="bx green" style="padding:13px 17px 11px;gap:8px">
+      <div class="head"><div class="t" style="font-size:19px">KenLM <span style="font-size:14px;font-weight:500">· 5-gram Language Model</span></div><span class="tag green">문서 품질 지표</span></div>
+      <div class="m" style="font-size:13.5px">사전 준비: <b style="color:var(--ink)">Wikipedia</b>로 Tokenizer와 KenLM 학습</div>
+      <div class="flow vertical" style="gap:6px">
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">1</span> SentencePiece Tokenization</div><div class="d" style="font-size:14px">문서를 Subword 토큰 시퀀스로 분해</div></div>
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">2</span> 5-gram 확률 계산</div><div class="d" style="font-size:14px">이전 최대 4개 토큰으로 다음 토큰 예측<br><code style="font-size:12px">P(mat | cat, is, on, the)</code> <span class="m" style="font-size:12px">(단어 단위 도식)</span></div></div>
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">3</span> Kneser–Ney Smoothing</div><div class="d" style="font-size:14px">드문 토큰 조합도 낮은 차수 통계를 이용해 확률 추정</div></div>
+        <div class="bx" style="padding:8px 12px;gap:3px"><div class="t" style="font-size:15.5px"><span class="num" style="width:23px;height:23px;font-size:12px">4</span> Perplexity → 품질 구간</div><div class="d" style="font-size:14px">토큰별 확률을 종합해 PPL 계산 → <b>Head / Middle / Tail</b></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="annotation orange" style="padding:8px 12px;gap:3px"><strong style="font-size:14px">예시 해석</strong><span style="font-size:13px">“The cat is on the mat.”과 “Mat the on is cat the.”는 <b>모두 영어</b>로 식별될 수 있지만, KenLM의 <b>PPL은 다를 수</b> 있습니다. 실제 측정 결과는 아니며, Llama 2의 KenLM 사용은 공개되지 않았습니다.</span></div>
+</div></div>
+<footer class="src"><span>근거: <a href="https://aclanthology.org/2020.lrec-1.494/" target="_blank" rel="noopener noreferrer">CCNet §3.3–3.4</a> · <a href="https://arxiv.org/html/2302.13971" target="_blank" rel="noopener noreferrer">LLaMA 1 §2.1</a> (처리 과정 예시)</span><span>RQ1 · 07</span></footer></div>
+<aside class="speaker-notes">fastText는 단순히 언어 이름을 바로 출력하는 것이 아니라 문자 n-gram을 특징으로 추출하고, 이를 벡터로 결합한 뒤 hierarchical softmax 분류를 수행합니다. CCNet에서는 최대 언어 점수가 0.5보다 높을 때 언어를 확정했습니다. KenLM은 별도로 Wikipedia 데이터로 학습된 SentencePiece 토크나이저와 5-gram Kneser–Ney 언어모델을 사용합니다. 문장을 Subword로 쪼개고 이전 최대 네 토큰을 바탕으로 각 토큰의 확률을 계산합니다. 드문 조합에서는 Kneser–Ney smoothing으로 확률을 추정합니다. 마지막으로 이 확률을 합쳐 Perplexity를 계산하고 Head, Middle, Tail 그룹으로 분류합니다. 영어 문장이라고 해도 단어 배열이 이상하면 PPL이 높을 수 있습니다. 숫자들은 실제 측정하지 않았고 원리 설명을 위한 예시입니다. Llama 2가 KenLM을 사용했는지는 원논문으로 확인할 수 없습니다.</aside></section>
+<section class="slide layout-quantitative" data-nav="Up-sampling 일부 데이터를 더 자주 학습하기" data-sec="1" data-section-label="RQ1 · 혼합 전략">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · SAMPLING STRATEGY</div><h2>Up-sampling<br/>일부 데이터를 더 자주 학습하기</h2><p>예를 들어 원본에서 10%인 고품질 문서를, 학습할 때는 30%의 비율로 선택하도록 조정할 수 있습니다.</p></div><div class="vis"><div class="g c2"><div class="bx gray"><div class="t">Original Data Mix</div><div class="d">일반 글 90%<br/>신뢰할 만한 글 10%</div><div class="m">설명용 예시이며 실제 Llama 2 수치는 아님</div></div><div class="bx green"><div class="t">Training Sampling Mix</div><div class="d">일반 글 70%<br/>신뢰할 만한 글 30%</div><div class="m">좋다고 판단한 글을 더 자주 선택</div></div></div><div class="flow"><div class="bx"><div class="t">Data Mixing</div><div class="d">비율을 조절</div></div><div class="arrow">→</div><div class="bx blue"><div class="t">Training</div><div class="d">특정 글을 더 자주 봄</div></div></div><div class="annotation orange"><strong>논문에서의 의미</strong><span>Llama 2는 Knowledge 향상과 Hallucination 감소를 <b>목표</b>로 했습니다. 이 방법만의 효과는 따로 측정하지 않았습니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §2.1</a></span><span>RQ1 · 08</span></footer></div>
+<aside class="speaker-notes">업샘플링은 코퍼스의 실제 비율과 훈련 과정에서 뽑히는 비율을 다르게 만드는 것입니다. 예시의 10%와 30%는 설명용 숫자이며 Llama 2의 비율이 아닙니다. 논문은 factual 데이터 비중을 늘렸다고만 밝힙니다.</aside></section>
+<section class="slide layout-quantitative" data-nav="Language Distribution 영어 89.70%, 한국어 0.06%" data-sec="1" data-section-label="RQ1 · 데이터 진단">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · TABLE 10</div><h2>Language Distribution<br/>영어 89.70%, 한국어 0.06%</h2><p><b>fastText Language Identification</b>으로 데이터의 언어 분포를 분석했습니다. 이는 사전에 정한 혼합 비율이 아닌 분석 결과입니다.</p></div><div class="vis"><div class="g c3"><div class="bx ctr blue"><div class="metric">89.70%</div><div class="t">영어</div><div class="m">가장 많은 언어</div></div><div class="bx ctr gray"><div class="metric">8.38%</div><div class="t">Unknown Language</div><div class="m">코드 등이 일부 포함</div></div><div class="bx ctr green"><div class="metric">0.06%</div><div class="t">한국어</div><div class="m">매우 작은 비중</div></div></div><div class="table-wrap"><table class="tbl"><thead><tr><th>항목</th><th>의미</th></tr></thead><tbody><tr><td>도구</td><td>fastText Language Identification</td></tr><tr><td>기준</td><td>전체 글 중 해당 언어 문서의 비율</td></tr><tr><td>주의</td><td>Language Identifier의 결과이므로 완벽한 판정은 아님</td></tr></tbody></table></div><div class="annotation blue"><strong>논문</strong><span>Llama 2 §4.1 Table 10에서 확인할 수 있습니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §4.1 · Table 10</a></span><span>RQ1 · 09</span></footer></div>
+<aside class="speaker-notes">이 표는 실제로 학습한 데이터에 fastText를 적용해 언어별 문서 비율을 측정한 것입니다. 영어가 89.7%, 한국어가 0.06%입니다. 원본 자료 일부에서는 문서 기준인지 불명확하다고 적혀 있었지만 원문은 percentage of documents라고 명시합니다.</aside></section>
+<section class="slide layout-process" data-nav="Data Analysis ≠ Filtering 측정과 제거는 다르다" data-sec="1" data-section-label="RQ1 · 데이터 진단">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · SAFETY IN PRETRAINING</div><h2>Data Analysis ≠ Filtering<br/>측정과 제거는 다르다</h2><p><b>Toxicity Analysis</b>와 <b>Demographic Representation 분석</b>을 수행했지만, 유해성 점수에 따른 추가 필터링을 수행하지는 않았습니다.</p></div><div class="vis"><div class="g c2"><div class="bx blue"><div class="t">① Toxicity Analysis</div><div class="d">HateBERT + ToxiGen으로 줄별 점수 계산</div><div class="m">독성 점수 0.5 이상 문서 약 0.2% (영어 표본)</div></div><div class="bx green"><div class="t">② Demographic Representation</div><div class="d">성별·국적 관련 단어의 빈도 조사</div><div class="m">어떤 집단이 많이 등장하는지 확인</div></div></div><div class="table-wrap"><table class="tbl"><thead><tr><th>구분</th><th>예시</th></tr></thead><tbody><tr><td>Measurement</td><td>“문서에 유해한 표현이 얼마나 있나?”</td></tr><tr><td>Filtering</td><td>“기준을 넘는 문서를 학습에서 빼자”</td></tr></tbody></table></div><div class="annotation orange"><strong>주의</strong><span>0.2%는 영어 부분의 표본 분석 결과입니다. 전체 언어의 유해성이 0.2%라는 뜻은 아닙니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §4.1 · Table 9 · Fig. 13</a></span><span>RQ1 · 10</span></footer></div>
+<aside class="speaker-notes">독성 문서를 걸러내지 않았다는 표현은 추가적인 유해성 필터링을 수행하지 않았다는 뜻입니다. 전처리를 전혀 안 했다는 말이 아닙니다. Figure 13의 독성 결과는 영어 부분을 평가한 10% 표본에 대한 결과입니다.</aside></section>
+<section class="slide layout-reference" data-nav="RQ1 Summary 공개된 것과 공개되지 않은 것" data-sec="1" data-section-label="RQ1 · 정리">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ1 · TAKEAWAYS</div><h2>RQ1 Summary<br/>공개된 것과 공개되지 않은 것</h2><p>Pretraining은 <b>2T Tokens</b>로 확대됐지만, 데이터 소스별 비율과 Filtering 구현은 공개되지 않았습니다.</p></div><div class="vis"><div class="g c2"><div class="bx green"><div class="t">Disclosed</div><div class="d">2조 토큰 · New Data Mix</div><div class="m">개인정보가 많은 특정 사이트 제외</div></div><div class="bx orange"><div class="t">Not Disclosed</div><div class="d">Mixing ratio · Filtering threshold</div><div class="m">KenLM 사용 여부도 미공개</div></div></div><div class="annotation blue"><strong>LLaMA 1을 봤던 이유</strong><span>CCNet·fastText·KenLM은 <b>데이터 전처리를 이해하기 위한 이전 모델의 사례</b>입니다.</span></div><div class="annotation green"><strong>이제 RQ2</strong><span>이렇게 글을 읽힌 뒤, “질문에 어떻게 답할지”는 어떤 데이터로 가르쳤을까요?</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">§2.1 · §4.1 · A.7 Table 52</a> · <a href="https://arxiv.org/html/2302.13971" rel="noopener noreferrer" target="_blank">LLaMA 1 §2.1</a></span><span>RQ1 · 11</span></footer></div>
+<aside class="speaker-notes">RQ1은 아는 것과 모르는 것을 엄격하게 구분하는 것으로 마무리합니다. 이후 SFT로 넘어가면 Llama 2 논문은 오히려 상당히 구체적인 데이터 작성, QA 절차를 설명합니다.</aside></section>
+<section class="slide layout-process" data-nav="RQ2. SFT Data는 어디서 수집했나?" data-sec="2" data-section-label="RQ2 · SFT 수집">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ2 · SFT DATA</div><h2>RQ2. SFT Data는<br/>어디서 수집했나?</h2><p><b>Supervised Fine-Tuning(SFT)</b>은 <b>Prompt–Response</b> 예시로 모델이 질문에 어떻게 답할지 배우는 학습입니다.</p></div><div class="vis"><div class="flow"><div class="bx gray"><div class="t">Prompt</div><div class="d">“달이 왜 보이나요?”</div></div><div class="arrow">→</div><div class="bx blue"><div class="t">Reference Response</div><div class="d">“태양빛을 반사하기 때문입니다.”</div></div></div><div class="g c2"><div class="bx ctr green"><div class="metric">27,540건</div><div class="t">SFT Annotations</div><div class="m">Human annotators가 작성</div></div><div class="bx"><div class="t">왜 직접 만들었나?</div><div class="d">Public Instruction Data는 품질·다양성이 부족하다고 평가</div><div class="m">양보다 좋은 답변을 우선</div></div></div><div class="annotation blue"><strong>Table 5</strong><span>논문 Table 5는 데이터 양 표가 아니라 질문·답변 예시입니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §3.1 · Table 5</a></span><span>RQ2 · 12</span></footer></div>
+<aside class="speaker-notes">SFT 데이터는 처음에는 공개 데이터로 시작했습니다. 이후 대량의 외부 자료보다 vendor가 직접 작성한 상대적으로 적지만 높은 품질의 데이터에 집중했습니다. 총 27,540건에서 작성을 중단했으며, 180건을 직접 검토했습니다.</aside></section>
+<section class="slide layout-process" data-nav="SFT Data Annotation &amp; Quality Assurance" data-sec="2" data-section-label="RQ2 · SFT 품질 관리">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ2 · ANNOTATION</div><h2>SFT Data Annotation<br/>&amp; Quality Assurance</h2><p>사람이 <b>Prompt와 Response</b>를 작성하고 <b>Quality Assurance(QA)</b>로 검수했습니다. 위험한 질문에는 Safety SFT를 적용했습니다.</p></div><div class="vis"><div class="flow"><div class="bx gray"><div class="t">① Prompt Annotation</div><div class="d">일반 질문 또는 위험한 질문</div></div><div class="arrow">→</div><div class="bx blue"><div class="t">② Response Writing</div><div class="d">도움이 되고 안전한 모범 답변</div></div><div class="arrow">→</div><div class="bx green"><div class="t">③ Quality Assurance</div><div class="d">틀린 내용·어색한 표현 수정</div></div></div><div class="g c2"><div class="bx"><div class="t">Helpfulness QA</div><div class="d">요청에 맞나? 문장이 자연스러운가?</div></div><div class="bx orange"><div class="t">Safety QA</div><div class="d">위험한 방법을 직접 알려주지 않는가?</div><div class="m">Risk Category × Attack Vector 구성</div></div></div><div class="annotation blue"><strong>사람이 검수한 뒤 사용</strong><span>검수자는 데이터를 승인·수정·반려할 수 있었습니다. Safety SFT는 수천 건이라고만 밝힙니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">§3.1 · §4.2.1–4.2.2 · Appendix A.5</a></span><span>RQ2 · 13</span></footer></div>
+<aside class="speaker-notes">Data Annotation Appendix의 QA 설명을 간단히 소개합니다. 데이터의 올바른 문법, 지시 준수, 안전 기준을 검수자가 평가합니다. Safety SFT는 위험 카테고리와 공격 벡터라는 두 축을 사용합니다. SFT의 27,540건과 Safety SFT 수천 건을 단순히 합치지 말아야 합니다.</aside></section>
+<section class="slide layout-process" data-nav="RQ3. Pairwise Preference 어떻게 비교했나?" data-sec="3" data-section-label="RQ3 · 선호 수집">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ3 · HUMAN PREFERENCE</div><h2>RQ3. Pairwise Preference<br/>어떻게 비교했나?</h2><p><b>Pairwise Preference</b>는 하나의 Prompt에 대한 <b>두 Response를 사람이 비교</b>해 더 나은 답을 고르는 방식입니다.</p></div><div class="vis"><div class="bx gray"><div class="t">Prompt</div><div class="d">“지구가 태양 주위를 도는 이유는?”</div></div><div class="g c2"><div class="bx green"><div class="t">Response A</div><div class="d">“태양의 중력 때문에 궤도를 돕니다.”</div><div class="m">Chosen: 사람이 선택</div></div><div class="bx orange"><div class="t">Response B</div><div class="d">“지구가 태양을 밀어서 움직입니다.”</div><div class="m">Rejected: 선택되지 않음</div></div></div><div class="annotation blue"><strong>1 Pairwise Comparison</strong><span>Prompt 1개 + Response A/B + 더 좋은 답을 고른 기록 = 비교 데이터 한 건<br/>(위 문답은 이해를 돕기 위한 예시입니다.)</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §3.2.1 · Table 6</a></span><span>RQ3 · 14</span></footer></div>
+<aside class="speaker-notes">선호 데이터는 (Prompt, A, B, 누가 더 나은가?) 구조입니다. 같은 Prompt에 대해 두 응답을 만든 다음 사람이 선호를 평가합니다. 선호 차이가 크냐 작으냐도 네 단계로 받습니다.</aside></section>
+<section class="slide layout-reference" data-nav="Preference Data 총 2,919,326 Comparisons" data-sec="3" data-section-label="RQ3 · 데이터 규모">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ3 · TABLE 6</div><h2>Preference Data<br/>총 2,919,326 Comparisons</h2><p>2,919,326건은 <b>독립 질문 수나 응답 수가 아니라 두 답변의 비교 기록 수</b>입니다.</p></div><div class="vis"><div class="g c2"><div class="bx ctr blue"><div class="metric">약 292만</div><div class="t">All Preference Comparisons</div><div class="m">Reward Model 학습에 사용</div></div><div class="bx ctr green"><div class="metric">약 142만</div><div class="t">Meta Human Preference</div><div class="m">나머지는 다른 곳의 공개 자료</div></div></div><div class="table-wrap"><table class="tbl"><thead><tr><th>Data Source</th><th>규모</th></tr></thead><tbody><tr><td>Meta 내부에서 직접 수집</td><td>약 142만 건</td></tr><tr><td>외부 공개 자료를 포함한 나머지</td><td>약 150만 건</td></tr></tbody></table></div><div class="annotation blue"><strong>Reward Model이란?</strong><span>사람이 어떤 답을 더 좋게 골랐는지 학습해서, 새로운 답변에 점수를 주는 모델입니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §3.2.1 · Table 6</a></span><span>RQ3 · 15</span></footer></div>
+<aside class="speaker-notes">약 292만 개는 비교 쌍이고, 비교 한 건에는 두 응답이 있으므로 단일 응답 292만 개와는 전혀 다릅니다. Meta 내부 데이터 약 142만에 외부 선호 데이터들을 합친 것입니다. Synthetic GPT-J 역시 외부 출처로 소개됩니다.</aside></section>
+<section class="slide layout-process" data-nav="Iterative Data Collection 14 Batches에 걸쳐 수집" data-sec="3" data-section-label="RQ3 · 반복 수집">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ3 · TABLE 26 / FIG. 25–26</div><h2>Iterative Data Collection<br/>14 Batches에 걸쳐 수집</h2><p>모델이 발전함에 따라 새 <b>Preference Data</b>를 수집했고, <b>Curriculum Annotation</b>으로 질문 난이도를 높였습니다.</p></div><div class="vis"><div class="flow"><div class="bx gray"><div class="t">Early Batches</div><div class="d">비교적 쉬운 질문</div></div><div class="arrow">→</div><div class="bx blue"><div class="t">Model Improvement</div><div class="d">비슷하게 좋은 답이 늘어남</div></div><div class="arrow">→</div><div class="bx green"><div class="t">Later Batches</div><div class="d">더 어려운 질문으로 다시 비교</div></div></div><div class="g c2"><div class="bx ctr blue"><div class="metric">14번</div><div class="t">Data Collection Batches</div><div class="m">논문 Appendix A.3</div></div><div class="bx orange"><div class="t">Figure 25–26: Preference 변화</div><div class="d">Preference Strength는 줄고, Prompt 난이도는 높아진 것으로 해석</div><div class="m">이 변화는 평가 점수를 이용한 간접 분석</div></div></div><div class="annotation blue"><strong>왜 반복했을까?</strong><span>이미 잘 대답하는 쉬운 문제만 모아서는 모델을 더 개선하기 어렵기 때문입니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Appendix A.3 · Table 26 · Figs. 25–26</a></span><span>RQ3 · 16</span></footer></div>
+<aside class="speaker-notes">초기와 후기를 비교하면 수집 규모가 크게 증가하고 한 예시의 길이도 길어졌습니다. 응답 모델이 좋아지면서 두 응답의 우열 차이는 줄어들고, 데이터 수집자가 더 어려운 질문을 쓰도록 유도했습니다. Figure 26은 난이도의 직접 지표가 아니라 보상 점수를 통한 간접 해석입니다.</aside></section>
+<section class="slide layout-quantitative" data-nav="Helpfulness vs Safety 서로 다른 평가 기준" data-sec="3" data-section-label="RQ3 · Safety 라벨">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ3 · PREFERENCE LABELS</div><h2>Helpfulness vs Safety<br/>서로 다른 평가 기준</h2><p>두 응답 중 <b>어느 답변이 더 유용한지(Helpfulness)</b>와 <b>각 답변이 안전한지(Safety)</b>는 별개입니다.</p></div><div class="vis"><div class="g c2"><div class="bx blue"><div class="t">Pairwise Preference</div><div class="d">A와 B 중 어느 답이 더 나은가?</div><div class="m">사람이 상대적으로 좋은 답 선택</div></div><div class="bx green"><div class="t">Safety Labeling</div><div class="d">A는 안전한가? B는 안전한가?</div><div class="m">각 답의 안전 상태 기록</div></div></div><div class="table-wrap"><table class="tbl"><thead><tr><th>논문의 안전 비교 데이터</th><th>비율</th></tr></thead><tbody><tr><td>Chosen만 Safe</td><td>18%</td></tr><tr><td>Both Safe</td><td>47%</td></tr><tr><td>Both Unsafe</td><td>35%</td></tr></tbody></table></div><div class="annotation orange"><strong>왜 나눌까?</strong><span>답변 두 개가 모두 위험하더라도 상대적으로 더 나은 답이 있을 수 있기 때문입니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §3.2.1</a></span><span>RQ3 · 17</span></footer></div>
+<aside class="speaker-notes">상대적 선호와 절대적인 안전성 판정은 다른 정보입니다. Safety 선호 데이터에서 선택된 응답만 안전한 비율이 18%, 둘 다 안전한 비교가 47%, 둘 다 불안전한 경우가 35%였습니다.</aside></section>
+<section class="slide layout-process" data-nav="Synthetic Data Rejection Sampling &amp; Context Distillation" data-sec="3" data-section-label="RQ3 · 합성·선별">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ3 · SYNTHETIC DATA</div><h2>Synthetic Data<br/>Rejection Sampling &amp; Context Distillation</h2><p>모델이 생성한 <b>Response</b>를 무조건 쓰는 것이 아니라, <b>Reward Model</b>로 평가한 뒤 일부를 선택해 학습합니다.</p></div><div class="vis"><div class="g c2"><div class="bx blue"><div class="t">① Rejection Sampling</div><div class="d">같은 질문에 여러 답변 생성<br/>→ 점수가 높은 답 선택</div><div class="m">“여러 후보 중 가장 좋은 것 고르기”</div></div><div class="bx green"><div class="t">② Context Distillation</div><div class="d">안전하게 답하라는 지시를 더해 생성<br/>→ 이전 답보다 좋으면 채택</div><div class="m">“좋은 답을 만들어 학습 예시로 삼기”</div></div></div><div class="flow"><div class="bx"><div class="t">Generate Responses</div><div class="d">Candidate Responses</div></div><div class="arrow">→</div><div class="bx"><div class="t">Reward Model Scoring</div><div class="d">Select High-score Response</div></div><div class="arrow">→</div><div class="bx blue"><div class="t">Fine-tuning</div><div class="d">Selected Response 활용</div></div></div><div class="annotation orange"><strong>기억할 점</strong><span>자동 생성한 모든 답변을 쓰는 것이 아니라, <b>점수를 보고 선별</b>했습니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2 §3.2.3 · §4.2.4</a></span><span>RQ3 · 18</span></footer></div>
+<aside class="speaker-notes">이제 합성 데이터 단계입니다. 거절 샘플링에서는 같은 질문에 여러 답을 만들고 가장 보상이 높은 답을 선택합니다. 안전 Context Distillation에서는 안전 지시를 덧붙여 더 안전한 답을 생성하고, Safety RM으로 비교해 개선된 것만 채택합니다. 즉 자동 생성과 자동 선별을 연결합니다.</aside></section>
+<section class="slide layout-reference" data-nav="RQ4. Llama 3 Model-based Data Filtering" data-sec="4" data-section-label="RQ4 · 다음 모델">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">RQ4 · LLAMA 3</div><h2>RQ4. Llama 3<br/>Model-based Data Filtering</h2><p>Llama 3에서는 <b>Llama 2-Chat을 문서 품질 라벨 생성에 활용</b>하고, 그 결과로 더 작은 Quality Classifier를 학습합니다.</p></div><div class="vis"><div class="flow"><div class="bx gray"><div class="t">Web Documents</div><div class="d">이 문서는 학습에 적합할까?</div></div><div class="arrow">→</div><div class="bx blue"><div class="t">Llama 2-Chat</div><div class="d">Quality Label 생성</div></div><div class="arrow">→</div><div class="bx green"><div class="t">Quality Classifier</div><div class="d">Quality Label을 학습하여 대규모 문서를 필터링</div></div></div><div class="g c2"><div class="bx ctr gray"><div class="metric">2조</div><div class="t">Llama 2 학습 토큰</div><div class="m">2023년 모델</div></div><div class="bx ctr blue"><div class="metric">약 15조</div><div class="t">Llama 3 학습 토큰</div><div class="m">2024년 모델</div></div></div><div class="annotation blue"><strong>쉽게 말하면</strong><span>큰 모델을 “채점 선생님”으로 쓰고, 그 채점 결과로 더 빠른 분류기를 훈련했습니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2407.21783" rel="noopener noreferrer" target="_blank">Llama 3 §3.1.1–3.1.2 · §4.2</a></span><span>RQ4 · 19</span></footer></div>
+<aside class="speaker-notes">Llama 3에서는 무려 약 15조 토큰을 사용하고 도메인별 비율도 일부 공개합니다. 특히 Llama 2-Chat으로 문서의 품질 라벨을 만들고 DistilRoBERTa 품질 분류기를 학습한 점을 연결해 설명할 수 있습니다.</aside></section>
+<section class="slide layout-reference" data-nav="Summary Data Collection → Quality → Synthesis" data-sec="5" data-section-label="정리">
+<div class="card"><div class="inner"><div class="txt"><div class="ey">KEY TAKEAWAYS</div><h2>Summary<br/>Data Collection → Quality → Synthesis</h2><p>Llama 2는 <b>Pretraining Data</b>뿐 아니라 <b>SFT, Preference Data, Synthetic Data</b>를 체계적으로 수집하고 활용했습니다.</p></div><div class="vis"><div class="table-wrap"><table class="tbl"><thead><tr><th>질문</th><th>오늘 기억할 한 가지</th></tr></thead><tbody><tr><td>RQ1 Pretraining</td><td>2조 토큰. 출처·전처리 세부 내용은 일부 미공개</td></tr><tr><td>RQ2 SFT</td><td>사람이 작성·검수한 27,540건</td></tr><tr><td>RQ3 Preference &amp; Synthetic</td><td>약 292만 비교 기록을 수집, 모델이 만든 답도 골라 사용</td></tr><tr><td>RQ4 Llama 3</td><td>Llama 3에서 Llama 2로 학습용 문서 품질을 평가</td></tr></tbody></table></div><div class="annotation green"><strong>핵심 단어 세 개</strong><span>CCNet = 웹 글 정리 과정 · fastText = 언어 구별 · KenLM = 문장 확률 계산</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/html/2307.09288" rel="noopener noreferrer" target="_blank">Llama 2</a> · <a href="https://arxiv.org/html/2302.13971" rel="noopener noreferrer" target="_blank">LLaMA 1</a> · <a href="https://aclanthology.org/2020.lrec-1.494/" rel="noopener noreferrer" target="_blank">CCNet</a> · <a href="https://arxiv.org/html/2407.21783" rel="noopener noreferrer" target="_blank">Llama 3</a></span><span>결론 · 20</span></footer></div>
+<aside class="speaker-notes">마지막으로 네 질문에 대한 결론입니다. Llama 2의 원논문은 사전학습 원천 구성은 미공개지만, 후속 정렬 데이터 생성과 검수는 상대적으로 상세히 공개합니다. 사전학습의 fastText와 LLaMA 1/CCNet의 KenLM을 혼동하지 않는 것이 중요합니다.</aside></section>
+</main>
+<nav aria-label="슬라이드 이동" class="nav">
+<button aria-label="이전 슬라이드" class="btn" id="prev" type="button">이전</button>
+<select aria-label="슬라이드 선택" id="jump"></select>
+<span aria-atomic="true" aria-live="polite" class="count" id="count"></span>
+<button aria-label="다음 슬라이드" class="btn next" id="next" type="button">다음</button>
+<button aria-pressed="false" class="btn mode" id="mode" type="button">읽기 모드</button>
+</nav>
+</div>
+<script>
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  const slides = [...document.querySelectorAll('.slide')];
+  const stage = document.getElementById('stage');
+  const jump = document.getElementById('jump');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const modeButton = document.getElementById('mode');
+  const prog = document.getElementById('prog');
+  const sections = {};
+  slides.forEach(slide => {
+    const key = slide.dataset.sec || '1';
+    sections[key] ||= slide.dataset.sectionLabel || key;
+  });
+  const storageKey = 'paper-study-' + document.title;
+  const mq = window.matchMedia('(min-width:820px) and (min-height:540px)');
+  let mode = 'auto';
+  try { mode = localStorage.getItem(storageKey + '-mode') || 'auto'; } catch (_) {}
+  if (!['auto','slide','read'].includes(mode)) mode = 'auto';
+  const groups = new Map();
+  const dots = [];
+  let current = 0;
+  const scrollRegions = [...document.querySelectorAll('.table-wrap,.diagram-scroll')];
+  scrollRegions.forEach(region => {
+    region.tabIndex = 0;
+    region.setAttribute('role','region');
+    const isTable = region.classList.contains('table-wrap');
+    if (!region.hasAttribute('aria-label')) region.setAttribute('aria-label',isTable ? '근거 표 · 가로 스크롤 가능' : '설명 도식 · 가로 스크롤 가능');
+    const hint = document.createElement('p');
+    hint.className = 'scroll-hint';
+    hint.textContent = isTable ? '↔ 표를 좌우로 밀면 나머지 열을 볼 수 있습니다.' : '↔ 도식을 좌우로 밀어 연결 경로를 확인하세요.';
+    hint.hidden = true;
+    region.insertAdjacentElement('afterend',hint);
+    region._scrollHint = hint;
+  });
+  function scrollHints() {
+    scrollRegions.forEach(region => {
+      region._scrollHint.hidden = !region.offsetWidth || region.scrollWidth <= region.clientWidth + 2;
+    });
+  }
+  slides.forEach((slide, index) => {
+    const key = slide.dataset.sec || '1';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(index);
+    slide.id ||= 'slide-' + (index + 1);
+    slide.setAttribute('role','group');
+    slide.setAttribute('aria-roledescription','슬라이드');
+    slide.setAttribute('aria-label',(index + 1) + ' / ' + slides.length + ': ' + (slide.dataset.nav || ''));
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = (index + 1) + '. ' + (slide.dataset.nav || '슬라이드');
+    jump.append(option);
+  });
+  groups.forEach((indices, key) => {
+    const group = document.createElement('div');
+    group.className = 'psec';
+    const label = document.createElement('span');
+    label.className = 'lab';
+    label.textContent = sections[key] || key;
+    group.append(label);
+    indices.forEach((index, sectionIndex) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dot';
+      dot.setAttribute('aria-label',(index + 1) + '. ' + slides[index].dataset.nav);
+      dot.setAttribute('aria-controls',slides[index].id);
+      dot.addEventListener('click',() => show(index));
+      dots[index] = dot;
+      group.append(dot);
+      const eyebrow = slides[index].querySelector('.ey');
+      if (eyebrow && !eyebrow.textContent.trim()) {
+        eyebrow.textContent = (sections[key] || key) + ' · ' + (sectionIndex + 1) + ' / ' + indices.length;
+      }
+    });
+    prog.append(group);
+  });
+  function scale() {
+    if (!root.classList.contains('fit')) return;
+    const rect = stage.getBoundingClientRect();
+    const ratio = Math.min((rect.width - 36) / 1280,(rect.height - 12) / 720,1);
+    root.style.setProperty('--s',Math.max(.1,ratio).toFixed(4));
+  }
+  function show(index, updateHistory = true) {
+    if (!slides.length) {
+      prev.disabled = next.disabled = jump.disabled = true;
+      count.textContent = '0 / 0';
+      return;
+    }
+    current = Math.max(0,Math.min(slides.length - 1,index));
+    slides.forEach((slide,i) => {
+      const active = i === current;
+      slide.classList.toggle('on',active);
+      slide.inert = !active;
+      slide.setAttribute('aria-hidden',String(!active));
+    });
+    dots.forEach((dot,i) => {
+      dot.classList.toggle('cur',i === current);
+      dot.classList.toggle('seen',i < current);
+      if (i === current) dot.setAttribute('aria-current','step');
+      else dot.removeAttribute('aria-current');
+    });
+    jump.value = String(current);
+    count.textContent = (current + 1) + ' / ' + slides.length;
+    prev.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+    if (updateHistory) {
+      try { history.replaceState(null,'','#s' + (current + 1)); } catch (_) {}
+      if (!root.classList.contains('fit')) window.scrollTo({top:0,behavior:'instant'});
+    }
+    scrollHints();
+  }
+  function layout() {
+    const fit = mq.matches && (mode === 'slide' || mode === 'auto');
+    root.classList.toggle('fit',fit);
+    modeButton.hidden = !mq.matches;
+    modeButton.textContent = fit ? '읽기 모드' : '슬라이드 모드';
+    modeButton.setAttribute('aria-pressed',String(!fit));
+    scale();
+    scrollHints();
+  }
+  function readHash() {
+    const match = /^#s(\d+)$/.exec(location.hash);
+    return match ? Number(match[1]) - 1 : 0;
+  }
+  prev.addEventListener('click',() => show(current - 1));
+  next.addEventListener('click',() => show(current + 1));
+  jump.addEventListener('change',() => show(Number(jump.value)));
+  modeButton.addEventListener('click',() => {
+    mode = root.classList.contains('fit') ? 'read' : 'slide';
+    try { localStorage.setItem(storageKey + '-mode',mode); } catch (_) {}
+    layout();
+  });
+  document.addEventListener('keydown',event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const tag = event.target.tagName;
+    if (['INPUT','TEXTAREA','SELECT'].includes(tag) || event.target.isContentEditable) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2 && ['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    let target;
+    if (event.key === 'ArrowRight' || event.key === 'PageDown') target = current + 1;
+    else if (event.key === 'ArrowLeft' || event.key === 'PageUp') target = current - 1;
+    else if (event.key === 'Home') target = 0;
+    else if (event.key === 'End') target = slides.length - 1;
+    else if (event.key === ' ' && root.classList.contains('fit') && tag !== 'BUTTON' && tag !== 'A') target = current + 1;
+    if (target !== undefined) { event.preventDefault(); show(target); }
+  });
+  window.addEventListener('hashchange',() => show(readHash(),false));
+  let raf;
+  window.addEventListener('resize',() => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(layout);
+  });
+  if (mq.addEventListener) mq.addEventListener('change',layout);
+  let touchStart = null;
+  stage.addEventListener('touchstart',event => {
+    touchStart = null;
+    // Reading mode is a vertically scrolling document; use navigation buttons there.
+    if (!root.classList.contains('fit') || event.touches.length !== 1) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2) return;
+    touchStart = {x:event.touches[0].clientX,y:event.touches[0].clientY};
+  },{passive:true});
+  stage.addEventListener('touchend',event => {
+    if (!touchStart) return;
+    const dx = event.changedTouches[0].clientX - touchStart.x;
+    const dy = event.changedTouches[0].clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1));
+  },{passive:true});
+  stage.addEventListener('touchcancel',() => { touchStart = null; },{passive:true});
+  // Read-only diagnostics for authoring. No automatic shrinking of dense slides.
+  window.deckCheck = () => {
+    const saved = current;
+    const results = slides.map((slide,index) => {
+      show(index,false);
+      const inner = slide.querySelector('.inner');
+      const card = slide.querySelector('.card');
+      return {
+        slide:index + 1,title:slide.dataset.nav,
+        innerOverflow:!!inner && (inner.scrollHeight > inner.clientHeight + 2 || inner.scrollWidth > inner.clientWidth + 2),
+        cardOverflow:!!card && (card.scrollHeight > card.clientHeight + 2 || card.scrollWidth > card.clientWidth + 2),
+        hasSource:!!slide.querySelector('.src,.slide-source')
+      };
+    });
+    show(saved,false);
+    return results;
+  };
+  show(readHash(),false);
+  layout();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+})();
+</script>
+</body>
+</html>

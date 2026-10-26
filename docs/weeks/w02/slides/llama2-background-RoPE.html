@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>위치 인코딩 방식 비교: Transformer → GPT-3 → RoPE</title>
+<style>
+/* Paper-study presentation shell. Visual principles adapted from research-idea-deck;
+   its research-proposal narrative and example content are deliberately not included. */
+:root{
+  color-scheme:light;
+  --bg:#E9ECF0;--card:#F7F8FA;--box:#FFFFFF;--ink:#1A1D23;--ink2:#2F343C;
+  --muted:#5D6570;--faint:#959BA5;--line:#CDD2D9;--wire:#4A505A;
+  --blue:#2E55A5;--blue-s:#EEF2FA;--green:#2B7858;--green-s:#ECF5F0;
+  --orange:#A65A2E;--orange-s:#F9F0E8;--red:#AE3A33;--red-s:#FAEDEB;--gray-s:#F0F2F5;
+  --f:Pretendard,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  --s:1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
+body{font-family:var(--f);-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+button,select{font:inherit}
+button,a,select{touch-action:manipulation}
+a{color:var(--blue);text-underline-offset:3px;text-decoration-thickness:1px}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+html.fit,html.fit body{height:100%;overflow:hidden}
+.app{display:flex;flex-direction:column;min-height:100vh}
+html.fit .app{height:100%;min-height:0}
+.top{padding:18px 32px 12px;flex:none}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px 24px;flex-wrap:wrap}
+.ttl{font-size:19px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin:0}
+.sub{font-size:13px;line-height:1.5;color:var(--muted)}
+.prog{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap;margin-top:12px}
+.psec{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
+.psec .lab{font-size:12px;font-weight:500;color:var(--muted);margin-right:5px;white-space:nowrap}
+.dot{position:relative;display:grid;place-items:center;width:24px;height:24px;border:0;background:transparent;padding:0;border-radius:50%}
+.dot::after{content:"";width:10px;height:10px;border:1.5px solid var(--faint);border-radius:50%;background:transparent}
+.dot.seen::after{background:var(--faint)}
+.dot.cur::after{background:var(--blue);border-color:var(--blue)}
+.stage{position:relative;padding:0 18px 18px;isolation:isolate}
+html.fit .stage{flex:1;min-height:0;padding:0;overflow:hidden;display:grid;place-items:center}
+.slide{display:none;min-width:0}
+.slide.on{display:block}
+html.fit .slide.on{width:1280px;height:720px;zoom:var(--s)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px #141C280D,0 10px 28px -16px #141C2829;overflow:hidden}
+html.fit .card{height:720px;display:flex;flex-direction:column}
+.inner{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:30px 24px}
+html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+.inner.wide{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:24px}
+.txt{display:flex;flex-direction:column;gap:18px;min-width:0}
+.ey{font-size:14px;line-height:1.4;font-weight:500;color:var(--muted)}
+.txt h2,.slide h2{margin:0;font-size:32px;font-weight:700;line-height:1.35;letter-spacing:-.035em;text-wrap:balance}
+.txt p{margin:0;font-size:20px;line-height:1.7;color:var(--ink2)}
+.txt p.lead{font-size:23px;line-height:1.6}
+.txt p.small,.small{font-size:16px;line-height:1.6}
+.txt p.note,.note{font-size:15px;line-height:1.6;color:var(--muted)}
+.txt ul,.txt ol{font-size:19px;line-height:1.7;margin:0;padding-left:1.3em;color:var(--ink2)}
+.txt li+li{margin-top:8px}
+.txt b,.txt strong{color:var(--ink)}
+.vis{display:flex;flex-direction:column;gap:14px;min-width:0}
+.g{display:grid;gap:14px;min-width:0}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bx{position:relative;min-width:0;display:flex;flex-direction:column;gap:7px;padding:18px 20px;border:1.5px solid var(--line);border-radius:12px;background:var(--box)}
+.bx.blue{border-color:var(--blue);background:var(--blue-s)}
+.bx.green{border-color:var(--green);background:var(--green-s)}
+.bx.orange{border-color:var(--orange);background:var(--orange-s)}
+.bx.red{border-color:var(--red);background:var(--red-s)}
+.bx.gray{background:var(--gray-s)}
+.bx.dash{border-style:dashed}
+.bx.thick{border-width:2px}
+.bx.ctr{align-items:center;justify-content:center;text-align:center}
+.bx.pill{border-radius:999px}
+.bx .t{font-size:19px;line-height:1.45;font-weight:700;color:var(--ink)}
+.bx .d{font-size:17px;line-height:1.6;color:var(--ink2)}
+.bx .m{font-size:14px;line-height:1.55;color:var(--muted)}
+.bx .k{font-size:13px;font-weight:700;line-height:1.45}
+.bx .gap{flex:1;min-height:8px}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.tag{display:inline-flex;align-items:center;align-self:flex-start;gap:5px;font-size:12px;line-height:1.5;font-weight:600;padding:3px 9px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted)}
+.tag.blue{color:var(--blue);border-color:var(--blue);background:var(--blue-s)}
+.tag.green{color:var(--green);border-color:var(--green);background:var(--green-s)}
+.tag.orange{color:var(--orange);border-color:var(--orange);background:var(--orange-s)}
+.tb{color:var(--blue)!important}.tg{color:var(--green)!important}.to{color:var(--orange)!important}.tr{color:var(--red)!important}
+.muted{color:var(--muted)!important}.bold{font-weight:700}.nw{white-space:nowrap}
+.lab{font-size:15px;line-height:1.5;font-weight:700}
+.cap{margin:0;font-size:14px;line-height:1.6;color:var(--muted);text-align:center}
+.rule{height:1px;background:var(--line);margin:4px 0}
+.num{display:inline-grid;place-items:center;flex:none;width:27px;height:27px;border:1.5px solid currentColor;border-radius:50%;font-size:13px;font-weight:700}
+.step{flex-direction:row;align-items:center;gap:14px}
+.flow{display:flex;align-items:stretch;gap:12px;min-width:0}
+.flow>.bx{flex:1}
+.arrow{flex:none;align-self:center;font-size:24px;color:var(--wire);font-weight:500}
+.flow.vertical{flex-direction:column;align-items:stretch}
+.flow.vertical>.arrow{line-height:1}
+.tbl{border-collapse:collapse;width:100%;font-size:16px;line-height:1.5;table-layout:fixed;background:var(--box)}
+.tbl th,.tbl td{text-align:left;vertical-align:top;padding:13px 14px;border-bottom:1px solid var(--line);overflow-wrap:break-word}
+.tbl th{font-size:14px;font-weight:600;color:var(--muted);background:var(--gray-s)}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl .numcol{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl .em{background:var(--blue-s);font-weight:650}
+.table-wrap{overflow:hidden;border:1px solid var(--line);border-radius:12px}
+.figure{margin:0}
+.figure img,.vis>img,.vis>svg{display:block;max-width:100%;height:auto}
+.figure figcaption{font-size:14px;color:var(--muted);line-height:1.5;margin-top:9px}
+.metric{font-size:46px;line-height:1.15;font-weight:700;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.metric small{font-size:19px;letter-spacing:0}
+.equation{font-size:22px;line-height:1.7;text-align:center;padding:20px;background:var(--box);border:1px solid var(--line);border-radius:12px}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em}
+sub,sup{font-size:.72em;line-height:0}sub{vertical-align:-.25em}sup{vertical-align:.45em}
+.src,.slide-source{font-size:13px;line-height:1.65;color:var(--muted)}
+.card>.src,.card>.slide-source{flex:none;margin:0;padding:13px 54px 15px;border-top:1px solid var(--line);background:#FFFFFF60;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 24px;min-height:52px}
+.src a,.slide-source a{color:var(--muted)}
+.src a:hover,.slide-source a:hover{color:var(--blue)}
+.speaker-notes{display:none}
+.nav{display:flex;align-items:center;justify-content:center;gap:12px;flex:none;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+html:not(.fit) .nav{position:sticky;bottom:0;z-index:10;border-top:1px solid var(--line)}
+.btn{height:42px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);font-size:15px;font-weight:500}
+.btn.next{background:var(--ink);color:white;border-color:var(--ink)}
+.btn.mode{height:36px;padding:0 14px;font-size:13px;color:var(--muted)}
+.nav select{height:42px;min-width:0;width:330px;max-width:34vw;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:var(--box);color:var(--ink);font-size:14px}
+.count{font-size:14px;font-variant-numeric:tabular-nums;min-width:54px;text-align:center;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:819px){
+  .top{padding:16px 18px 12px}.prog{gap:8px 15px}.sub{font-size:12px}
+  .inner{padding:28px 22px}.txt h2,.slide h2{font-size:28px}.txt p{font-size:18px}
+  .card>.src,.card>.slide-source{padding:12px 22px;font-size:12px}
+  .nav{gap:8px;flex-wrap:wrap}.nav select{flex:1;width:auto;max-width:none}.btn{padding:0 15px}
+}
+@media(max-width:520px){
+  .c3{grid-template-columns:minmax(0,1fr)}.flow:not(.vertical){flex-direction:column}
+  .flow:not(.vertical)>.arrow{transform:rotate(90deg)}
+  .table-wrap{overflow-x:auto}.tbl{min-width:520px}.count{min-width:46px}
+  .btn.mode{flex-basis:100%;max-width:160px}.psec .lab{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media print{
+  @page{size:338.667mm 190.5mm;margin:0}
+  html,html.fit,body,html.fit body{height:auto!important;min-height:0!important;overflow:visible!important;background:white!important}
+  .app,html.fit .app{display:block;height:auto!important;min-height:0}.top,.nav{display:none!important}
+  .stage,html.fit .stage{display:block;padding:0;overflow:visible}
+  .slide,.slide.on,html.fit .slide.on{display:block!important;width:1280px;height:720px;zoom:1!important;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .card,html.fit .card{height:720px;display:flex;flex-direction:column;border:0;border-radius:0;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .inner,html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+  .inner.wide{grid-template-columns:minmax(0,1fr)!important}.speaker-notes{display:none!important}
+  .c3{grid-template-columns:repeat(3,minmax(0,1fr))}.flow:not(.vertical){flex-direction:row}.flow:not(.vertical)>.arrow{transform:none}
+  a{text-decoration:none}.card>.src,.card>.slide-source{padding:13px 54px 15px}
+}
+</style>
+<style>
+/* Four information layouts: narrative overview, processes, quantitative comparison,
+   and full-width references. Charts use fixed, explicitly labelled scales. */
+.txt h2,.slide h2{font-size:34px;line-height:1.28;letter-spacing:-.035em}
+.txt p{font-size:19px;line-height:1.65}
+.txt .ey{font-size:14px;letter-spacing:.02em}
+.layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr);gap:44px}
+.layout-quantitative .vis{gap:18px}
+.layout-quantitative .txt h2{font-size:36px}
+.layout-overview .inner,.layout-process .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:26px}
+.layout-overview .txt,.layout-process .txt,.layout-reference .txt{display:grid;grid-template-columns:420px minmax(0,1fr);gap:8px 46px;align-items:start}
+.layout-overview .txt .ey,.layout-process .txt .ey,.layout-reference .txt .ey{grid-column:1/-1;margin-bottom:7px}
+.layout-overview .txt h2,.layout-process .txt h2,.layout-reference .txt h2{grid-column:1;grid-row:2/4;font-size:34px}
+.layout-overview .txt p,.layout-process .txt p,.layout-reference .txt p{grid-column:2;font-size:18px;line-height:1.65}
+.layout-reference .vis{gap:16px}
+.layout-reference .tbl th{font-size:16px}
+.layout-reference .tbl td{font-size:18px;padding:13px 18px}
+.layout-reference .tbl th:first-child,.layout-reference .tbl td:first-child{width:35%}
+.layout-reference .tbl th{padding:13px 18px}
+.layout-overview .vis>.g{gap:22px}
+.layout-overview .vis>.g .bx{padding:23px 26px}
+.layout-overview .vis>.g .t{font-size:22px}
+.layout-overview .vis>.g .d{font-size:18px}
+.layout-cover .inner{grid-template-columns:1fr 1fr;gap:55px}
+.layout-cover .txt h2{font-size:44px;line-height:1.27;letter-spacing:-.045em}
+.layout-cover .txt p{font-size:20px}
+.cover-graphic{padding:25px 0 25px 36px;border-left:1px solid var(--line)}
+.overline{font-size:14px;font-weight:700;letter-spacing:.15em;color:var(--blue)}
+.family-range{display:flex;align-items:center;justify-content:space-between;font-size:79px;line-height:1.2;font-weight:750;letter-spacing:-.05em;margin:25px 0 36px;color:var(--blue)}
+.family-range>span{font-size:45px;color:var(--faint);font-weight:400}
+.family-models{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center}
+.family-models span{padding:16px 0;background:var(--box);border:1px solid var(--line);border-radius:10px;font-weight:650;font-size:24px}
+.token-brackets{display:grid;grid-template-columns:1fr 1fr;gap:15px;font-size:17px;color:var(--green);text-align:center;margin-top:12px}
+.token-brackets span{border-top:2px solid var(--green);padding-top:8px}
+.cover-graphic p{font-size:23px;font-weight:650;line-height:1.5;margin:38px 0 14px}
+.cover-graphic small{font-size:15px;color:var(--muted);line-height:1.7}
+.recipe-map{display:grid;grid-template-columns:1fr 38px 1.15fr 38px 1.1fr;align-items:center;gap:10px;padding:28px 0 20px}
+.recipe-step{align-self:stretch;border-top:3px solid var(--blue);padding:24px 10px 12px 0;display:flex;flex-direction:column;align-items:flex-start}
+.step-index{font-size:44px;font-weight:600;line-height:1;color:var(--blue)}
+.recipe-step h3{font-size:27px;line-height:1.4;letter-spacing:-.03em;margin:23px 0 10px}
+.recipe-step p{font-size:19px;line-height:1.65;color:var(--ink2);margin:0 0 20px}
+.recipe-step .tag{margin-top:auto}
+.recipe-arrow{font-size:30px;color:var(--faint);text-align:center}
+.recipe-outcomes{display:flex;flex-direction:column;border-left:3px solid var(--green);padding-left:22px;gap:22px}
+.recipe-outcomes strong{display:block;font-size:23px;line-height:1.4;color:var(--green)}
+.recipe-outcomes span{display:block;font-size:16px;margin-top:5px;color:var(--muted)}
+.annotation{display:flex;flex-direction:column;gap:5px;border-left:3px solid var(--orange);padding:13px 18px;background:var(--orange-s);border-radius:0 8px 8px 0}
+.annotation strong{font-size:17px;line-height:1.5;color:var(--orange)}
+.annotation span{font-size:16px;line-height:1.6;color:var(--ink2)}
+.annotation.green{border-color:var(--green);background:var(--green-s)}
+.annotation.green strong{color:var(--green)}
+.annotation.blue{border-color:var(--blue);background:var(--blue-s)}
+.annotation.blue strong{color:var(--blue)}
+.data-chart{display:flex;flex-direction:column;gap:12px;padding:8px 0 14px}
+.data-chart-head,.data-row{display:grid;grid-template-columns:122px minmax(0,1fr) 44px 66px;gap:12px;align-items:center}
+.data-chart-head{font-size:12px;line-height:1.5;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--line)}
+.data-chart-head>:nth-child(n+3){text-align:right}
+.data-name{font-size:16px;font-weight:600;line-height:1.3}
+.data-row>strong,.epoch{font-size:16px;text-align:right;font-variant-numeric:tabular-nums}
+.data-track{height:25px;position:relative;background:linear-gradient(to right,transparent 49.8%,#CBD2DD 49.8%,#CBD2DD 50.2%,transparent 50.2%),#EDF0F4;border-left:1px solid var(--faint)}
+.data-track i{height:100%;display:block;min-width:2px;border-radius:0 4px 4px 0}
+.data-track .blue,.hbar-fill.blue,.v-bar.blue{background:var(--blue)}
+.data-track .green,.hbar-fill.green,.v-bar.green{background:var(--green)}
+.epoch.green{color:var(--green);font-weight:700}
+.diagram-scroll{min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.diagram-scroll>svg{display:block;width:100%;height:auto;overflow:visible;font-family:var(--f)}
+.sv-label{font-family:var(--f);font-size:20px;fill:var(--ink);font-weight:550}
+.sv-note{font-family:var(--f);font-size:17px;fill:var(--muted)}
+.norm-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.diagram-panel{background:var(--box);border:1px solid var(--line);border-radius:12px;padding:22px 18px 18px;min-width:0}
+.diagram-panel.emphasized{border-color:var(--blue)}
+.diagram-title{display:flex;flex-direction:column;gap:4px;padding:0 5px}
+.diagram-title span{font-size:15px;color:var(--muted)}
+.diagram-title strong{font-size:23px;font-weight:650;line-height:1.4}
+.diagram-panel .formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:16px;line-height:1.5;text-align:center;white-space:nowrap;letter-spacing:-.04em}
+.block-stack{display:flex;flex-direction:column;gap:7px}
+.block-diagram h3{display:flex;align-items:center;gap:13px;margin:0;font-size:18px;font-weight:600;line-height:1.5}
+.block-diagram .diagram-scroll>svg{max-height:188px}
+.block-diagram .sv-label{font-size:19px}
+.block-diagram .sv-note{font-size:17px}
+.layout-process .block-stack+.cap{font-size:13px;margin-top:-5px}
+.chart-line{stroke:var(--faint);stroke-width:1.5}
+.chart-grid{stroke:var(--line);stroke-dasharray:4 5;stroke-width:1}
+.recipe-settings{display:grid;grid-template-columns:1.15fr .7fr 1.4fr;gap:14px;border-top:1px solid var(--line);padding-top:16px}
+.recipe-settings span{font-size:14px;color:var(--muted);line-height:1.65}
+.recipe-settings b{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+.delta-header{display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line);padding-bottom:15px}
+.delta-header strong{font-size:21px;line-height:1.4}.delta-header span{font-size:14px;color:var(--muted)}
+.delta-chart{display:flex;flex-direction:column;gap:14px;padding:0 0 8px}
+.delta-row{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;align-items:center;gap:14px;min-height:35px}
+.delta-name{font-size:16px;font-weight:600;line-height:1.3}
+.delta-name small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:4px;white-space:nowrap}
+.delta-track{height:28px;position:relative;background:linear-gradient(to right,transparent 19.8%,#959BA5 19.8%,#959BA5 20.2%,transparent 20.2%),#EDF0F4}
+.delta-track i{position:absolute;top:3px;height:22px;min-width:2px;display:block;border-radius:3px}
+.delta-track .blue{background:var(--blue)}.delta-track .orange{background:var(--orange)}
+.delta-value{font-size:17px;text-align:right;font-variant-numeric:tabular-nums}.delta-value.blue{color:var(--blue)}.delta-value.orange{color:var(--orange)}
+.delta-axis{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;gap:14px;font-size:12px;color:var(--muted);margin-top:1px}
+.delta-axis>div{position:relative;height:20px}.delta-axis>div span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.delta-axis>div span:first-child{transform:none}.delta-axis>div span:last-child{transform:translateX(-100%)}
+.condition-panels{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.compare-panel{min-width:0;background:var(--box);border:1px solid var(--line);border-radius:12px;padding:23px 27px}
+.compare-panel h3{font-size:24px;font-weight:650;line-height:1.4;margin:0}
+.panel-sub{font-size:14px;line-height:1.5;color:var(--muted);margin:6px 0 24px}
+.hbar-chart{display:flex;flex-direction:column;gap:22px;padding:8px 0}
+.hbar-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;font-size:18px;line-height:1.5}
+.hbar-head strong{font-size:23px;font-weight:650;font-variant-numeric:tabular-nums}.hbar-head small{font-size:14px;margin-left:2px}
+.hbar-track{height:28px;background:repeating-linear-gradient(to right,transparent 0,transparent calc(25% - 1px),#CCD3DD calc(25% - 1px),#CCD3DD 25%),#EEF0F4;border-left:1px solid var(--faint)}
+.hbar-fill{height:100%;border-radius:0 4px 4px 0}.hbar-fill.gray{background:#8A98AE}
+.chart-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:-10px;font-variant-numeric:tabular-nums}
+.chart-heading{display:flex;flex-direction:column;gap:10px}.chart-heading>strong{font-size:22px}
+.before-after{display:grid;grid-template-columns:1.2fr 1fr;gap:70px;align-items:center;padding:15px 30px 8px 5px}
+.vertical-chart{display:grid;grid-template-columns:40px minmax(0,1fr);gap:15px;min-width:0}
+.v-axis{height:240px;display:flex;flex-direction:column;justify-content:space-between;text-align:right;font-size:13px;color:var(--muted)}
+.v-columns{display:grid;grid-template-columns:1fr 1fr;gap:55px;background:linear-gradient(to bottom,#CDD2D9 1px,transparent 1px,transparent 119px,#E1E4E9 119px,#E1E4E9 120px,transparent 120px,transparent 239px,#959BA5 239px,#959BA5 240px,transparent 240px)}
+.v-column{text-align:center;min-width:0}.v-track{height:240px;position:relative;display:flex;align-items:flex-end;justify-content:center}
+.v-bar{width:90px;max-width:80%;position:relative;border-radius:6px 6px 0 0}
+.v-bar strong{position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:25px;font-weight:650;white-space:nowrap}
+.v-column>span{display:block;font-size:17px;font-weight:600;line-height:1.5;margin-top:12px}
+.change-summary{padding-left:25px;border-left:1px solid var(--line)}
+.change-value{font-size:79px;font-weight:700;letter-spacing:-.04em;color:var(--orange);line-height:1.2;margin:12px 0 16px}
+.change-value small{font-size:25px;margin-left:9px;letter-spacing:0}
+.change-summary h3{font-size:24px;font-weight:650;line-height:1.45;margin:0 0 12px}
+.change-summary p{font-size:16px;line-height:1.7;color:var(--muted);margin:0}
+.scroll-hint{font-size:12px;line-height:1.5;color:var(--blue);margin:4px 0 0;padding:7px 10px;background:var(--blue-s);border-radius:5px}
+.scroll-hint[hidden]{display:none!important}
+.formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:20px;line-height:1.7;letter-spacing:-.04em;white-space:nowrap}
+.metric span{font-size:22px;margin-left:5px}
+html:not(.fit) .layout-quantitative .inner,html:not(.fit) .layout-cover .inner{grid-template-columns:minmax(0,1fr)}
+html:not(.fit) .layout-process .txt,html:not(.fit) .layout-overview .txt,html:not(.fit) .layout-reference .txt{display:flex;flex-direction:column;gap:15px}
+html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid var(--line)}
+@media(max-width:819px){
+ .layout-quantitative .txt h2,.txt h2,.slide h2,.layout-process .txt h2,.layout-overview .txt h2,.layout-reference .txt h2{font-size:28px;line-height:1.35}
+ .layout-cover .txt h2{font-size:34px}.layout-cover .txt p,.txt p{font-size:18px}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{gap:27px}
+ .layout-overview .vis>.g .bx{padding:20px}.layout-overview .vis>.g .t{font-size:20px}.layout-overview .vis>.g .d{font-size:16px}
+ .norm-pair,.condition-panels{grid-template-columns:1fr;gap:18px}.diagram-panel{padding:17px 14px}
+ .diagram-panel .diagram-scroll>svg{min-width:570px}.block-diagram .diagram-scroll>svg{min-width:960px;max-height:none}
+ .layout-quantitative .diagram-scroll>svg{min-width:600px}
+ .block-diagram h3{flex-wrap:wrap;font-size:16px;gap:7px}.block-stack{gap:24px}
+ .diagram-panel .formula{font-size:13px;white-space:normal}.diagram-title strong{font-size:21px}
+ .recipe-map{grid-template-columns:1fr;gap:18px;padding:6px 0}.recipe-step{padding:18px 0 0}.recipe-arrow{transform:rotate(90deg)}
+ .recipe-step h3{margin-top:12px}.recipe-step p{font-size:18px}.recipe-outcomes{gap:18px;padding:5px 0 5px 20px}
+ .before-after{grid-template-columns:1fr;gap:30px;padding:25px 0 5px}.change-summary{padding:20px 0 0;border-left:0;border-top:1px solid var(--line)}
+ .change-value{font-size:60px}.change-summary h3{font-size:22px}.change-summary h3 br{display:none}
+ .v-columns{gap:24px}.v-bar strong{font-size:22px}.v-column>span{font-size:14px}
+ .family-range{font-size:62px;margin:20px 0 26px}.family-range>span{font-size:33px}.family-models span{font-size:19px;padding:12px 0}
+ .token-brackets{font-size:14px}.cover-graphic p{font-size:20px;margin-top:28px}
+ .data-chart-head,.data-row{grid-template-columns:90px minmax(0,1fr) 35px 44px;gap:7px}
+ .data-chart-head{font-size:10px}.data-name{font-size:13px}.data-row>strong,.epoch{font-size:13px}.data-track{height:21px}
+ .data-chart-head>:nth-child(2){font-size:10px}.data-chart{gap:13px}
+ .annotation span{font-size:14px}.annotation strong{font-size:16px}
+ .delta-row{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}.delta-axis{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}
+ .delta-name{font-size:13px}.delta-name small{font-size:10px}.delta-value{font-size:14px}.delta-header strong{font-size:18px}
+ .compare-panel{padding:20px}.compare-panel h3{font-size:21px}.hbar-head{font-size:16px}.hbar-head strong{font-size:20px}
+ .recipe-settings{grid-template-columns:1fr 1fr}.recipe-settings span:last-child{grid-column:1/-1}.cap{font-size:12px;line-height:1.65}
+ .layout-reference .tbl th,.layout-reference .tbl td{font-size:15px;padding:12px 14px}.table-wrap{max-width:100%;overscroll-behavior-x:contain}
+}
+@media(max-width:520px){.c2{grid-template-columns:minmax(0,1fr)}.tbl{min-width:520px}.formula{font-size:14px;white-space:normal}}
+@media print{
+ .layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr)!important}
+ .layout-cover .inner{grid-template-columns:1fr 1fr!important}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important}
+ .layout-process .txt,.layout-overview .txt,.layout-reference .txt{display:grid!important;grid-template-columns:420px minmax(0,1fr);gap:8px 46px}
+ .cover-graphic{padding:25px 0 25px 36px!important;border-left:1px solid var(--line)!important;border-top:0!important}
+ .scroll-hint{display:none!important}.diagram-scroll{overflow:visible}.table-wrap{overflow:visible}.tbl{min-width:0}
+}
+</style>
+<style>
+/* Part B: content-specific layouts, with readable mobile reflow. */
+html.fit .layout-partb .inner{grid-template-columns:1fr;align-content:center;gap:26px;padding:38px 50px 26px}
+html.fit .layout-partb .txt{display:grid;grid-template-columns:1.12fr 1fr;gap:14px 40px;align-items:center}
+html.fit .layout-partb .ey{grid-column:1/-1}
+html.fit .layout-partb h2{font-size:36px;line-height:1.32;grid-column:1}
+html.fit .layout-partb .txt>p{grid-column:2;font-size:20px;line-height:1.6}
+.layout-partb .vis{gap:18px}.layout-partb .bx{padding:22px 24px}.layout-partb .t{font-size:24px}.layout-partb .d{font-size:20px}
+.kind{display:inline-block;font-size:13px;color:var(--blue);font-weight:650;margin-right:9px;border-bottom:1px solid var(--blue)}
+.sentence-pair{display:grid;grid-template-columns:1fr 1fr;gap:22px}.sentence-pair .bx{gap:22px}.token{display:inline-block;background:white;border:1px solid var(--line);border-radius:7px;padding:7px 10px;margin:0 6px 5px 0;font-size:21px}
+.ribbon{padding:16px 20px;border-left:4px solid var(--blue);background:var(--blue-s);font-size:22px;font-weight:600;line-height:1.55}
+.explain{font-size:20px;line-height:1.6;margin:0}.explain p{margin:12px 0 0}.caveat{font-size:17px;line-height:1.6;margin:0;color:var(--ink2)}
+.micro{font-size:13px;color:var(--muted);line-height:1.6;margin:0}.addition{display:grid;grid-template-columns:1fr 30px 1fr 30px .8fr;gap:10px;align-items:center}.operator{font-size:29px;text-align:center;color:var(--blue)}
+.equation-row{display:grid;grid-template-columns:1.1fr 1fr;gap:28px;align-items:center}.math-box{padding:22px;background:white;border:1px solid var(--line);border-radius:12px;font-size:23px;line-height:1.8;font-family:Georgia,'Times New Roman',serif}.math-box span{display:block;font:16px/1.6 var(--f);color:var(--muted);margin-top:15px}
+.comparison th:first-child{width:23%}.comparison th,.comparison td{font-size:20px;padding:14px 18px}.comparison th{font-size:17px}.lookup{display:flex;gap:20px;align-items:center;justify-content:center;padding:18px;background:white;font-size:23px;border-radius:10px}.lookup b{color:var(--blue)}
+.rope-flow{display:grid;grid-template-columns:145px 1fr 245px;gap:20px;align-items:center}.input-node{font-size:23px;padding:25px 10px;text-align:center;border:1px solid var(--line);border-radius:12px;background:white;line-height:1.6}.branches{display:grid;gap:14px;border-left:2px solid var(--line);padding-left:18px;position:relative}.input-node{position:relative}.input-node::after{content:"→";position:absolute;right:-21px;top:38%;color:var(--wire);font-size:22px}.projection{position:relative}.projection::before{content:"";position:absolute;left:-20px;top:50%;width:19px;border-top:2px solid var(--line)}.branch{display:grid;grid-template-columns:130px 30px 1fr 30px;align-items:center;text-align:center;gap:10px;font-size:20px}.projection{background:white;padding:14px 6px;border:1px solid var(--line);border-radius:9px}.rotation{border:1px solid var(--line);padding:14px 8px;border-radius:9px;background:white}.rotation.blue{background:var(--blue-s);color:var(--blue);border-color:var(--blue)}.rotation.green{background:var(--green-s);color:var(--green);border-color:var(--green)}.attention-node{display:flex;flex-direction:column;gap:9px;padding:24px 16px;border:2px solid var(--blue);border-radius:12px;background:white;text-align:center;font-size:18px}.attention-node b{font-size:25px}
+.rotation-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:30px;align-items:center}.plane-pair{display:grid;grid-template-columns:1fr 1fr;gap:10px}.plane-pair>div{text-align:center;background:white;border:1px solid var(--line);border-radius:12px;padding:14px 5px 0}.plane-pair strong{font-size:20px}.plane-pair svg{display:block;width:100%;height:auto}.rotation-math{display:grid;gap:17px}.rotation-math .explain{font-size:19px}.core{font-size:25px;padding:20px;line-height:1.65;border-color:var(--blue)}.demo-controls{padding:14px 0 0}.demo-controls label{display:flex;justify-content:space-between;align-items:center;font-size:17px}.demo-controls output{font-weight:700;color:var(--blue)}input[type=range]{width:100%;margin:14px 0;accent-color:var(--blue);height:22px}.demo-controls p{font-size:17px;margin:0;line-height:1.6}.closing-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:35px}.takeaways{display:grid;gap:16px}.takeaways>div{display:flex;gap:20px;align-items:center;border-bottom:1px solid var(--line);padding-bottom:16px}.takeaways span{font-size:32px;color:var(--blue);font-weight:650}.takeaways p{margin:0;font-size:19px;line-height:1.55}.closing-grid .annotation{margin:16px 0}.context th,.context td{font-size:19px}.context th:first-child{width:42%}.closing-question{font-size:21px;line-height:1.5;padding-top:16px;border-top:1px solid var(--line);color:var(--blue);font-weight:600}
+.notes-toggle{font-size:13px;border:0;border-bottom:1px solid var(--blue);color:var(--blue);background:transparent;padding:0 2px}.notes-panel{padding:18px 26px;background:white;border:1px solid var(--line);border-radius:12px;font-size:17px;line-height:1.8;margin-top:12px}.notes-panel[hidden]{display:none}html.fit .notes-panel{position:fixed;z-index:50;inset:25% 10% auto;max-height:60vh;overflow:auto;box-shadow:0 10px 60px #0003}.notes-panel button{float:right}.src>span:first-child{max-width:88%}
+@media(max-width:819px){.sentence-pair,.equation-row,.rotation-grid,.closing-grid{grid-template-columns:1fr}.addition{grid-template-columns:1fr}.operator{transform:rotate(90deg)}.addition .operator:first-of-type{transform:none}.layout-partb .txt h2{font-size:29px}.layout-partb .txt p{font-size:18px}.layout-partb .bx{padding:20px}.layout-partb .t{font-size:21px}.layout-partb .d,.token{font-size:18px}.ribbon{font-size:19px}.explain{font-size:18px}.math-box{font-size:21px}.core{font-size:23px}.rope-flow{grid-template-columns:1fr}.input-node{padding:12px;font-size:20px}.branches{gap:10px}.input-node::after{content:"↓";right:calc(50% - 10px);top:auto;bottom:-24px}.branch{grid-template-columns:80px 18px 1fr 18px;gap:6px;font-size:16px}.projection,.rotation{padding:13px 4px}.attention-node{font-size:17px}.comparison{min-width:640px}.comparison th,.comparison td{font-size:17px}.context{min-width:0}.context th,.context td{font-size:15px;padding:12px 8px}.lookup{flex-direction:column;gap:10px;font-size:20px}.lookup b{transform:rotate(90deg)}.plane-pair{grid-template-columns:1fr 1fr}.plane-pair strong{font-size:16px}.caveat{font-size:16px}.src>span:first-child{max-width:100%}.card>.src{padding:14px 22px}.notes-panel{font-size:16px}.closing-question{font-size:19px}}
+@media(max-width:430px){.plane-pair{grid-template-columns:1fr}.plane-pair svg{max-width:300px;margin:auto}.math-box{font-size:18px}.core{font-size:22px}.branch{grid-template-columns:70px 15px 1fr 13px;font-size:14px}.token{font-size:16px;padding:7px}.context th:first-child{width:38%}}
+@media print{.notes-toggle,.notes-panel{display:none!important}.layout-partb .inner{grid-template-columns:1fr!important;gap:26px!important;padding:38px 50px 26px!important}.layout-partb .txt{display:grid!important;grid-template-columns:1.12fr 1fr;gap:14px 40px}.layout-partb .ey{grid-column:1/-1}.layout-partb .txt>p{grid-column:2}.layout-partb h2{grid-column:1}}
+
+.rotation-intro,.highdim-grid,.limits-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:30px;align-items:center}.single-plane{background:#fff;border:1px solid var(--line);border-radius:12px}.single-plane svg{display:block;width:100%;height:auto;max-height:330px}.rotation-explanation{display:grid;gap:22px}.coordinate-step{display:grid;grid-template-columns:85px 1fr;gap:12px;font-size:22px}.coordinate-step span{font-size:18px;color:var(--muted)}.pair-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}.pair-strip span{padding:14px 5px;text-align:center;background:var(--blue-s);border:1px solid var(--blue);border-radius:8px;font-size:21px}.pair-arrow{text-align:center;font-size:18px;line-height:1.6;padding:14px 0;color:var(--blue)}.frequency th,.frequency td,.distance th,.distance td{font-size:19px;padding:12px 16px}.frequency th:first-child,.frequency td:first-child{width:20%}.limits-grid .micro{margin-top:12px}.distance{font-variant-numeric:tabular-nums}.distance th{font-size:17px}
+@media(max-width:819px){.rotation-intro,.highdim-grid,.limits-grid{grid-template-columns:1fr}.frequency,.distance{min-width:0}.frequency th,.frequency td,.distance th,.distance td{padding:12px 9px;font-size:16px}.frequency th,.distance th{font-size:14px}.pair-strip span{font-size:16px}.coordinate-step{font-size:20px}.single-plane svg{min-height:240px}}
+
+.order-comparison{display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:17px;line-height:1.6}.order-comparison span{padding:12px 16px;background:white;border:1px solid var(--line);border-radius:8px}.order-comparison b{display:block;color:var(--blue)}.toy-tokens{display:flex;gap:12px;justify-content:center}.toy-tokens span{font-size:22px;padding:9px 24px;border:1px solid var(--line);border-radius:8px;background:white}.motivation-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.motivation-panel{padding:22px;border:1px solid var(--line);border-radius:12px;background:white}.motivation-panel.emphasized{border-color:var(--blue);background:var(--blue-s)}.motivation-panel h3{font-size:25px;line-height:1.4;margin:12px 0 17px}.motivation-panel p{font-size:19px;line-height:1.6;margin:8px 0}.motivation-panel small{font-size:15px;line-height:1.6;color:var(--muted)}.mini-pipeline{display:flex;justify-content:center;align-items:center;gap:20px;font-size:22px}.mini-pipeline b{color:var(--blue)}
+html.fit .slide:first-child .inner{gap:18px}html.fit .slide:first-child .vis{gap:12px}html.fit .slide:first-child .sentence-pair .bx{padding:14px 22px;gap:12px}
+@media(max-width:819px){.order-comparison,.motivation-grid{grid-template-columns:1fr}.toy-tokens{gap:6px;flex-wrap:wrap}.toy-tokens span{font-size:18px;padding:8px 12px}.motivation-panel h3{font-size:22px}.motivation-panel p{font-size:18px}.mini-pipeline{flex-wrap:wrap;font-size:18px;gap:10px}.order-comparison{font-size:16px}}
+</style><style>
+.slide:nth-child(2) .equation-row{grid-template-columns:.9fr 1.2fr;gap:26px}
+.pair-explain{font-size:19px;line-height:1.55}.pair-explain p{margin:10px 0 0}
+html.fit .slide:nth-child(2) .inner{gap:20px}html.fit .slide:nth-child(2) .vis{gap:14px}
+@media(max-width:819px){.slide:nth-child(2) .equation-row{grid-template-columns:1fr}.pair-explain{font-size:18px;line-height:1.65}}
+</style><style>
+.pair-picture{min-width:0}.pair-picture-heading{text-align:center;font-size:20px;font-weight:700}.pair-dials{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}.pair-dials svg{display:block;width:100%;height:auto;background:white;border:1px solid var(--line);border-radius:10px}.pair-picture-note{font-size:14px;line-height:1.6;text-align:center;color:var(--muted);margin:10px 0 0}
+html.fit .slide:nth-child(2) .addition .bx{padding:14px 20px}html.fit .slide:nth-child(2) .equation-row{grid-template-columns:.95fr 1.15fr;align-items:center}html.fit .slide:nth-child(2) .pair-dials svg{max-height:205px}html.fit .slide:nth-child(2) .inner{padding-top:30px;padding-bottom:20px;gap:16px}html.fit .slide:nth-child(2) .vis{gap:12px}
+@media(max-width:819px){.slide:nth-child(2) .equation-row{grid-template-columns:1fr}.pair-picture-heading{font-size:18px}.pair-dials{grid-template-columns:1fr}.pair-dials svg{max-width:320px;margin:auto}.pair-picture-note{font-size:14px}}
+</style><style>html.fit .slide:nth-child(2) .toy-tokens{display:none}html.fit .slide:nth-child(2) .addition .d{font-size:18px;line-height:1.45}</style><style>
+.relative-example{display:grid;grid-template-columns:1fr 76px 1fr;align-items:center;gap:12px}.relative-case{border:1px solid var(--line);border-radius:10px;padding:16px 20px;background:white}.relative-case>strong{font-size:18px}.relative-case>div{display:flex;justify-content:space-between;gap:12px;margin:12px 0;font-size:21px;font-weight:600}.relative-case>b{display:block;font-size:20px;color:var(--blue);padding-top:10px;border-top:1px solid var(--line)}.move-together{font-size:15px;text-align:center;color:var(--muted);line-height:1.5}.relative-takeaway{font-size:21px;line-height:1.5;font-weight:600;margin:0;text-align:center;color:var(--blue)}
+html.fit .slide:nth-child(4) .inner{gap:20px;padding-top:30px;padding-bottom:20px}html.fit .slide:nth-child(4) .vis{gap:14px}html.fit .slide:nth-child(4) .motivation-panel{padding:16px 20px}html.fit .slide:nth-child(4) .motivation-panel h3{font-size:23px;margin:8px 0 10px}html.fit .slide:nth-child(4) .motivation-panel p{font-size:18px;margin:5px 0}html.fit .slide:nth-child(4) .motivation-panel small{font-size:14px}
+@media(max-width:819px){.relative-example{grid-template-columns:1fr;gap:12px}.relative-case>div{flex-direction:column;gap:8px;font-size:20px}.move-together br{display:none}.move-together{font-size:16px}.relative-takeaway{font-size:19px}.relative-case>b{font-size:19px}}
+</style></head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-row"><h1 class="ttl">위치 인코딩 방식 비교: Transformer → GPT-3 → RoPE</h1><span class="sub">Background - 김민선</span></div>
+    <nav class="prog" id="prog" aria-label="발표 구간과 슬라이드"></nav>
+  </header>
+  <main class="stage" id="stage" aria-label="논문 발표자료">
+<section class="slide layout-partb" data-sec="1" data-section-label="위치의 필요성" data-nav="토큰의 내용만으로는 순서를 충분히 표현할 수 없다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>토큰의 내용만으로는<br>순서를 충분히 표현할 수 없다</h2><p>위치 인코딩 방식 비교: Transformer → GPT-3 → RoPE</p><p>텍스트를 토큰으로 바꿨다면, 이제 <b>어느 자리에 있는지</b> 알려줄 차례입니다.</p></div>
+<div class="vis"><div class="sentence-pair"><div class="bx blue"><strong class="t">개가 사람을 문다</strong><div class="d"><span class="token">dog</span><span class="token">bites</span><span class="token">man</span></div></div><div class="bx green"><strong class="t">사람이 개를 문다</strong><div class="d"><span class="token">man</span><span class="token">bites</span><span class="token">dog</span></div></div></div><div class="ribbon">같은 토큰 집합 · 달라진 어순과 의미 → 모델은 위치 관계를 어떻게 구별할까?</div><div class="order-comparison"><span><b>RNN</b> 앞 토큰의 상태를 다음 토큰에 전달 → 순서가 연산 경로에 들어감</span><span><b>Self-attention</b> 토큰 사이 관계를 직접 비교 → 위치 정보는 별도로 반영</span></div><p class="explain"><span class="kind">원리 설명</span>토큰 임베딩은 내용을 표현하고, 위치 인코딩은 각 토큰의 자리와 토큰 사이의 간격을 반영합니다.</p><p class="micro">영어 문장과 한국어 뜻을 함께 표시한 설명용 예시입니다. dog / bites / man은 단어 단위로 나눴으며 실제 토크나이저 결과가 아닙니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/1706.03762v7#page=6">Transformer v7 · §3.5 · PDF p.6</a> · <a href="https://mandoooo20.notion.site/2-Background-3fe5f36cc0c680329f51c1ff8f001f0a">발표 범위 · Notion 파트 B</a> · <a href="https://arxiv.org/pdf/2104.09864v5#page=1">RoFormer v5 · §1 · PDF pp.1–2</a></span><span>B1</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="2" data-section-label="두 절대 위치 방식" data-nav="토큰 벡터와 위치 벡터를 같은 크기로 만들어 더한다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>토큰 벡터와 위치 벡터를<br>같은 크기로 만들어 더한다</h2><p>예시 문장: <b>“나는 사과를 먹었다”</b><br>5개 토큰, 토큰당 8차원이라고 가정해 보겠습니다.</p></div>
+<div class="vis"><div class="toy-tokens"><span>나</span><span>는</span><span>사과</span><span>를</span><span>먹었다</span></div><div class="addition"><div class="bx blue"><strong class="t">토큰 임베딩 E</strong><div class="d">각 토큰의 내용<br><b>5 × 8</b></div></div><span class="operator">＋</span><div class="bx green"><strong class="t">위치 벡터 PE</strong><div class="d">각 토큰의 자리<br><b>5 × 8</b></div></div><span class="operator">→</span><div class="bx"><strong class="t">E + PE</strong><div class="d">Attention 입력<br><b>5 × 8</b></div></div></div><div class="equation-row"><div class="math-box"><b>PE(m, 2i) = sin(m·ωᵢ)</b><br><b>PE(m, 2i+1) = cos(m·ωᵢ)</b><span>ωᵢ = 10000^(−2i/d) · m: 위치 · d: 차원 수</span></div><div class="pair-picture"><div class="pair-picture-heading">숫자 두 칸이 한 쌍 · 같은 한 칸 이동</div><div class="pair-dials"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 235" role="img" aria-label="차원 쌍 1, 위치가 한 칸 이동하면 1라디안 변화"><defs><marker id="dial-arrow-1" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0L6,3L0,6Z" fill="#2E55A5"/></marker></defs><text x="125" y="25" text-anchor="middle" font-size="19" font-weight="700" fill="#2E55A5">쌍 1 · [sin 값, cos 값]</text><circle cx="125" cy="116" r="56" fill="none" stroke="#CDD2D9" stroke-width="2"/><path d="M125 116V60" stroke="#959BA5" stroke-width="3" stroke-dasharray="5 4"/><path d="M125 116L172.12 85.74" stroke="#2E55A5" stroke-width="4" marker-end="url(#dial-arrow-1)"/><circle cx="125" cy="116" r="4" fill="#5D6570"/><text x="125" y="202" text-anchor="middle" font-size="20" font-weight="700" fill="#2E55A5">한 칸 → 1 rad</text><text x="125" y="227" text-anchor="middle" font-size="17" fill="#5D6570">각도가 많이 변함</text></svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 235" role="img" aria-label="차원 쌍 2, 위치가 한 칸 이동하면 0.1라디안 변화"><defs><marker id="dial-arrow-2" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0L6,3L0,6Z" fill="#2B7858"/></marker></defs><text x="125" y="25" text-anchor="middle" font-size="19" font-weight="700" fill="#2B7858">쌍 2 · [sin 값, cos 값]</text><circle cx="125" cy="116" r="56" fill="none" stroke="#CDD2D9" stroke-width="2"/><path d="M125 116V60" stroke="#959BA5" stroke-width="3" stroke-dasharray="5 4"/><path d="M125 116L130.59 60.28" stroke="#2B7858" stroke-width="4" marker-end="url(#dial-arrow-2)"/><circle cx="125" cy="116" r="4" fill="#5D6570"/><text x="125" y="202" text-anchor="middle" font-size="20" font-weight="700" fill="#2B7858">한 칸 → 0.1 rad</text><text x="125" y="227" text-anchor="middle" font-size="17" fill="#5D6570">각도가 조금 변함</text></svg></div><p class="pair-picture-note">8차원 중 두 쌍만 확대 · 점선: 위치 0 / 실선: 위치 1<br>사인·코사인을 원 위에 표시한 설명용 그림입니다.</p></div></div><p class="micro">Transformer §3.5를 재구성한 설명용 예시. 토큰 구분·5×8은 실제 토크나이저 결과나 모델 크기가 아닙니다. 원본 Transformer의 임베딩 스케일링은 생략했습니다. 저자는 상대 위치 학습에 도움이 될 것이라는 가설도 제시했습니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/1706.03762v7#page=6">Transformer v7 · §3.5 · PDF p.6</a></span><span>B2</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="2" data-section-label="두 절대 위치 방식" data-nav="GPT-3는 위치별 벡터를 학습하는 방식을 계승한다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>GPT-3는 위치별 벡터를<br>학습하는 방식을 계승한다</h2><p>위치 번호로 벡터를 조회하는 <b>학습형 절대 위치 임베딩</b>입니다. 위치 정보를 입력에 더한다는 점은 같습니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl comparison"><thead><tr><th>비교 항목</th><th>원본 Transformer의 주 설정</th><th>GPT-3 / GPT-2 계열</th></tr></thead><tbody><tr><td>위치 벡터 생성</td><td>사인·코사인으로 계산</td><td>위치별 파라미터를 조회</td></tr><tr><td>학습 대상</td><td>위치 함수는 고정</td><td>위치 테이블도 학습</td></tr><tr><td>반영 위치</td><td>입력 임베딩에 더함</td><td>입력 임베딩에 더함</td></tr></tbody></table></div><div class="lookup"><span>위치 m</span><b>→</b><span>학습 테이블 P[m]</span><b>→</b><span>hₘ = eₘ + P[m]</span></div><div class="annotation blue"><strong>근거를 연결해서 읽기</strong><span>GPT-3 §2.1은 GPT-2의 구조를 계승한다고 기술합니다. GPT-2 공식 구현은 학습 변수 wpe를 조회해 토큰 임베딩에 더합니다.</span></div><p class="micro">표·기호는 발표자 재구성. 비교를 위한 설명 순서이며 기술이 차례로 대체됐다는 뜻은 아닙니다. GPT-3 원문에 위 식이 직접 제시되지는 않습니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2005.14165v4#page=8">GPT-3 v4 · §2.1 · PDF p.8</a> · <a href="https://github.com/openai/gpt-2/blob/master/src/model.py#L152-L157">GPT-2 원본 구현 · model.py L152–157</a> · <a href="https://arxiv.org/pdf/1706.03762v7#page=6">Transformer v7 · §3.5 · PDF p.6</a></span><span>B3</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="3" data-section-label="RoPE" data-nav="RoPE의 등장 배경: 자리 번호와 상대 간격을 함께 다루기">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>RoPE의 등장 배경:<br>자리 번호와 상대 간격을 함께 다루기</h2><p>“몇 번째 토큰인가?”에 더해<br><b>“두 토큰이 몇 칸 떨어졌는가?”</b>를 attention의 비교에 드러내려는 설계입니다.</p></div>
+<div class="vis"><div class="motivation-grid"><div class="motivation-panel"><span class="kind">이전 연구 · 절대 / 상대 위치</span><h3>위치 벡터나 거리 항을 더하기</h3><p><b>절대 위치</b> · 각 토큰의 자리 번호를 입력에 반영</p><p><b>상대 위치</b> · 두 토큰의 거리 정보를 attention에 반영</p><small>상대 위치를 다루는 연구는 RoPE 이전에도 있었습니다.</small></div><div class="motivation-panel emphasized"><span class="kind">RoFormer 저자의 제안</span><h3>각 위치를 회전으로 넣기</h3><p><b>Q·K 각각</b> · 자기 위치에 따라 회전</p><p><b>Q·K 내적</b> · 두 위치의 차이가 회전 항에 남음</p><small>절대 위치를 사용해 상대 위치 의존성을 구성합니다.</small></div></div><div class="relative-example"><div class="relative-case"><strong>처음 위치</strong><div><span class="tb">Q · 위치 2 → 60°</span><span class="tg">K · 위치 1 → 30°</span></div><b>1칸 차이 · 각도 차 30°</b></div><div class="move-together">함께<br>+2칸 →</div><div class="relative-case"><strong>함께 옮긴 위치</strong><div><span class="tb">Q · 위치 4 → 120°</span><span class="tg">K · 위치 3 → 90°</span></div><b>1칸 차이 · 각도 차 30°</b></div></div><p class="relative-takeaway">자기 위치로 각각 회전 → 비교할 때 두 위치의 차이가 반영됩니다.</p><p class="micro">설명용 가정: 회전 전 q=k=(1,0), 위치당 30°. 내용 벡터를 고정한 예시이며 실제 내적은 내용에도 의존합니다. 원전은 linear attention 호환성도 동기로 제시합니다. Llama 2가 이를 쓴다는 뜻은 아닙니다. 기존 절대 위치 방식도 상대 관계를 학습할 수 있습니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2104.09864v5#page=2">RoFormer v5 · §1 · PDF p.2 / §2–§3.1 · pp.2–4</a> · <a href="https://arxiv.org/pdf/2104.09864v5#page=4">RoFormer §3.2 · 식 (12)–(16) · pp.4–5</a></span><span>B4</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="3" data-section-label="RoPE" data-nav="회전은 벡터의 길이를 보존하고 방향만 바꾼다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>회전은 벡터의 길이를 보존하고<br>방향만 바꾼다</h2><p>먼저 Q 하나만 봅니다.<br>위치 m을 <b>회전 각도 mθ</b>로 바꾸면 같은 내용 벡터도 위치에 따라 방향이 달라집니다.</p></div>
+<div class="vis"><div class="rotation-intro"><div class="single-plane"><svg viewBox="0 0 480 300" role="img" aria-label="벡터 (1,0)을 반시계 60도 회전하면 (0.5,0.866)이 되며 길이는 1로 유지"><defs><marker id="intro-arrow" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#2E55A5"/></marker></defs><path d="M70 230H435 M170 255V25" stroke="#CDD2D9" fill="none"/><path d="M170 230H340" stroke="#959BA5" stroke-width="4" stroke-dasharray="8 5"/><path d="M170 230L255 83" stroke="#2E55A5" stroke-width="5" marker-end="url(#intro-arrow)"/><path d="M225 230 A55 55 0 0 0 197.5 182.4" stroke="#A65A2E" fill="none" stroke-width="3"/><text x="234" y="211" fill="#A65A2E" font-size="22">60°</text><text x="308" y="258" fill="#5D6570" font-size="22">q = (1, 0)</text><text x="264" y="68" fill="#2E55A5" font-size="23">q̃ = (0.5, 0.866)</text><text x="85" y="285" fill="#5D6570" font-size="18">설명용 회전도</text></svg></div><div class="rotation-explanation"><div class="ribbon">위치 m = 2 × 위치당 θ = 30°<br>→ 총 60° 회전</div><div class="coordinate-step"><span>회전 전</span><b>(1, 0)</b><span>회전 후</span><b>(cos 60°, sin 60°)</b></div><p class="explain"><b>길이 1은 그대로입니다.</b><br>다음은 Q와 K를 각각 회전한 뒤 두 방향을 비교합니다.</p></div></div><p class="micro">RoFormer §3.2.1 식 (12)–(13)의 2차원 회전을 재구성. q=(1,0), θ=30°는 발표용 가정이며 실제 모델 설정이 아닙니다. 0.866은 √3/2의 반올림값입니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2104.09864v5#page=4">RoFormer v5 · §3.2 · 식 (12)–(16) · PDF pp.4–5</a></span><span>B5</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="3" data-section-label="RoPE" data-nav="두 위치를 함께 옮겨도 회전의 각도 차이는 같다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>두 위치를 함께 옮겨도<br>회전의 각도 차이는 같다</h2><p><b>회전 그림 → 2차원 예시 → 핵심 수식</b><br>슬라이더로 두 위치에 같은 값을 더해보세요.</p></div>
+<div class="vis"><div class="rotation-grid"><div class="rotation-visual"><div class="plane-pair"><div><strong>원래 위치</strong><svg id="plane-a" viewBox="0 0 270 205" role="img" aria-label="Q 위치 2와 K 위치 1의 회전"></svg></div><div><strong>함께 이동한 위치</strong><svg id="plane-b" viewBox="0 0 270 205" role="img" aria-label="동일한 상대 거리를 유지한 회전"></svg></div></div><div class="demo-controls"><label for="shift">두 위치의 공통 이동량 t <output id="shift-val">0</output></label><input id="shift" type="range" min="0" max="4" step="1" value="0"><p id="demo-value" aria-live="polite"></p></div></div><div class="rotation-math"><div class="math-box core"><b>(R(mθ)q)ᵀ(R(nθ)k)<br>= qᵀR((n−m)θ)k</b><span>q, k: 회전 전 Q·K 벡터<br>R(α): 각도 α의 2차원 회전 행렬</span></div><p class="explain"><b>위치 의존성이 n−m으로 정리됩니다.</b><br>점수는 벡터 내용 q·k에도 의존합니다.</p><p class="explain">실제 고차원에서는 차원을 쌍으로 나누고, 쌍마다 다른 주파수로 회전합니다.</p></div></div><p class="micro">설명용 재구성: q = k = (1, 0), θ = 30°, m = 2, n = 1. 원전 식 (16)의 2D 축약이며 실제 모델 수치가 아닙니다. 표시 내적은 softmax 이전이고 √dₖ scaling을 적용하지 않았습니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2104.09864v5#page=4">RoFormer v5 · §3.2 · 식 (12)–(16) · PDF pp.4–5</a></span><span>B6</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="3" data-section-label="RoPE" data-nav="고차원에서는 차원을 쌍으로 묶어 서로 다른 주파수로 회전한다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>고차원에서는 차원을 쌍으로 묶어<br>서로 다른 주파수로 회전한다</h2><p>각 attention head의 Q·K를 여러 2차원 쌍으로 나눕니다. <b>같은 쌍의 Q와 K는 같은 주파수</b>를 사용합니다.</p></div>
+<div class="vis"><div class="highdim-grid"><div><div class="pair-strip"><span>q₀, q₁</span><span>q₂, q₃</span><span>q₄, q₅</span><span>q₆, q₇</span></div><div class="pair-arrow">↓ 각 쌍에 독립적인 2D 회전 ↓</div><div class="table-wrap"><table class="tbl frequency"><thead><tr><th>쌍 i</th><th>θᵢ (rad/위치)</th><th>m=2의 각도</th></tr></thead><tbody><tr><td>0</td><td>1</td><td>2 rad</td></tr><tr><td>1</td><td>0.1</td><td>0.2 rad</td></tr><tr><td>2</td><td>0.01</td><td>0.02 rad</td></tr><tr><td>3</td><td>0.001</td><td>0.002 rad</td></tr></tbody></table></div></div><div class="rotation-math"><div class="math-box"><b>θᵢ = 10000<sup>−2i/d</sup></b><span>d: 회전 대상 차원 수<br>i = 0, …, d/2−1 (0부터 세는 표기)</span></div><p class="explain"><b>짧고 긴 변화 주기를 함께 사용</b><br>각 쌍의 내적을 더해 전체 Q·K 내적을 만듭니다.</p><p class="caveat">이 표는 d=8의 설명용 계산입니다. Llama 2의 실제 head 차원이 8이라는 뜻은 아닙니다.</p></div></div><p class="micro">RoFormer v5 §3.2.2 식 (14)–(16), Figure 1을 재구성. 원전의 1부터 세는 인덱스를 0부터로 바꿔 썼습니다. 원전 블록 회전의 쌍 배치를 사용하며 구현별 차원 배열 차이는 생략했습니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2104.09864v5#page=5">RoFormer v5 · §3.2.2 · 식 (14)–(16), Fig.1 · PDF p.5</a></span><span>B7</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="3" data-section-label="RoPE" data-nav="상대 거리를 반영한다는 말은 멀수록 점수가 낮다는 보장이 아니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>상대 거리를 반영한다는 말은<br>멀수록 점수가 낮다는 보장이 아니다</h2><p>핵심 성질은 <b>위치 항이 n−m으로 정리</b>된다는 것입니다. 특정 거리에서의 점수와 장문 성능은 별도로 봐야 합니다.</p></div>
+<div class="vis"><div class="limits-grid"><div><div class="table-wrap"><table class="tbl distance"><thead><tr><th>거리 m−n</th><th>각도 차</th><th>설명용 내적</th></tr></thead><tbody><tr><td>1</td><td>30°</td><td>0.866</td></tr><tr><td>2</td><td>60°</td><td>0.500</td></tr><tr><td>3</td><td>90°</td><td>0.000</td></tr><tr><td>6</td><td>180°</td><td>−1.000</td></tr><tr><td>12</td><td>360°</td><td>1.000</td></tr></tbody></table></div><p class="micro">같은 q=k=(1,0), θ=30°를 고정한 단일 쌍의 계산. 내적=cos((n−m)θ). 모델 성능·attention 확률이 아닙니다.</p></div><div class="rotation-math"><div class="annotation blue"><strong>저자 분석 · 다중 주파수의 거리 감쇠</strong><span>RoFormer는 §3.3·§3.4.3에서 장거리 감쇠 성질을 분석합니다.</span></div><p class="explain"><span class="kind">발표자 해석</span>이를 “모든 Q·K 점수가 거리마다 단조 감소한다”로 읽으면 안 됩니다. 단일 회전 쌍은 주기적으로 같은 방향에 도달합니다.</p><p class="caveat"><b>위치를 계산할 수 있음 ≠ 그 길이에서 잘 동작함</b><br>학습 길이 밖의 성능은 별도 실험으로 확인해야 합니다.</p></div></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2104.09864v5#page=5">RoFormer v5 · §3.3 · PDF p.5 / §3.4.3</a> · <a href="https://arxiv.org/pdf/2104.09864v5#page=4">RoFormer v5 · §3.2 · 식 (12)–(16) · PDF pp.4–5</a></span><span>B8</span></footer></div>
+</section>
+<section class="slide layout-partb" data-sec="4" data-section-label="LLaMA 연결" data-nav="Llama 2는 RoPE를 이어 쓰며 문맥 길이를 4k로 늘렸다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Llama 2는 RoPE를 이어 쓰며<br>문맥 길이를 4k로 늘렸다</h2><p>기억할 구분은 세 가지입니다.<br><b>내용 임베딩 · 위치 반영 지점 · 상대 거리</b></p></div>
+<div class="vis"><div class="closing-grid"><div class="takeaways"><div><span>01</span><p>Transformer<br><b>고정 위치 벡터를 입력에 더함</b></p></div><div><span>02</span><p>GPT-3<br><b>학습한 위치 벡터를 입력에 더함</b></p></div><div><span>03</span><p>RoPE / LLaMA<br><b>Q·K를 회전해 상대 거리를 반영</b></p></div></div><div><div class="table-wrap"><table class="tbl context"><thead><tr><th>논문 보고 설정</th><th>LLaMA 1</th><th>Llama 2</th></tr></thead><tbody><tr><td>위치 방식</td><td>RoPE</td><td>RoPE</td></tr><tr><td>문맥 길이</td><td>2k</td><td>4k</td></tr></tbody></table></div><div class="annotation blue"><strong>저자 기술 · Llama 2 §2.2</strong><span>RoPE를 사용하며, 주요 구조 차이로 문맥 길이 증가와 GQA를 제시합니다.</span></div><p class="caveat"><span class="kind">발표자 해석</span>RoPE 채택만으로 4k 확장의 인과 효과를 증명할 수는 없습니다. 두 세대 모두 RoPE를 사용합니다.</p></div></div><div class="closing-question">확인 질문 · Q와 K의 위치에 같은 수를 더하면, 수식에서 무엇이 그대로 남을까요?</div><p class="micro">표는 Llama 2 Table 1과 두 논문의 설계 기술을 재구성. 문맥 길이는 보고된 학습 설정이며 RoPE 단독 성능 비교 지표가 아닙니다.</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=5">Llama 2 v2 · §2.2 · PDF p.5 / Table 1 · p.6</a> · <a href="https://arxiv.org/pdf/2302.13971v1#page=3">LLaMA 1 v1 · §2.2 · PDF p.3</a> · <a href="llama2-background-part-b-notes.md">발표 원고·근거 지도</a></span><span>B9</span></footer></div>
+</section>
+  </main>
+  <nav class="nav" aria-label="슬라이드 이동">
+    <button class="btn" id="prev" type="button" aria-label="이전 슬라이드">이전</button>
+    <select id="jump" aria-label="슬라이드 선택"></select>
+    <span class="count" id="count" aria-live="polite" aria-atomic="true"></span>
+    <button class="btn next" id="next" type="button" aria-label="다음 슬라이드">다음</button>
+    <button class="btn mode" id="mode" type="button" aria-pressed="false">읽기 모드</button>
+  </nav>
+</div>
+<script>
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  const slides = [...document.querySelectorAll('.slide')];
+  const stage = document.getElementById('stage');
+  const jump = document.getElementById('jump');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const modeButton = document.getElementById('mode');
+  const prog = document.getElementById('prog');
+  const sections = {};
+  slides.forEach(slide => {
+    const key = slide.dataset.sec || '1';
+    sections[key] ||= slide.dataset.sectionLabel || key;
+  });
+  const storageKey = 'paper-study-' + document.title;
+  const mq = window.matchMedia('(min-width:820px) and (min-height:540px)');
+  let mode = 'auto';
+  try { mode = localStorage.getItem(storageKey + '-mode') || 'auto'; } catch (_) {}
+  if (!['auto','slide','read'].includes(mode)) mode = 'auto';
+  const groups = new Map();
+  const dots = [];
+  let current = 0;
+  const scrollRegions = [...document.querySelectorAll('.table-wrap,.diagram-scroll')];
+  scrollRegions.forEach(region => {
+    region.tabIndex = 0;
+    region.setAttribute('role','region');
+    const isTable = region.classList.contains('table-wrap');
+    if (!region.hasAttribute('aria-label')) region.setAttribute('aria-label',isTable ? '근거 표 · 가로 스크롤 가능' : '설명 도식 · 가로 스크롤 가능');
+    const hint = document.createElement('p');
+    hint.className = 'scroll-hint';
+    hint.textContent = isTable ? '↔ 표를 좌우로 밀면 나머지 열을 볼 수 있습니다.' : '↔ 도식을 좌우로 밀어 연결 경로를 확인하세요.';
+    hint.hidden = true;
+    region.insertAdjacentElement('afterend',hint);
+    region._scrollHint = hint;
+  });
+  function scrollHints() {
+    scrollRegions.forEach(region => {
+      region._scrollHint.hidden = !region.offsetWidth || region.scrollWidth <= region.clientWidth + 2;
+    });
+  }
+  slides.forEach((slide, index) => {
+    const key = slide.dataset.sec || '1';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(index);
+    slide.id ||= 'slide-' + (index + 1);
+    slide.setAttribute('role','group');
+    slide.setAttribute('aria-roledescription','슬라이드');
+    slide.setAttribute('aria-label',(index + 1) + ' / ' + slides.length + ': ' + (slide.dataset.nav || ''));
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = (index + 1) + '. ' + (slide.dataset.nav || '슬라이드');
+    jump.append(option);
+  });
+  groups.forEach((indices, key) => {
+    const group = document.createElement('div');
+    group.className = 'psec';
+    const label = document.createElement('span');
+    label.className = 'lab';
+    label.textContent = sections[key] || key;
+    group.append(label);
+    indices.forEach((index, sectionIndex) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dot';
+      dot.setAttribute('aria-label',(index + 1) + '. ' + slides[index].dataset.nav);
+      dot.setAttribute('aria-controls',slides[index].id);
+      dot.addEventListener('click',() => show(index));
+      dots[index] = dot;
+      group.append(dot);
+      const eyebrow = slides[index].querySelector('.ey');
+      if (eyebrow && !eyebrow.textContent.trim()) {
+        eyebrow.textContent = (sections[key] || key) + ' · ' + (sectionIndex + 1) + ' / ' + indices.length;
+      }
+    });
+    prog.append(group);
+  });
+  function scale() {
+    if (!root.classList.contains('fit')) return;
+    const rect = stage.getBoundingClientRect();
+    const ratio = Math.min((rect.width - 36) / 1280,(rect.height - 12) / 720,1);
+    root.style.setProperty('--s',Math.max(.1,ratio).toFixed(4));
+  }
+  function show(index, updateHistory = true) {
+    if (!slides.length) {
+      prev.disabled = next.disabled = jump.disabled = true;
+      count.textContent = '0 / 0';
+      return;
+    }
+    current = Math.max(0,Math.min(slides.length - 1,index));
+    slides.forEach((slide,i) => {
+      const active = i === current;
+      slide.classList.toggle('on',active);
+      slide.inert = !active;
+      slide.setAttribute('aria-hidden',String(!active));
+    });
+    dots.forEach((dot,i) => {
+      dot.classList.toggle('cur',i === current);
+      dot.classList.toggle('seen',i < current);
+      if (i === current) dot.setAttribute('aria-current','step');
+      else dot.removeAttribute('aria-current');
+    });
+    jump.value = String(current);
+    count.textContent = (current + 1) + ' / ' + slides.length;
+    prev.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+    if (updateHistory) {
+      try { history.replaceState(null,'','#s' + (current + 1)); } catch (_) {}
+      if (!root.classList.contains('fit')) window.scrollTo({top:0,behavior:'instant'});
+    }
+    scrollHints();
+  }
+  function layout() {
+    const fit = mq.matches && (mode === 'slide' || mode === 'auto');
+    root.classList.toggle('fit',fit);
+    modeButton.hidden = !mq.matches;
+    modeButton.textContent = fit ? '읽기 모드' : '슬라이드 모드';
+    modeButton.setAttribute('aria-pressed',String(!fit));
+    scale();
+    scrollHints();
+  }
+  function readHash() {
+    const match = /^#s(\d+)$/.exec(location.hash);
+    return match ? Number(match[1]) - 1 : 0;
+  }
+  prev.addEventListener('click',() => show(current - 1));
+  next.addEventListener('click',() => show(current + 1));
+  jump.addEventListener('change',() => show(Number(jump.value)));
+  modeButton.addEventListener('click',() => {
+    mode = root.classList.contains('fit') ? 'read' : 'slide';
+    try { localStorage.setItem(storageKey + '-mode',mode); } catch (_) {}
+    layout();
+  });
+  document.addEventListener('keydown',event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const tag = event.target.tagName;
+    if (['INPUT','TEXTAREA','SELECT'].includes(tag) || event.target.isContentEditable) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2 && ['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    let target;
+    if (event.key === 'ArrowRight' || event.key === 'PageDown') target = current + 1;
+    else if (event.key === 'ArrowLeft' || event.key === 'PageUp') target = current - 1;
+    else if (event.key === 'Home') target = 0;
+    else if (event.key === 'End') target = slides.length - 1;
+    else if (event.key === ' ' && root.classList.contains('fit') && tag !== 'BUTTON' && tag !== 'A') target = current + 1;
+    if (target !== undefined) { event.preventDefault(); show(target); }
+  });
+  window.addEventListener('hashchange',() => show(readHash(),false));
+  let raf;
+  window.addEventListener('resize',() => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(layout);
+  });
+  if (mq.addEventListener) mq.addEventListener('change',layout);
+  let touchStart = null;
+  stage.addEventListener('touchstart',event => {
+    touchStart = null;
+    // Reading mode is a vertically scrolling document; use navigation buttons there.
+    if (!root.classList.contains('fit') || event.touches.length !== 1) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2) return;
+    touchStart = {x:event.touches[0].clientX,y:event.touches[0].clientY};
+  },{passive:true});
+  stage.addEventListener('touchend',event => {
+    if (!touchStart) return;
+    const dx = event.changedTouches[0].clientX - touchStart.x;
+    const dy = event.changedTouches[0].clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1));
+  },{passive:true});
+  stage.addEventListener('touchcancel',() => { touchStart = null; },{passive:true});
+  // Read-only diagnostics for authoring. No automatic shrinking of dense slides.
+  window.deckCheck = () => {
+    const saved = current;
+    const results = slides.map((slide,index) => {
+      show(index,false);
+      const inner = slide.querySelector('.inner');
+      const card = slide.querySelector('.card');
+      return {
+        slide:index + 1,title:slide.dataset.nav,
+        innerOverflow:!!inner && (inner.scrollHeight > inner.clientHeight + 2 || inner.scrollWidth > inner.clientWidth + 2),
+        cardOverflow:!!card && (card.scrollHeight > card.clientHeight + 2 || card.scrollWidth > card.clientWidth + 2),
+        hasSource:!!slide.querySelector('.src,.slide-source')
+      };
+    });
+    show(saved,false);
+    return results;
+  };
+  show(readHash(),false);
+  layout();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+})();
+</script>
+<script>
+(()=>{
+const ns='http://www.w3.org/2000/svg';
+function plane(id,m,n){
+ const el=document.getElementById(id), cx=124,cy=139,r=90;
+ const line=(a,color,name)=>{const rad=a*Math.PI/180,x=cx+r*Math.cos(rad),y=cy-r*Math.sin(rad);return `<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${color}" stroke-width="4" marker-end="url(#${id}-arrow-${name})"/><text x="${x+8}" y="${y-5}" fill="${color}" font-size="18" font-weight="700">${name}</text>`};
+ el.innerHTML=`<defs>${[['Q','#2E55A5'],['K','#2B7858']].map(([name,c])=>`<marker id="${id}-arrow-${name}" markerWidth="5" markerHeight="5" refX="4" refY="2.5" orient="auto"><path d="M0,0 L5,2.5 L0,5 Z" fill="${c}"/></marker>`).join('')}</defs><line x1="15" y1="${cy}" x2="255" y2="${cy}" stroke="#CDD2D9"/><line x1="${cx}" y1="15" x2="${cx}" y2="165" stroke="#CDD2D9"/><path d="M34 139 A90 90 0 0 1 214 139" fill="none" stroke="#CDD2D9" stroke-dasharray="4 4"/>${line(m*30,'#2E55A5','Q')}${line(n*30,'#2B7858','K')}<circle cx="${cx}" cy="${cy}" r="3" fill="#5D6570"/><text x="135" y="190" text-anchor="middle" fill="#5D6570" font-size="17">m=${m}, n=${n} · 각도 차 30°</text>`;
+ el.setAttribute('aria-label',`Q 위치 ${m}, ${m*30}도; K 위치 ${n}, ${n*30}도; 각도 차 30도`);
+}
+function update(){let t=+document.getElementById('shift').value;document.getElementById('shift-val').value='+'+t;plane('plane-a',2,1);plane('plane-b',2+t,1+t);document.getElementById('demo-value').textContent=`n − m = ${1+t} − ${2+t} = −1 · 내적 cos(30°) ≈ 0.866 (유지)`;}
+document.getElementById('shift').addEventListener('input',update);update();
+})();</script></body>
+</html>
