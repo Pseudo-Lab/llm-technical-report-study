@@ -1,0 +1,834 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>W02 Background · Tokenizer·BPE·Byte Fallback</title>
+<style>
+/* Paper-study presentation shell. Visual principles adapted from research-idea-deck;
+   its research-proposal narrative and example content are deliberately not included. */
+:root{
+  color-scheme:light;
+  --bg:#E9ECF0;--card:#F7F8FA;--box:#FFFFFF;--ink:#1A1D23;--ink2:#2F343C;
+  --muted:#5D6570;--faint:#959BA5;--line:#CDD2D9;--wire:#4A505A;
+  --blue:#2E55A5;--blue-s:#EEF2FA;--green:#2B7858;--green-s:#ECF5F0;
+  --orange:#A65A2E;--orange-s:#F9F0E8;--red:#AE3A33;--red-s:#FAEDEB;--gray-s:#F0F2F5;
+  --f:Pretendard,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;
+  --s:1;
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink)}
+body{font-family:var(--f);-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:break-word}
+button,select{font:inherit}
+button,a,select{touch-action:manipulation}
+a{color:var(--blue);text-underline-offset:3px;text-decoration-thickness:1px}
+button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:4px}
+button{cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+html.fit,html.fit body{height:100%;overflow:hidden}
+.app{display:flex;flex-direction:column;min-height:100vh}
+html.fit .app{height:100%;min-height:0}
+.top{padding:18px 32px 12px;flex:none}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px 24px;flex-wrap:wrap}
+.ttl{font-size:19px;line-height:1.4;font-weight:700;letter-spacing:-.02em;margin:0}
+.sub{font-size:13px;line-height:1.5;color:var(--muted)}
+.prog{display:flex;align-items:center;gap:12px 24px;flex-wrap:wrap;margin-top:12px}
+.psec{display:flex;align-items:center;flex-wrap:wrap;gap:6px;max-width:100%}
+.psec .lab{font-size:12px;font-weight:500;color:var(--muted);margin-right:5px;white-space:nowrap}
+.dot{position:relative;display:grid;place-items:center;width:24px;height:24px;border:0;background:transparent;padding:0;border-radius:50%}
+.dot::after{content:"";width:10px;height:10px;border:1.5px solid var(--faint);border-radius:50%;background:transparent}
+.dot.seen::after{background:var(--faint)}
+.dot.cur::after{background:var(--blue);border-color:var(--blue)}
+.stage{position:relative;padding:0 18px 18px;isolation:isolate}
+html.fit .stage{flex:1;min-height:0;padding:0;overflow:hidden;display:grid;place-items:center}
+.slide{display:none;min-width:0}
+.slide.on{display:block}
+html.fit .slide.on{width:1280px;height:720px;zoom:var(--s)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:0 1px 2px #141C280D,0 10px 28px -16px #141C2829;overflow:hidden}
+html.fit .card{height:720px;display:flex;flex-direction:column}
+.inner{display:grid;grid-template-columns:minmax(0,1fr);gap:28px;padding:30px 24px}
+html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+.inner.wide{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:24px}
+.txt{display:flex;flex-direction:column;gap:18px;min-width:0}
+.ey{font-size:14px;line-height:1.4;font-weight:500;color:var(--muted)}
+.txt h2,.slide h2{margin:0;font-size:32px;font-weight:700;line-height:1.35;letter-spacing:-.035em;text-wrap:balance}
+.txt p{margin:0;font-size:20px;line-height:1.7;color:var(--ink2)}
+.txt p.lead{font-size:23px;line-height:1.6}
+.txt p.small,.small{font-size:16px;line-height:1.6}
+.txt p.note,.note{font-size:15px;line-height:1.6;color:var(--muted)}
+.txt ul,.txt ol{font-size:19px;line-height:1.7;margin:0;padding-left:1.3em;color:var(--ink2)}
+.txt li+li{margin-top:8px}
+.txt b,.txt strong{color:var(--ink)}
+.vis{display:flex;flex-direction:column;gap:14px;min-width:0}
+.g{display:grid;gap:14px;min-width:0}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.bx{position:relative;min-width:0;display:flex;flex-direction:column;gap:7px;padding:18px 20px;border:1.5px solid var(--line);border-radius:12px;background:var(--box)}
+.bx.blue{border-color:var(--blue);background:var(--blue-s)}
+.bx.green{border-color:var(--green);background:var(--green-s)}
+.bx.orange{border-color:var(--orange);background:var(--orange-s)}
+.bx.red{border-color:var(--red);background:var(--red-s)}
+.bx.gray{background:var(--gray-s)}
+.bx.dash{border-style:dashed}
+.bx.thick{border-width:2px}
+.bx.ctr{align-items:center;justify-content:center;text-align:center}
+.bx.pill{border-radius:999px}
+.bx .t{font-size:19px;line-height:1.45;font-weight:700;color:var(--ink)}
+.bx .d{font-size:17px;line-height:1.6;color:var(--ink2)}
+.bx .m{font-size:14px;line-height:1.55;color:var(--muted)}
+.bx .k{font-size:13px;font-weight:700;line-height:1.45}
+.bx .gap{flex:1;min-height:8px}
+.head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.tag{display:inline-flex;align-items:center;align-self:flex-start;gap:5px;font-size:12px;line-height:1.5;font-weight:600;padding:3px 9px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted)}
+.tag.blue{color:var(--blue);border-color:var(--blue);background:var(--blue-s)}
+.tag.green{color:var(--green);border-color:var(--green);background:var(--green-s)}
+.tag.orange{color:var(--orange);border-color:var(--orange);background:var(--orange-s)}
+.tb{color:var(--blue)!important}.tg{color:var(--green)!important}.to{color:var(--orange)!important}.tr{color:var(--red)!important}
+.muted{color:var(--muted)!important}.bold{font-weight:700}.nw{white-space:nowrap}
+.lab{font-size:15px;line-height:1.5;font-weight:700}
+.cap{margin:0;font-size:14px;line-height:1.6;color:var(--muted);text-align:center}
+.rule{height:1px;background:var(--line);margin:4px 0}
+.num{display:inline-grid;place-items:center;flex:none;width:27px;height:27px;border:1.5px solid currentColor;border-radius:50%;font-size:13px;font-weight:700}
+.step{flex-direction:row;align-items:center;gap:14px}
+.flow{display:flex;align-items:stretch;gap:12px;min-width:0}
+.flow>.bx{flex:1}
+.arrow{flex:none;align-self:center;font-size:24px;color:var(--wire);font-weight:500}
+.flow.vertical{flex-direction:column;align-items:stretch}
+.flow.vertical>.arrow{line-height:1}
+.tbl{border-collapse:collapse;width:100%;font-size:16px;line-height:1.5;table-layout:fixed;background:var(--box)}
+.tbl th,.tbl td{text-align:left;vertical-align:top;padding:13px 14px;border-bottom:1px solid var(--line);overflow-wrap:break-word}
+.tbl th{font-size:14px;font-weight:600;color:var(--muted);background:var(--gray-s)}
+.tbl tbody tr:last-child td{border-bottom:0}
+.tbl .numcol{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tbl .em{background:var(--blue-s);font-weight:650}
+.table-wrap{overflow:hidden;border:1px solid var(--line);border-radius:12px}
+.figure{margin:0}
+.figure img,.vis>img,.vis>svg{display:block;max-width:100%;height:auto}
+.figure figcaption{font-size:14px;color:var(--muted);line-height:1.5;margin-top:9px}
+.metric{font-size:46px;line-height:1.15;font-weight:700;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.metric small{font-size:19px;letter-spacing:0}
+.equation{font-size:22px;line-height:1.7;text-align:center;padding:20px;background:var(--box);border:1px solid var(--line);border-radius:12px}
+code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.9em}
+sub,sup{font-size:.72em;line-height:0}sub{vertical-align:-.25em}sup{vertical-align:.45em}
+.src,.slide-source{font-size:13px;line-height:1.65;color:var(--muted)}
+.card>.src,.card>.slide-source{flex:none;margin:0;padding:13px 54px 15px;border-top:1px solid var(--line);background:#FFFFFF60;display:flex;flex-wrap:wrap;justify-content:space-between;gap:4px 24px;min-height:52px}
+.src a,.slide-source a{color:var(--muted)}
+.src a:hover,.slide-source a:hover{color:var(--blue)}
+.speaker-notes{display:none}
+.nav{display:flex;align-items:center;justify-content:center;gap:12px;flex:none;padding:12px 18px calc(16px + env(safe-area-inset-bottom,0px));background:var(--bg)}
+html:not(.fit) .nav{position:sticky;bottom:0;z-index:10;border-top:1px solid var(--line)}
+.btn{height:42px;padding:0 22px;border-radius:999px;border:1px solid var(--line);background:var(--box);color:var(--ink);font-size:15px;font-weight:500}
+.btn.next{background:var(--ink);color:white;border-color:var(--ink)}
+.btn.mode{height:36px;padding:0 14px;font-size:13px;color:var(--muted)}
+.nav select{height:42px;min-width:0;width:330px;max-width:34vw;border:1px solid var(--line);border-radius:10px;padding:0 12px;background:var(--box);color:var(--ink);font-size:14px}
+.count{font-size:14px;font-variant-numeric:tabular-nums;min-width:54px;text-align:center;color:var(--muted)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:819px){
+  .top{padding:16px 18px 12px}.prog{gap:8px 15px}.sub{font-size:12px}
+  .inner{padding:28px 22px}.txt h2,.slide h2{font-size:28px}.txt p{font-size:18px}
+  .card>.src,.card>.slide-source{padding:12px 22px;font-size:12px}
+  .nav{gap:8px;flex-wrap:wrap}.nav select{flex:1;width:auto;max-width:none}.btn{padding:0 15px}
+}
+@media(max-width:520px){
+  .c3{grid-template-columns:minmax(0,1fr)}.flow:not(.vertical){flex-direction:column}
+  .flow:not(.vertical)>.arrow{transform:rotate(90deg)}
+  .table-wrap{overflow-x:auto}.tbl{min-width:520px}.count{min-width:46px}
+  .btn.mode{flex-basis:100%;max-width:160px}.psec .lab{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+@media print{
+  @page{size:338.667mm 190.5mm;margin:0}
+  html,html.fit,body,html.fit body{height:auto!important;min-height:0!important;overflow:visible!important;background:white!important}
+  .app,html.fit .app{display:block;height:auto!important;min-height:0}.top,.nav{display:none!important}
+  .stage,html.fit .stage{display:block;padding:0;overflow:visible}
+  .slide,.slide.on,html.fit .slide.on{display:block!important;width:1280px;height:720px;zoom:1!important;break-after:page;page-break-after:always}
+  .slide:last-child{break-after:auto;page-break-after:auto}
+  .card,html.fit .card{height:720px;display:flex;flex-direction:column;border:0;border-radius:0;box-shadow:none;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  .inner,html.fit .inner{flex:1;min-height:0;grid-template-columns:425px minmax(0,1fr);gap:44px;padding:44px 54px 30px;align-items:center}
+  .inner.wide{grid-template-columns:minmax(0,1fr)!important}.speaker-notes{display:none!important}
+  .c3{grid-template-columns:repeat(3,minmax(0,1fr))}.flow:not(.vertical){flex-direction:row}.flow:not(.vertical)>.arrow{transform:none}
+  a{text-decoration:none}.card>.src,.card>.slide-source{padding:13px 54px 15px}
+}
+</style>
+<style>
+/* Four information layouts: narrative overview, processes, quantitative comparison,
+   and full-width references. Charts use fixed, explicitly labelled scales. */
+.txt h2,.slide h2{font-size:34px;line-height:1.28;letter-spacing:-.035em}
+.txt p{font-size:19px;line-height:1.65}
+.txt .ey{font-size:14px;letter-spacing:.02em}
+.layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr);gap:44px}
+.layout-quantitative .vis{gap:18px}
+.layout-quantitative .txt h2{font-size:36px}
+.layout-overview .inner,.layout-process .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important;align-content:center;gap:26px}
+.layout-overview .txt,.layout-process .txt,.layout-reference .txt{display:grid;grid-template-columns:420px minmax(0,1fr);gap:8px 46px;align-items:start}
+.layout-overview .txt .ey,.layout-process .txt .ey,.layout-reference .txt .ey{grid-column:1/-1;margin-bottom:7px}
+.layout-overview .txt h2,.layout-process .txt h2,.layout-reference .txt h2{grid-column:1;grid-row:2/4;font-size:34px}
+.layout-overview .txt p,.layout-process .txt p,.layout-reference .txt p{grid-column:2;font-size:18px;line-height:1.65}
+.layout-reference .vis{gap:16px}
+.layout-reference .tbl th{font-size:16px}
+.layout-reference .tbl td{font-size:18px;padding:13px 18px}
+.layout-reference .tbl th:first-child,.layout-reference .tbl td:first-child{width:35%}
+.layout-reference .tbl th{padding:13px 18px}
+.layout-overview .vis>.g{gap:22px}
+.layout-overview .vis>.g .bx{padding:23px 26px}
+.layout-overview .vis>.g .t{font-size:22px}
+.layout-overview .vis>.g .d{font-size:18px}
+.layout-cover .inner{grid-template-columns:1fr 1fr;gap:55px}
+.layout-cover .txt h2{font-size:44px;line-height:1.27;letter-spacing:-.045em}
+.layout-cover .txt p{font-size:20px}
+.cover-graphic{padding:25px 0 25px 36px;border-left:1px solid var(--line)}
+.overline{font-size:14px;font-weight:700;letter-spacing:.15em;color:var(--blue)}
+.family-range{display:flex;align-items:center;justify-content:space-between;font-size:79px;line-height:1.2;font-weight:750;letter-spacing:-.05em;margin:25px 0 36px;color:var(--blue)}
+.family-range>span{font-size:45px;color:var(--faint);font-weight:400}
+.family-models{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;text-align:center}
+.family-models span{padding:16px 0;background:var(--box);border:1px solid var(--line);border-radius:10px;font-weight:650;font-size:24px}
+.token-brackets{display:grid;grid-template-columns:1fr 1fr;gap:15px;font-size:17px;color:var(--green);text-align:center;margin-top:12px}
+.token-brackets span{border-top:2px solid var(--green);padding-top:8px}
+.cover-graphic p{font-size:23px;font-weight:650;line-height:1.5;margin:38px 0 14px}
+.cover-graphic small{font-size:15px;color:var(--muted);line-height:1.7}
+.recipe-map{display:grid;grid-template-columns:1fr 38px 1.15fr 38px 1.1fr;align-items:center;gap:10px;padding:28px 0 20px}
+.recipe-step{align-self:stretch;border-top:3px solid var(--blue);padding:24px 10px 12px 0;display:flex;flex-direction:column;align-items:flex-start}
+.step-index{font-size:44px;font-weight:600;line-height:1;color:var(--blue)}
+.recipe-step h3{font-size:27px;line-height:1.4;letter-spacing:-.03em;margin:23px 0 10px}
+.recipe-step p{font-size:19px;line-height:1.65;color:var(--ink2);margin:0 0 20px}
+.recipe-step .tag{margin-top:auto}
+.recipe-arrow{font-size:30px;color:var(--faint);text-align:center}
+.recipe-outcomes{display:flex;flex-direction:column;border-left:3px solid var(--green);padding-left:22px;gap:22px}
+.recipe-outcomes strong{display:block;font-size:23px;line-height:1.4;color:var(--green)}
+.recipe-outcomes span{display:block;font-size:16px;margin-top:5px;color:var(--muted)}
+.annotation{display:flex;flex-direction:column;gap:5px;border-left:3px solid var(--orange);padding:13px 18px;background:var(--orange-s);border-radius:0 8px 8px 0}
+.annotation strong{font-size:17px;line-height:1.5;color:var(--orange)}
+.annotation span{font-size:16px;line-height:1.6;color:var(--ink2)}
+.annotation.green{border-color:var(--green);background:var(--green-s)}
+.annotation.green strong{color:var(--green)}
+.annotation.blue{border-color:var(--blue);background:var(--blue-s)}
+.annotation.blue strong{color:var(--blue)}
+.data-chart{display:flex;flex-direction:column;gap:12px;padding:8px 0 14px}
+.data-chart-head,.data-row{display:grid;grid-template-columns:122px minmax(0,1fr) 44px 66px;gap:12px;align-items:center}
+.data-chart-head{font-size:12px;line-height:1.5;color:var(--muted);padding-bottom:7px;border-bottom:1px solid var(--line)}
+.data-chart-head>:nth-child(n+3){text-align:right}
+.data-name{font-size:16px;font-weight:600;line-height:1.3}
+.data-row>strong,.epoch{font-size:16px;text-align:right;font-variant-numeric:tabular-nums}
+.data-track{height:25px;position:relative;background:linear-gradient(to right,transparent 49.8%,#CBD2DD 49.8%,#CBD2DD 50.2%,transparent 50.2%),#EDF0F4;border-left:1px solid var(--faint)}
+.data-track i{height:100%;display:block;min-width:2px;border-radius:0 4px 4px 0}
+.data-track .blue,.hbar-fill.blue,.v-bar.blue{background:var(--blue)}
+.data-track .green,.hbar-fill.green,.v-bar.green{background:var(--green)}
+.epoch.green{color:var(--green);font-weight:700}
+.diagram-scroll{min-width:0;max-width:100%;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:thin}
+.diagram-scroll>svg{display:block;width:100%;height:auto;overflow:visible;font-family:var(--f)}
+.sv-label{font-family:var(--f);font-size:20px;fill:var(--ink);font-weight:550}
+.sv-note{font-family:var(--f);font-size:17px;fill:var(--muted)}
+.norm-pair{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.diagram-panel{background:var(--box);border:1px solid var(--line);border-radius:12px;padding:22px 18px 18px;min-width:0}
+.diagram-panel.emphasized{border-color:var(--blue)}
+.diagram-title{display:flex;flex-direction:column;gap:4px;padding:0 5px}
+.diagram-title span{font-size:15px;color:var(--muted)}
+.diagram-title strong{font-size:23px;font-weight:650;line-height:1.4}
+.diagram-panel .formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:16px;line-height:1.5;text-align:center;white-space:nowrap;letter-spacing:-.04em}
+.block-stack{display:flex;flex-direction:column;gap:7px}
+.block-diagram h3{display:flex;align-items:center;gap:13px;margin:0;font-size:18px;font-weight:600;line-height:1.5}
+.block-diagram .diagram-scroll>svg{max-height:188px}
+.block-diagram .sv-label{font-size:19px}
+.block-diagram .sv-note{font-size:17px}
+.layout-process .block-stack+.cap{font-size:13px;margin-top:-5px}
+.chart-line{stroke:var(--faint);stroke-width:1.5}
+.chart-grid{stroke:var(--line);stroke-dasharray:4 5;stroke-width:1}
+.recipe-settings{display:grid;grid-template-columns:1.15fr .7fr 1.4fr;gap:14px;border-top:1px solid var(--line);padding-top:16px}
+.recipe-settings span{font-size:14px;color:var(--muted);line-height:1.65}
+.recipe-settings b{display:block;font-size:15px;color:var(--ink);margin-bottom:2px}
+.delta-header{display:flex;flex-direction:column;gap:6px;border-bottom:1px solid var(--line);padding-bottom:15px}
+.delta-header strong{font-size:21px;line-height:1.4}.delta-header span{font-size:14px;color:var(--muted)}
+.delta-chart{display:flex;flex-direction:column;gap:14px;padding:0 0 8px}
+.delta-row{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;align-items:center;gap:14px;min-height:35px}
+.delta-name{font-size:16px;font-weight:600;line-height:1.3}
+.delta-name small{display:block;font-size:12px;font-weight:400;color:var(--muted);margin-top:4px;white-space:nowrap}
+.delta-track{height:28px;position:relative;background:linear-gradient(to right,transparent 19.8%,#959BA5 19.8%,#959BA5 20.2%,transparent 20.2%),#EDF0F4}
+.delta-track i{position:absolute;top:3px;height:22px;min-width:2px;display:block;border-radius:3px}
+.delta-track .blue{background:var(--blue)}.delta-track .orange{background:var(--orange)}
+.delta-value{font-size:17px;text-align:right;font-variant-numeric:tabular-nums}.delta-value.blue{color:var(--blue)}.delta-value.orange{color:var(--orange)}
+.delta-axis{display:grid;grid-template-columns:121px minmax(0,1fr) 48px;gap:14px;font-size:12px;color:var(--muted);margin-top:1px}
+.delta-axis>div{position:relative;height:20px}.delta-axis>div span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.delta-axis>div span:first-child{transform:none}.delta-axis>div span:last-child{transform:translateX(-100%)}
+.condition-panels{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.compare-panel{min-width:0;background:var(--box);border:1px solid var(--line);border-radius:12px;padding:23px 27px}
+.compare-panel h3{font-size:24px;font-weight:650;line-height:1.4;margin:0}
+.panel-sub{font-size:14px;line-height:1.5;color:var(--muted);margin:6px 0 24px}
+.hbar-chart{display:flex;flex-direction:column;gap:22px;padding:8px 0}
+.hbar-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:8px;font-size:18px;line-height:1.5}
+.hbar-head strong{font-size:23px;font-weight:650;font-variant-numeric:tabular-nums}.hbar-head small{font-size:14px;margin-left:2px}
+.hbar-track{height:28px;background:repeating-linear-gradient(to right,transparent 0,transparent calc(25% - 1px),#CCD3DD calc(25% - 1px),#CCD3DD 25%),#EEF0F4;border-left:1px solid var(--faint)}
+.hbar-fill{height:100%;border-radius:0 4px 4px 0}.hbar-fill.gray{background:#8A98AE}
+.chart-axis{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-top:-10px;font-variant-numeric:tabular-nums}
+.chart-heading{display:flex;flex-direction:column;gap:10px}.chart-heading>strong{font-size:22px}
+.before-after{display:grid;grid-template-columns:1.2fr 1fr;gap:70px;align-items:center;padding:15px 30px 8px 5px}
+.vertical-chart{display:grid;grid-template-columns:40px minmax(0,1fr);gap:15px;min-width:0}
+.v-axis{height:240px;display:flex;flex-direction:column;justify-content:space-between;text-align:right;font-size:13px;color:var(--muted)}
+.v-columns{display:grid;grid-template-columns:1fr 1fr;gap:55px;background:linear-gradient(to bottom,#CDD2D9 1px,transparent 1px,transparent 119px,#E1E4E9 119px,#E1E4E9 120px,transparent 120px,transparent 239px,#959BA5 239px,#959BA5 240px,transparent 240px)}
+.v-column{text-align:center;min-width:0}.v-track{height:240px;position:relative;display:flex;align-items:flex-end;justify-content:center}
+.v-bar{width:90px;max-width:80%;position:relative;border-radius:6px 6px 0 0}
+.v-bar strong{position:absolute;left:50%;top:-34px;transform:translateX(-50%);font-size:25px;font-weight:650;white-space:nowrap}
+.v-column>span{display:block;font-size:17px;font-weight:600;line-height:1.5;margin-top:12px}
+.change-summary{padding-left:25px;border-left:1px solid var(--line)}
+.change-value{font-size:79px;font-weight:700;letter-spacing:-.04em;color:var(--orange);line-height:1.2;margin:12px 0 16px}
+.change-value small{font-size:25px;margin-left:9px;letter-spacing:0}
+.change-summary h3{font-size:24px;font-weight:650;line-height:1.45;margin:0 0 12px}
+.change-summary p{font-size:16px;line-height:1.7;color:var(--muted);margin:0}
+.scroll-hint{font-size:12px;line-height:1.5;color:var(--blue);margin:4px 0 0;padding:7px 10px;background:var(--blue-s);border-radius:5px}
+.scroll-hint[hidden]{display:none!important}
+.formula{font-family:ui-monospace,SFMono-Regular,monospace;font-size:20px;line-height:1.7;letter-spacing:-.04em;white-space:nowrap}
+.metric span{font-size:22px;margin-left:5px}
+html:not(.fit) .layout-quantitative .inner,html:not(.fit) .layout-cover .inner{grid-template-columns:minmax(0,1fr)}
+html:not(.fit) .layout-process .txt,html:not(.fit) .layout-overview .txt,html:not(.fit) .layout-reference .txt{display:flex;flex-direction:column;gap:15px}
+html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid var(--line)}
+@media(max-width:819px){
+ .layout-quantitative .txt h2,.txt h2,.slide h2,.layout-process .txt h2,.layout-overview .txt h2,.layout-reference .txt h2{font-size:28px;line-height:1.35}
+ .layout-cover .txt h2{font-size:34px}.layout-cover .txt p,.txt p{font-size:18px}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{gap:27px}
+ .layout-overview .vis>.g .bx{padding:20px}.layout-overview .vis>.g .t{font-size:20px}.layout-overview .vis>.g .d{font-size:16px}
+ .norm-pair,.condition-panels{grid-template-columns:1fr;gap:18px}.diagram-panel{padding:17px 14px}
+ .diagram-panel .diagram-scroll>svg{min-width:570px}.block-diagram .diagram-scroll>svg{min-width:960px;max-height:none}
+ .layout-quantitative .diagram-scroll>svg{min-width:600px}
+ .block-diagram h3{flex-wrap:wrap;font-size:16px;gap:7px}.block-stack{gap:24px}
+ .diagram-panel .formula{font-size:13px;white-space:normal}.diagram-title strong{font-size:21px}
+ .recipe-map{grid-template-columns:1fr;gap:18px;padding:6px 0}.recipe-step{padding:18px 0 0}.recipe-arrow{transform:rotate(90deg)}
+ .recipe-step h3{margin-top:12px}.recipe-step p{font-size:18px}.recipe-outcomes{gap:18px;padding:5px 0 5px 20px}
+ .before-after{grid-template-columns:1fr;gap:30px;padding:25px 0 5px}.change-summary{padding:20px 0 0;border-left:0;border-top:1px solid var(--line)}
+ .change-value{font-size:60px}.change-summary h3{font-size:22px}.change-summary h3 br{display:none}
+ .v-columns{gap:24px}.v-bar strong{font-size:22px}.v-column>span{font-size:14px}
+ .family-range{font-size:62px;margin:20px 0 26px}.family-range>span{font-size:33px}.family-models span{font-size:19px;padding:12px 0}
+ .token-brackets{font-size:14px}.cover-graphic p{font-size:20px;margin-top:28px}
+ .data-chart-head,.data-row{grid-template-columns:90px minmax(0,1fr) 35px 44px;gap:7px}
+ .data-chart-head{font-size:10px}.data-name{font-size:13px}.data-row>strong,.epoch{font-size:13px}.data-track{height:21px}
+ .data-chart-head>:nth-child(2){font-size:10px}.data-chart{gap:13px}
+ .annotation span{font-size:14px}.annotation strong{font-size:16px}
+ .delta-row{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}.delta-axis{grid-template-columns:96px minmax(0,1fr) 39px;gap:8px}
+ .delta-name{font-size:13px}.delta-name small{font-size:10px}.delta-value{font-size:14px}.delta-header strong{font-size:18px}
+ .compare-panel{padding:20px}.compare-panel h3{font-size:21px}.hbar-head{font-size:16px}.hbar-head strong{font-size:20px}
+ .recipe-settings{grid-template-columns:1fr 1fr}.recipe-settings span:last-child{grid-column:1/-1}.cap{font-size:12px;line-height:1.65}
+ .layout-reference .tbl th,.layout-reference .tbl td{font-size:15px;padding:12px 14px}.table-wrap{max-width:100%;overscroll-behavior-x:contain}
+}
+@media(max-width:520px){.c2{grid-template-columns:minmax(0,1fr)}.tbl{min-width:520px}.formula{font-size:14px;white-space:normal}}
+@media print{
+ .layout-quantitative .inner{grid-template-columns:350px minmax(0,1fr)!important}
+ .layout-cover .inner{grid-template-columns:1fr 1fr!important}
+ .layout-process .inner,.layout-overview .inner,.layout-reference .inner{grid-template-columns:minmax(0,1fr)!important}
+ .layout-process .txt,.layout-overview .txt,.layout-reference .txt{display:grid!important;grid-template-columns:420px minmax(0,1fr);gap:8px 46px}
+ .cover-graphic{padding:25px 0 25px 36px!important;border-left:1px solid var(--line)!important;border-top:0!important}
+ .scroll-hint{display:none!important}.diagram-scroll{overflow:visible}.table-wrap{overflow:visible}.tbl{min-width:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div class="top-row"><h1 class="ttl">W02 Background · Tokenizer·BPE·Byte Fallback</h1><span class="sub">이정민 · Llama 2 스터디 · 검토 전 초안</span></div>
+    <nav class="prog" id="prog" aria-label="발표 구간과 슬라이드"></nav>
+  </header>
+  <main class="stage" id="stage" aria-label="논문 발표자료">
+<section class="slide layout-split" data-sec="1" data-section-label="왜 subword인가" data-nav="모델은 글자가 아니라 숫자만 계산합니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>모델은 글자가 아니라<br>숫자만 계산합니다</h2><p class="lead">“안녕하세요”를 모델에 넣으려면 <b>토큰</b>으로 자르고, 토큰을 <b>정수 ID</b>로 바꾸고, ID로 <b>임베딩 벡터</b>를 찾아야 합니다.</p>
+<p>Llama 2 논문은 이 첫 단계를 “LLaMA 1과 같은 tokenizer를 쓴다” 한 줄로 넘깁니다. 오늘은 그 한 줄 뒤에 있는 것을 풉니다.</p></div>
+<div class="vis"><style>
+.toks{display:inline-flex;flex-wrap:wrap;gap:5px;align-items:center}
+.tk{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:16px;line-height:1.3;padding:4px 8px;border-radius:7px;border:1.5px solid var(--line);background:#fff;color:var(--ink);white-space:nowrap}
+.tk.byte{border-color:var(--orange);background:var(--orange-s);color:var(--orange)}
+.tk.sp{border-style:dashed;color:var(--muted)}
+.tk.new{border-color:var(--blue);background:var(--blue-s);color:var(--blue);font-weight:700}
+.tk.unk{border-color:var(--red);background:var(--red-s);color:var(--red)}
+.toks.sm .tk{font-size:14px;padding:2px 6px}
+.toks+.toks{margin-left:18px}
+.pair-row{display:flex;flex-direction:column;gap:5px;padding:8px 0;border-bottom:1px solid var(--line)}
+.pair-lab{font-size:16px;line-height:1.4;color:var(--ink)}
+.pair-bar{display:grid;grid-template-columns:62px minmax(0,1fr) 34px;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.pair-bar .hbar-track{height:16px}.pair-bar strong{font-size:17px;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.hbar-chart.compact{gap:12px;padding:0}.hbar-chart.compact .hbar-head{margin-bottom:4px;font-size:17px}
+.hbar-chart.compact .hbar-head strong{font-size:20px}.hbar-chart.compact .hbar-track{height:18px}.hbar-chart.compact .chart-axis{margin-top:-2px}
+.ladder{display:grid;grid-template-columns:150px minmax(0,1fr);gap:10px 16px;align-items:center;background:var(--box);border:1px solid var(--line);border-radius:12px;padding:20px 22px}
+.ladder .rl{font-size:15px;line-height:1.4;color:var(--muted)}
+.ladder .rl b{display:block;color:var(--ink);font-size:16px}
+.ladder .done{grid-column:1/-1;border-top:1px solid var(--line);padding-top:12px;font-size:16px;color:var(--ink2)}
+.code{margin:0;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:13.5px;line-height:1.5;background:#FBFCFD;border:1px solid var(--line);border-radius:10px;padding:12px 14px;white-space:pre;overflow-x:auto;color:var(--ink)}
+.code .c{color:var(--green)}.code .o{color:var(--muted)}
+.code.out{background:var(--gray-s);font-size:13px}
+.panel{display:flex;flex-direction:column;gap:9px;min-width:0;background:var(--box);border:1px solid var(--line);border-radius:12px;padding:16px 16px 14px}
+.panel h3{margin:0;font-size:18px;line-height:1.4}
+.panel .m{font-size:13.5px;line-height:1.5;color:var(--muted);margin:0}
+.chips-row{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:15px;color:var(--muted)}
+.tbl td .toks{vertical-align:middle}
+.tbl.tight td,.tbl.tight th{padding:9px 12px}
+.layout-reference .tbl.dense td,.layout-reference .tbl.dense th{padding:6px 14px;font-size:16px;line-height:1.45}
+.layout-reference .tbl.dense td .small{font-size:13px}
+.quote{font-size:16px;line-height:1.6;color:var(--ink2);border-left:3px solid var(--blue);padding:8px 14px;background:var(--blue-s);border-radius:0 8px 8px 0;margin:0}
+.oq{margin:0;padding-left:1.2em;font-size:18px;line-height:1.6;color:var(--ink2)}
+.oq li+li{margin-top:6px}
+.layout-process .tbl td,.layout-reference .tbl td{vertical-align:middle}
+.layout-reference .tbl.cols4 th:first-child,.layout-reference .tbl.cols4 td:first-child{width:18%}
+.layout-reference .tbl.alg th:first-child,.layout-reference .tbl.alg td:first-child{width:16%}
+@media(max-width:819px){.ladder{grid-template-columns:1fr;gap:6px}.ladder .rl{margin-top:8px}.code{font-size:12px}}
+</style><div class="flow vertical">
+<div class="bx"><div class="k muted">문자열</div><div class="t">안녕하세요</div></div>
+<div class="arrow">↓ <span class="small muted">tokenizer가 자름</span></div>
+<div class="bx blue"><div class="k tb">토큰 8개 · 실제 LLaMA tokenizer 출력</div><span class="toks "><span class="tk sp">▁</span><span class="tk ">안</span><span class="tk byte">&lt;0xEB&gt;</span><span class="tk byte">&lt;0x85&gt;</span><span class="tk byte">&lt;0x95&gt;</span><span class="tk ">하</span><span class="tk ">세</span><span class="tk ">요</span></span><div class="m">주황 = 바이트 토큰(“녕”) · 점선 = 공백 표시 ▁</div></div>
+<div class="arrow">↓ <span class="small muted">어휘 표에서 번호 찾기</span></div>
+<div class="bx"><div class="k muted">정수 ID 8개</div><div class="d"><code>[id₁, id₂, …, id₈]</code> <span class="m">— 실제 번호는 생략</span></div></div>
+<div class="arrow">↓ <span class="small muted">임베딩 행렬 32,000 × 4,096 (LLaMA-7B)에서 행 조회</span></div>
+<div class="bx gray"><div class="k muted">벡터 8개 → Transformer</div></div>
+</div><p class="cap">토큰: “안녕하세요 반갑습니다” 실행 출력의 앞 8개 · d=4,096은 LLaMA 1 Table 2의 7B 설정</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2307.09288v2#page=6">Llama 2 v2 · §2.2 Tokenizer</a> · <a href="https://arxiv.org/pdf/2302.13971v1#page=3">LLaMA 1 v1 · Table 2</a></span><span></span></footer></div>
+<aside class="speaker-notes">모델은 글자가 아니라 숫자만 계산합니다. 문장을 어떻게 숫자로 바꿀지가 첫 질문입니다. Llama 2 논문은 이걸 “LLaMA 1과 같은 tokenizer를 쓴다” 한 줄로 넘깁니다. 그 한 줄 뒤에 무엇이 있는지 풀어 보겠습니다. (1분)</aside></section>
+<section class="slide layout-reference" data-sec="1" data-section-label="왜 subword인가" data-nav="단어는 모르는 말에 막히고, 문자는 너무 길어집니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>단어는 모르는 말에 막히고,<br>문자는 너무 길어집니다</h2><p>그래서 자주 나오는 조각은 크게, 드문 것은 잘게 자르는 <b>subword</b>를 씁니다.</p>
+<p>핵심은 줄다리기입니다. 어휘를 키우면 시퀀스는 짧아지지만 임베딩 표가 커집니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl tight cols4"><thead><tr><th>단위</th><th>“lowest”를 자르면</th><th>어휘 크기</th><th>약점</th></tr></thead><tbody>
+<tr><td><b>단어</b></td><td><span class="toks "><span class="tk ">lowest</span></span> 또는 <span class="toks "><span class="tk unk">&lt;unk&gt;</span></span></td><td>열린 집합 · 계속 늘어남</td><td>처음 보는 단어가 <code>&lt;unk&gt;</code>가 되고 어휘가 폭발</td></tr>
+<tr><td><b>문자</b></td><td><span class="toks sm"><span class="tk ">l</span><span class="tk ">o</span><span class="tk ">w</span><span class="tk ">e</span><span class="tk ">s</span><span class="tk ">t</span></span></td><td>작음 (문자 종류 수)</td><td>시퀀스가 길어져 attention 비용 증가 (길이²)</td></tr>
+<tr><td><b>바이트</b></td><td>영어는 문자와 같은 6개 · 한글 음절은 음절당 3개</td><td>256</td><td>가장 길다. 대신 표현 못 하는 글자가 없다</td></tr>
+<tr class="em"><td><b>Subword (BPE)</b></td><td><span class="toks "><span class="tk new">low</span><span class="tk new">est</span></span></td><td>미리 정함 (LLaMA 32,000)</td><td>어휘와 분할 규칙을 데이터로 학습해야 함</td></tr>
+</tbody></table></div>
+<div class="annotation blue"><strong>줄다리기 · 직접 계산</strong><span>어휘 V가 커지면 같은 문장이 더 적은 토큰이 되지만, 임베딩 행렬 V × d가 커집니다. LLaMA-7B 기준 32,000 × 4,096 ≈ <b>1.31억</b> 파라미터 (입력 임베딩 하나).</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/1508.07909">Sennrich et al. 2016 · §1</a> · <a href="https://arxiv.org/pdf/2302.13971v1#page=3">LLaMA 1 v1 · Table 2 (d=4,096)</a></span><span></span></footer></div>
+<aside class="speaker-notes">단어 단위는 처음 보는 단어가 &lt;unk&gt;가 되고 어휘가 폭발합니다. 문자 단위는 시퀀스가 길어져 attention 비용이 커집니다. 그래서 자주 나오는 조각은 크게, 드문 것은 잘게 자르는 subword를 씁니다. 어휘를 키우면 시퀀스가 짧아지지만 임베딩이 커지는 줄다리기가 핵심입니다. (1.5분)</aside></section>
+<section class="slide layout-reference" data-sec="1" data-section-label="왜 subword인가" data-nav="Subword를 만드는 방법은 셋, LLaMA는 그중 BPE">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Subword를 만드는 방법은 셋,<br>LLaMA는 그중 BPE</h2><p>오늘은 LLaMA가 쓴 BPE를 깊게 봅니다.</p>
+<p><b>SentencePiece는 알고리즘이 아니라</b> BPE나 Unigram을 돌리는 <b>라이브러리</b>입니다. LLaMA는 SentencePiece 위에서 BPE를 씁니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl tight alg"><thead><tr><th></th><th>BPE</th><th>WordPiece</th><th>Unigram</th></tr></thead><tbody>
+<tr><td><b>방향</b></td><td>작은 조각을 <b>합침</b></td><td>작은 조각을 <b>합침</b></td><td>큰 후보 집합에서 <b>지움</b></td></tr>
+<tr><td><b>기준</b></td><td>가장 <b>자주</b> 붙어 나오는 쌍</td><td>합쳤을 때 말뭉치 <b>likelihood</b>를 가장 올리는 쌍</td><td>지워도 likelihood 손실이 가장 작은 조각 (토큰은 서로 <b>독립</b>이라고 가정)</td></tr>
+<tr><td><b>대표 모델</b></td><td>GPT-2·3, LLaMA</td><td>BERT</td><td>T5, ALBERT</td></tr>
+<tr><td><b>원전</b></td><td>Sennrich 2016</td><td>Schuster &amp; Nakajima 2012</td><td>Kudo 2018</td></tr>
+</tbody></table></div>
+<div class="annotation green"><strong>SentencePiece (Kudo &amp; Richardson 2018)가 더한 것</strong><span>공백도 <code>▁</code>(U+2581)라는 글자로 바꿔 텍스트 안에 넣습니다. 언어별 띄어쓰기 전처리 없이 학습할 수 있고, 토큰을 이어 붙이면 원문이 그대로 복원됩니다. 기본 알고리즘은 Unigram이고 BPE도 고를 수 있습니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/1508.07909">BPE · Sennrich 2016</a> · <a href="https://arxiv.org/abs/1609.08144">WordPiece · GNMT §4.1</a> · <a href="https://arxiv.org/abs/1804.10959">Unigram · Kudo 2018</a> · <a href="https://arxiv.org/abs/1808.06226">SentencePiece · Kudo &amp; Richardson 2018</a> · <a href="https://huggingface.co/docs/transformers/tokenizer_summary">HF Tokenizer summary</a></span><span></span></footer></div>
+<aside class="speaker-notes">subword를 만드는 방법은 세 가지입니다. 오늘은 LLaMA가 쓴 BPE를 깊게 봅니다. 한 가지 구분: SentencePiece는 알고리즘이 아니라 BPE나 Unigram을 돌리는 라이브러리입니다. LLaMA는 SentencePiece 위에서 BPE를 씁니다. 단어 앞에 붙는 ▁ 표시는 SentencePiece의 규칙입니다. 공백 위치를 표시로 남기는 생각 자체는 2012년 WordPiece 논문에도 있었습니다(밑줄 표시). BERT의 WordPiece 구현은 반대로 이어지는 조각에 ##을 붙입니다. (1.5분)</aside></section>
+<section class="slide layout-process" data-sec="2" data-section-label="BPE 학습과 적용" data-nav="BPE 학습: 가장 자주 붙는 쌍을 합치고, 그 순서를 기록합니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>BPE 학습: 가장 자주 붙는 쌍을<br>합치고, 그 순서를 기록합니다</h2><p>① 단어를 글자로 쪼갠다 → ② 인접 쌍의 빈도를 단어 빈도만큼 더해 센다 → ③ 가장 많은 쌍을 새 토큰으로 합친다 → ④ 정한 어휘 크기까지 반복.</p>
+<p>학습의 결과물은 어휘와 <b>병합 규칙의 순서</b>입니다.</p></div>
+<div class="vis"><div class="chips-row"><b class="muted">초기 말뭉치</b><span class="toks sm"><span class="tk ">l</span><span class="tk ">o</span><span class="tk ">w</span></span> ×5 <span class="toks sm"><span class="tk ">l</span><span class="tk ">o</span><span class="tk ">w</span><span class="tk ">e</span><span class="tk ">r</span></span> ×2 <span class="toks sm"><span class="tk ">n</span><span class="tk ">e</span><span class="tk ">w</span><span class="tk ">e</span><span class="tk ">s</span><span class="tk ">t</span></span> ×6 <span class="toks sm"><span class="tk ">w</span><span class="tk ">i</span><span class="tk ">d</span><span class="tk ">e</span><span class="tk ">s</span><span class="tk ">t</span></span> ×3</div>
+<div class="table-wrap"><table class="tbl tight"><thead><tr><th style="width:8%">규칙</th><th style="width:20%">병합</th><th style="width:26%">빈도 계산</th><th>병합 후 바뀐 단어</th></tr></thead><tbody>
+<tr><td><b>1</b></td><td>e + s → <span class="tk new">es</span></td><td>newest 6 + widest 3 = <b>9</b></td><td><span class="toks sm"><span class="tk ">n</span><span class="tk ">e</span><span class="tk ">w</span><span class="tk new">es</span><span class="tk ">t</span></span> <span class="toks sm"><span class="tk ">w</span><span class="tk ">i</span><span class="tk ">d</span><span class="tk new">es</span><span class="tk ">t</span></span></td></tr>
+<tr><td><b>2</b></td><td>es + t → <span class="tk new">est</span></td><td>6 + 3 = <b>9</b></td><td><span class="toks sm"><span class="tk ">n</span><span class="tk ">e</span><span class="tk ">w</span><span class="tk new">est</span></span> <span class="toks sm"><span class="tk ">w</span><span class="tk ">i</span><span class="tk ">d</span><span class="tk new">est</span></span></td></tr>
+<tr><td><b>3</b></td><td>l + o → <span class="tk new">lo</span></td><td>low 5 + lower 2 = <b>7</b></td><td><span class="toks sm"><span class="tk new">lo</span><span class="tk ">w</span></span> <span class="toks sm"><span class="tk new">lo</span><span class="tk ">w</span><span class="tk ">e</span><span class="tk ">r</span></span></td></tr>
+<tr><td><b>4</b></td><td>lo + w → <span class="tk new">low</span></td><td>5 + 2 = <b>7</b></td><td><span class="toks sm"><span class="tk new">low</span></span> <span class="toks sm"><span class="tk new">low</span><span class="tk ">e</span><span class="tk ">r</span></span></td></tr>
+</tbody></table></div>
+<p class="cap">동점: 1단계 e+s = s+t = 9, 3단계 l+o = o+w = 7 → 먼저 센 쌍을 고르는 구현 규칙으로 결정<br>Python <code>Counter.most_common</code>과 Node 재구현에서 같은 순서 확인 · 알고리즘: Sennrich 2016 Algorithm 1</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/1508.07909">Sennrich et al. 2016 · §3.2 · Algorithm 1</a></span><span></span></footer></div>
+<aside class="speaker-notes">글자로 쪼개고, 가장 자주 붙는 쌍을 합쳐 새 토큰으로 어휘에 넣고, 다시 세서 반복합니다. 정한 어휘 크기, LLaMA는 32,000개가 될 때까지 합니다. 중요한 건 합친 순서가 곧 규칙이라는 점입니다. 동점이 두 번 나오는데, 이건 구현이 먼저 센 쌍을 고르기 때문에 정해진 것입니다. (3분 · 중심 슬라이드, 화이트보드로 1단계 빈도를 직접 세어 보여 주기)</aside></section>
+<section class="slide layout-split" data-sec="2" data-section-label="BPE 학습과 적용" data-nav="학습한 BPE 적용: 새 단어에 배운 순서대로 병합을 겁니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>학습한 BPE 적용: 새 단어에<br>배운 순서대로 병합을 겁니다</h2><p>쓸 때는 빈도를 다시 세지 않습니다. 글자로 쪼갠 뒤 규칙 1→4를 <b>순서대로</b> 적용합니다.</p>
+<p>학습 말뭉치에 없던 <b>lowest</b>도 아는 조각 <b>low + est</b>로 잘립니다.</p>
+<p class="note">규칙 2(es+t)는 규칙 1이 만든 es가 있어야 걸립니다. 그래서 순서가 곧 규칙입니다. LLaMA tokenizer를 어떤 데이터로 학습했는지는 원문에 없습니다.</p></div>
+<div class="vis"><div class="ladder">
+<div class="rl"><b>시작</b>글자로 쪼갬</div><div><span class="toks "><span class="tk ">l</span><span class="tk ">o</span><span class="tk ">w</span><span class="tk ">e</span><span class="tk ">s</span><span class="tk ">t</span></span></div>
+<div class="rl"><b>규칙 1</b>e + s</div><div><span class="toks "><span class="tk ">l</span><span class="tk ">o</span><span class="tk ">w</span><span class="tk new">es</span><span class="tk ">t</span></span></div>
+<div class="rl"><b>규칙 2</b>es + t</div><div><span class="toks "><span class="tk ">l</span><span class="tk ">o</span><span class="tk ">w</span><span class="tk new">est</span></span></div>
+<div class="rl"><b>규칙 3</b>l + o</div><div><span class="toks "><span class="tk new">lo</span><span class="tk ">w</span><span class="tk new">est</span></span></div>
+<div class="rl"><b>규칙 4</b>lo + w</div><div><span class="toks "><span class="tk new">low</span><span class="tk new">est</span></span></div>
+<div class="done">결과: <span class="toks "><span class="tk new">low</span><span class="tk new">est</span></span> — 토큰 2개</div>
+</div>
+<div class="g c2">
+<div class="bx"><div class="k muted">다른 입력 · slow</div><span class="toks "><span class="tk ">s</span><span class="tk new">low</span></span><div class="m">규칙 3·4만 걸림</div></div>
+<div class="bx"><div class="k muted">다른 입력 · newer</div><span class="toks "><span class="tk ">n</span><span class="tk ">e</span><span class="tk ">w</span><span class="tk ">e</span><span class="tk ">r</span></span><div class="m">걸리는 규칙 없음 → 글자 그대로</div></div>
+</div>
+<p class="cap">위 4개 규칙만 가진 장난감 tokenizer의 결과 · 직접 실행해 확인</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/1508.07909">Sennrich et al. 2016 · §3.2</a> · <a href="https://arxiv.org/pdf/2302.13971v1#page=3">LLaMA 1 v1 · §2.1</a></span><span></span></footer></div>
+<aside class="speaker-notes">쓸 때는 새 단어를 글자로 쪼갠 뒤 배운 순서대로 병합을 적용합니다. 학습 때 없던 lowest도 아는 조각으로 잘립니다. 그런데 글자 자체가 어휘에 없으면 어떻게 될까요? 그게 다음 장의 byte fallback입니다. 참고로 원문은 tokenizer를 어떤 데이터로 학습했는지 적지 않았습니다. (1.5분)</aside></section>
+<section class="slide layout-split" data-sec="3" data-section-label="Byte Fallback" data-nav="Byte Fallback: 어휘에 없는 글자는 UTF-8 바이트로 쪼갭니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Byte Fallback: 어휘에 없는 글자는<br>UTF-8 바이트로 쪼갭니다</h2><p>모든 글자는 UTF-8로 1–4바이트입니다(영어 1, 한글 음절 3, 이모지 4). 바이트 값은 256가지뿐이라 <code>&lt;0x00&gt;</code>…<code>&lt;0xFF&gt;</code>를 어휘에 넣어 두면 <b>어떤 글자도 표현</b>되고 <code>&lt;unk&gt;</code>가 생기지 않습니다.</p>
+<p>대가는 길이입니다. 어휘에 없는 한글 음절 하나가 토큰 3개가 됩니다.</p>
+<p class="note">BPE 병합과는 별개 규칙입니다. 병합은 자주 나오는 조각을 만들고, byte fallback은 어휘 밖 글자를 처리합니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl tight"><thead><tr><th style="width:9%">글자</th><th style="width:25%">UTF-8 바이트</th><th style="width:11%">어휘에</th><th>LLaMA 토큰 (앞 ▁ 제외)</th></tr></thead><tbody>
+<tr><td><b>안</b></td><td><code>EC 95 88</code> (3)</td><td class="tg">있음</td><td><span class="toks sm"><span class="tk ">안</span></span> 1개</td></tr>
+<tr><td><b>녕</b></td><td><code>EB 85 95</code> (3)</td><td class="to">없음</td><td><span class="toks sm"><span class="tk byte">&lt;0xEB&gt;</span><span class="tk byte">&lt;0x85&gt;</span><span class="tk byte">&lt;0x95&gt;</span></span> 3개</td></tr>
+<tr><td><b>😀</b></td><td><code>F0 9F 98 80</code> (4)</td><td class="to">없음</td><td><span class="toks sm"><span class="tk byte">&lt;0xF0&gt;</span><span class="tk byte">&lt;0x9F&gt;</span><span class="tk byte">&lt;0x98&gt;</span><span class="tk byte">&lt;0x80&gt;</span></span> 4개</td></tr>
+</tbody></table></div>
+<div class="g c2">
+<div class="bx red dash"><div class="k tr">fallback 없으면</div><span class="toks "><span class="tk unk">&lt;unk&gt;</span></span><div class="m">어떤 글자였는지 정보가 사라지고 원문 복원 불가</div></div>
+<div class="bx orange"><div class="k to">fallback 있으면</div><span class="toks "><span class="tk byte">&lt;0xEB&gt;</span><span class="tk byte">&lt;0x85&gt;</span><span class="tk byte">&lt;0x95&gt;</span></span><div class="m">디코딩 때 바이트를 이어 붙이면 “녕”으로 복원</div></div>
+</div>
+<p class="cap">바이트 값: 직접 계산 · 토큰: huggyllama/llama-7b tokenizer 실행 출력</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2302.13971v1#page=3">LLaMA 1 v1 · §2.1</a> · <a href="https://arxiv.org/abs/1808.06226">SentencePiece · Kudo &amp; Richardson 2018</a> · <a href="../../w01/index.html">W01 덱 · Tokenizer</a></span><span></span></footer></div>
+<aside class="speaker-notes">어휘에 없는 글자는 &lt;unk&gt; 대신 UTF-8 바이트로 쪼갭니다. 바이트 토큰 256개를 어휘에 미리 넣어 두면 어떤 글자도 표현됩니다. 대가는 길이입니다. 한글 음절이 어휘에 없으면 토큰 3개가 됩니다. (W01 덱은 LLaMA 어휘의 한 음절 한글 토큰이 111개라고 보고했습니다. 이 수치는 제가 재현하지 않았으니 “W01 덱에 따르면”이라고 말합니다.) (2분)</aside></section>
+<section class="slide layout-process" data-sec="4" data-section-label="핸즈온" data-nav="손으로 한 것을 코드로: 장난감 BPE와 실제 tokenizer">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>손으로 한 것을 코드로:<br>장난감 BPE와 실제 tokenizer</h2><p><b>1단계</b>는 BPE 원리를 구현해 슬라이드 4와 같은 순서가 나오는지 봅니다. <b>2단계</b>는 이미 학습된 LLaMA tokenizer를 불러와 실물을 관찰합니다. huggyllama/llama-7b는 LLaMA 1 재배포본이고, Llama 2는 원문상 같은 tokenizer입니다.</p>
+<p class="small">직접 해 보기: <a href="https://lenml.github.io/llama-tokenizer-playground/">Llama 1·2 playground</a> · <a href="https://belladoreai.github.io/llama3-tokenizer-js/example-demo/build/">Llama 3 playground</a></p></div>
+<div class="vis"><div class="g c2">
+<div class="panel"><h3>1단계 · 장난감 BPE <span class="tag">원리</span></h3><pre class="code">corpus = {"l o w": 5, "l o w e r": 2,
+          "n e w e s t": 6, "w i d e s t": 3}
+merges = []
+for step in range(4):                <span class="c"># 학습</span>
+    pair, freq = pair_counts(corpus).most_common(1)[0]
+    merges.append(pair)              <span class="c"># 순서 = 규칙</span>
+    corpus = merge(corpus, pair)
+def encode(word):                    <span class="c"># 적용</span>
+    sym = list(word)
+    for a, b in merges:              <span class="c"># 배운 순서대로</span>
+        sym = merge_pair(sym, a, b)
+    return sym</pre><pre class="code out">merges = [('e','s'), ('es','t'), ('l','o'), ('lo','w')]
+encode("lowest") → ['low', 'est']</pre><p class="m">요약본 · 보조 함수 포함 전체 코드는 Colab</p></div>
+<div class="panel"><h3>2단계 · LLaMA tokenizer <span class="tag blue">실물</span></h3><pre class="code">from transformers import AutoTokenizer
+tok = AutoTokenizer.from_pretrained("huggyllama/llama-7b")
+for text in ["2026", "안", "녕", "😀",
+             "안녕하세요 반갑습니다"]:
+    ids = tok(text, add_special_tokens=False).input_ids
+    print(text, len(ids), tok.convert_ids_to_tokens(ids))</pre><pre class="code out">2026 5 ['▁', '2', '0', '2', '6']
+녕 4 ['▁', '&lt;0xEB&gt;', '&lt;0x85&gt;', '&lt;0x95&gt;']
+😀 5 ['▁', '&lt;0xF0&gt;', '&lt;0x9F&gt;', '&lt;0x98&gt;', '&lt;0x80&gt;']</pre><p class="m">출력 일부 · 전체 결과는 다음 장</p></div>
+</div></div></div>
+<footer class="src"><span>근거: <a href="https://colab.research.google.com/drive/1RhPo9Znj5DkQaekB9DYxCaly-8ZEOo34">Colab 노트북</a> · <a href="https://huggingface.co/docs/transformers/model_doc/llama2">HF Llama 2 문서</a> · <a href="https://lenml.github.io/llama-tokenizer-playground/">Llama 1·2 playground</a> · <a href="https://belladoreai.github.io/llama3-tokenizer-js/example-demo/build/">Llama 3 playground</a></span><span></span></footer></div>
+<aside class="speaker-notes">손으로 한 것을 코드로 확인하겠습니다. 1단계는 제가 만든 장난감 BPE로, 단어 4개짜리 말뭉치에서 원리를 봅니다. 2단계는 구현이 아니라 수조 토큰 규모로 학습된 진짜 LLaMA tokenizer를 불러와 관찰합니다. (3분 · Colab 화면 전환)</aside></section>
+<section class="slide layout-reference" data-sec="4" data-section-label="핸즈온" data-nav="결과: 녕은 바이트 3개로, 숫자는 한 자리씩 잘립니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>결과: 녕은 바이트 3개로,<br>숫자는 한 자리씩 잘립니다</h2><p>W01 덱과 1씩 다른 것은 맨 앞 <code>▁</code> 때문입니다. SentencePiece는 입력 맨 앞에 공백 표시 ▁를 붙이고, “▁안” 같은 합친 토큰이 어휘에 없으면 ▁가 따로 한 토큰이 됩니다.</p>
+<p>▁를 빼고 보면 결론은 같습니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl tight cols4"><thead><tr><th>입력</th><th style="width:44%">내 출력</th><th style="width:12%">W01 덱</th><th>판정</th></tr></thead><tbody>
+<tr><td><code>2026</code></td><td><span class="toks sm"><span class="tk sp">▁</span><span class="tk ">2</span><span class="tk ">0</span><span class="tk ">2</span><span class="tk ">6</span></span> 5</td><td>5</td><td class="tg">일치</td></tr>
+<tr><td><code>안</code></td><td><span class="toks sm"><span class="tk sp">▁</span><span class="tk ">안</span></span> 2</td><td>1</td><td>▁ 빼면 일치</td></tr>
+<tr><td><code>녕</code></td><td><span class="toks sm"><span class="tk sp">▁</span><span class="tk byte">&lt;0xEB&gt;</span><span class="tk byte">&lt;0x85&gt;</span><span class="tk byte">&lt;0x95&gt;</span></span> 4</td><td>3</td><td>▁ 빼면 일치</td></tr>
+<tr><td><code>😀</code></td><td><span class="toks sm"><span class="tk sp">▁</span><span class="tk byte">&lt;0xF0&gt;</span><span class="tk byte">&lt;0x9F&gt;</span><span class="tk byte">&lt;0x98&gt;</span><span class="tk byte">&lt;0x80&gt;</span></span> 5</td><td>4</td><td>▁ 빼면 일치</td></tr>
+<tr><td><code>안녕하세요 반갑습니다</code></td><td><span class="toks sm"><span class="tk sp">▁</span><span class="tk ">안</span><span class="tk byte">녕×3</span><span class="tk ">하</span><span class="tk ">세</span><span class="tk ">요</span><span class="tk sp">▁</span><span class="tk byte">반×3</span><span class="tk byte">갑×3</span><span class="tk byte">습×3</span><span class="tk ">니</span><span class="tk ">다</span></span> 20</td><td>20</td><td class="tg">일치</td></tr>
+</tbody></table></div>
+<div class="annotation green"><strong>발표자 관찰 · 이 출력 하나에서 본 패턴</strong><span>같은 문장에서 하·세·요·니·다는 1토큰, 녕·반·갑·습은 바이트 3개씩입니다. 10음절(공백 포함 11자)이 20토큰이 됩니다. 어휘에 든 음절은 자주 쓰는 어미 쪽으로 보이지만 일반 법칙으로 확인한 것은 아닙니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://colab.research.google.com/drive/1RhPo9Znj5DkQaekB9DYxCaly-8ZEOo34">huggyllama/llama-7b 실행 출력 (발표자)</a> · <a href="../../w01/index.html">W01 덱 · Tokenizer</a></span><span></span></footer></div>
+<aside class="speaker-notes">맨 앞 ▁는 공백 표시 토큰이라 빼고 보면, 녕은 바이트 3개로 쪼개집니다. 핵심은 두 가지입니다. 첫째, byte fallback이 실제로 일어납니다. 둘째, 같은 한글인데 어휘에 있는 글자와 없는 글자가 갈립니다. 그래서 한국어는 토큰이 많아집니다. 1단계에서 BPE 원리를 직접 구현했고, 2단계에서 실제 LLaMA tokenizer가 한국어 녕을 바이트 3개로 쪼갠다는 걸 확인했습니다.</aside></section>
+<section class="slide layout-quantitative" data-sec="5" data-section-label="LLaMA와 연결" data-nav="Llama 2는 같은 tokenizer를 영어 89.7% 데이터와 씁니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Llama 2는 같은 tokenizer를<br>영어 89.7% 데이터와 씁니다</h2><p><b>LLaMA 1 §2.1의 세 규칙</b>: SentencePiece BPE · 숫자는 한 자리씩 · 모르는 UTF-8 문자는 바이트로. 왜 이렇게 골랐는지는 원문에 없습니다.</p>
+<p>Llama 2 §2.2는 “same tokenizer as Llama 1”, 어휘 32k입니다. 바뀐 건 데이터(2T 토큰)와 구조(4K context, GQA)입니다.</p>
+<p class="small muted">다음 세대 Llama 3는 tokenizer 자체를 바꿨습니다(다음 장).</p></div>
+<div class="vis"><div class="chart-heading"><span class="tag blue">Llama 2 Table 10</span><strong>사전학습 데이터 언어 분포 · 문서 비율 %</strong></div>
+<div class="hbar-chart compact" role="img" aria-label="Llama 2 Table 10: 영어 89.70%, unknown 8.38%, 독일어 0.17%, 중국어 0.13%, 일본어 0.10%, 한국어 0.06%">
+<div class="hbar-row" data-value="89.7"><div class="hbar-head"><span>영어</span><strong>89.70<small>%</small></strong></div><div class="hbar-track"><div class="hbar-fill blue" style="width:89.7%"></div></div></div><div class="hbar-row" data-value="8.38"><div class="hbar-head"><span>unknown (코드 일부 포함)</span><strong>8.38<small>%</small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:8.38%"></div></div></div><div class="hbar-row" data-value="0.17"><div class="hbar-head"><span>독일어</span><strong>0.17<small>%</small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:0.17%"></div></div></div><div class="hbar-row" data-value="0.1"><div class="hbar-head"><span>일본어</span><strong>0.10<small>%</small></strong></div><div class="hbar-track"><div class="hbar-fill gray" style="width:0.1%"></div></div></div><div class="hbar-row" data-value="0.06"><div class="hbar-head"><span>한국어</span><strong>0.06<small>%</small></strong></div><div class="hbar-track"><div class="hbar-fill green" style="width:0.06%"></div></div></div>
+<div class="chart-axis"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div></div>
+<div class="annotation"><strong>해석 주의</strong><span>Table 10은 <b>모델</b> 사전학습 데이터의 분포이고, tokenizer 학습 데이터는 공개되지 않았습니다. 한국어 비중이 낮은 것과 한국어 음절이 어휘에 적은 것을 잇는 것은 발표자 해석입니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2302.13971v1#page=3">LLaMA 1 v1 · §2.1</a> · <a href="https://arxiv.org/pdf/2307.09288v2#page=6">Llama 2 v2 · §2.2 Tokenizer</a> · <a href="https://arxiv.org/pdf/2307.09288v2#page=22">Llama 2 v2 · §4.1 · Table 10</a> · <a href="https://arxiv.org/abs/2407.21783">Llama 3 · §3.2</a></span><span></span></footer></div>
+<aside class="speaker-notes">지금까지 본 내용이 LLaMA 원문에서는 딱 한 문장입니다. SentencePiece BPE, 숫자 한 자리씩, 모르는 문자는 바이트로. 이유는 적혀 있지 않습니다. Llama 2는 같은 tokenizer를 계승합니다. 그런데 학습 데이터가 영어 89.7%, 한국어 0.06%라서 byte fallback이 한국어에서 실제로 비쌉니다. (단, Table 10은 모델 학습 데이터 분포라 tokenizer 학습 데이터와 같다고 단정하지 않습니다.) 그래서 다음 세대인 Llama 3는 tokenizer를 바꿉니다. (1분)</aside></section>
+<section class="slide layout-reference" data-sec="5" data-section-label="LLaMA와 연결" data-nav="Llama 3는 tokenizer를 tiktoken 128K로 바꿨습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>Llama 3는 tokenizer를<br>tiktoken 128K로 바꿨습니다</h2><p>Llama 3 §3.2: tiktoken의 100K 토큰에 비영어 28K를 더해 <b>128K</b>. 영어 압축률은 Llama 2 tokenizer보다 <b>3.17 → 3.94 글자/토큰</b>으로 좋아졌습니다.</p>
+<p class="small muted">비영어 28K를 더해도 영어 토큰화에는 영향이 없었다고 적습니다. 아래 “관찰” 칸은 원문이 아니라 실행 결과입니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl tight"><thead><tr><th style="width:16%"></th><th>Llama 1·2</th><th class="em">Llama 3</th></tr></thead><tbody>
+<tr><td><b>구현</b></td><td>SentencePiece BPE</td><td class="em">tiktoken 100K + 비영어 28K</td></tr>
+<tr><td><b>어휘</b></td><td>32,000</td><td class="em">128K (4배)</td></tr>
+<tr><td><b>어휘 밖 글자</b></td><td>바이트 토큰으로 fallback <span class="toks sm"><span class="tk byte">&lt;0xEB&gt;</span><span class="tk byte">&lt;0x85&gt;</span><span class="tk byte">&lt;0x95&gt;</span></span></td><td class="em">바이트 단위 BPE라 처음부터 바이트에서 출발 <span class="tag">관찰</span></td></tr>
+<tr><td><b>“녕”</b></td><td>바이트 3개</td><td class="em"><span class="toks sm"><span class="tk ">녕</span></span> 1토큰 <span class="tag">관찰</span></td></tr>
+<tr><td><b>숫자 “2026”</b></td><td><span class="toks sm"><span class="tk ">2</span><span class="tk ">0</span><span class="tk ">2</span><span class="tk ">6</span></span> 한 자리씩 (원문)</td><td class="em"><span class="toks sm"><span class="tk ">202</span><span class="tk ">6</span></span> 최대 3자리 묶음 <span class="tag">관찰</span></td></tr>
+<tr><td><b>공백</b></td><td><span class="toks sm"><span class="tk ">▁is</span></span> ▁ 기호를 앞에</td><td class="em"><span class="toks sm"><span class="tk "> is</span></span> 공백이 토큰 안에 <span class="tag">관찰</span></td></tr>
+</tbody></table></div>
+<p class="cap">관찰: llama-tokenizer-js 1.2.2(Llama 1·2, HF 출력과 20토큰 결과 일치 확인) · llama3-tokenizer-js 1.2.0 실행 결과</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/2407.21783">Llama 3 · §3.2</a> · <a href="https://discuss.pytorch.kr/t/llama-3-tokenizer-youtube/4899">PyTorchKR · Llama 3 Tokenizer 영상 요약</a> · <a href="https://belladoreai.github.io/llama3-tokenizer-js/example-demo/build/">Llama 3 playground</a></span><span></span></footer></div>
+<aside class="speaker-notes">Llama 3는 tokenizer를 바꿨습니다. SentencePiece 대신 OpenAI의 tiktoken 어휘 100K에 비영어 토큰 28K를 더해 128K입니다. 원문은 영어 압축률이 3.17에서 3.94 글자/토큰으로 좋아졌다고 적습니다. 원문이 적지 않은 부분은 직접 돌려 봤습니다. 녕이 한 토큰이 됐고, 숫자는 한 자리씩이 아니라 세 자리까지 묶였습니다. 이건 실행 관찰이지 원문 주장은 아닙니다. (2분) 참고: PyTorchKR 글은 Meta의 “Understanding the Llama 3 Tokenizer | Llama for Developers” 영상을 GPT로 요약한 글이라 원문 확인용으로는 Llama 3 논문 §3.2를 씁니다.</aside></section>
+<section class="slide layout-process" data-sec="5" data-section-label="LLaMA와 연결" data-nav="tiktoken이란? OpenAI의 빠른 BPE tokenizer">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>tiktoken이란?<br>OpenAI의 빠른 BPE tokenizer</h2><p>OpenAI가 공개한 BPE tokenizer 라이브러리입니다(“a fast BPE tokeniser for use with OpenAI's models”). 자체 벤치마크에서 HF의 GPT-2 tokenizer보다 3–6배 빠릅니다.</p>
+<p><b>Llama 3에 들어간 게 맞습니다.</b> 논문 §3.2가 “tiktoken의 100K 토큰”을 썼다고 적고, Meta의 공식 코드도 tiktoken으로 tokenizer를 불러옵니다.</p></div>
+<div class="vis"><div class="g c2">
+<div class="bx blue"><div class="k tb">SentencePiece(Llama 2)와 다른 점</div>
+<div class="d">① 정규식으로 단어·숫자(최대 3자리)·구두점 덩어리를 먼저 나누고, 그 안에서만 BPE</div>
+<div class="chips-row"><span class="toks sm"><span class="tk ">I</span><span class="tk "> bought</span><span class="tk "> </span><span class="tk new">202</span><span class="tk new">6</span><span class="tk "> apples</span><span class="tk ">!</span></span> 7 <span class="muted">(Llama 2: 10)</span></div>
+<div class="d">② 바이트 단위 BPE: 바이트 256개에서 출발해 byte fallback이 따로 없고, 토큰 경계가 글자 중간에 올 수 있음</div>
+<div class="chips-row"><b class="muted">냈다</b><span class="toks sm"><span class="tk byte">EB 83</span><span class="tk byte">88 + 다</span></span> <span class="muted">“냈”이 두 토큰에 걸침</span></div></div>
+<div class="bx green"><div class="k tg">Llama 3에 들어간 증거</div>
+<pre class="code"><span class="c"># meta-llama/llama3 · llama/tokenizer.py (발췌)</span>
+import tiktoken
+from tiktoken.load import load_tiktoken_bpe
+mergeable_ranks = load_tiktoken_bpe(model_path)
+pat_str = r"...|\p{N}{1,3}|..."   <span class="c"># 숫자는 최대 3자리 덩어리</span>
+num_reserved_special_tokens = 256</pre>
+<div class="m">128,000 + 특수 토큰 256 = <b>128,256</b> (llama3-tokenizer-js 어휘 수로 확인)</div></div>
+</div>
+<div class="annotation"><strong>구분할 것</strong><span>“초고속”은 라이브러리 구현 속도 이야기라 모델 성능과는 별개입니다. 원문은 tiktoken의 어느 인코딩(cl100k_base 등)인지 이름은 밝히지 않습니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://github.com/openai/tiktoken">openai/tiktoken README</a> · <a href="https://github.com/meta-llama/llama3/blob/main/llama/tokenizer.py">meta-llama/llama3 · tokenizer.py</a> · <a href="https://arxiv.org/abs/2407.21783">Llama 3 · §3.2</a> · <a href="https://belladoreai.github.io/llama3-tokenizer-js/example-demo/build/">Llama 3 playground</a></span><span></span></footer></div>
+<aside class="speaker-notes">tiktoken은 OpenAI가 GPT 모델용으로 공개한 BPE tokenizer 라이브러리입니다. README는 다른 오픈소스 tokenizer보다 3에서 6배 빠르다고 하는데, 이건 OpenAI 자체 벤치마크입니다. Llama 3에 들어간 게 맞습니다. 논문이 tiktoken의 100K 토큰에 비영어 28K를 더했다고 적고, Meta가 공개한 Llama 3 코드도 tiktoken 라이브러리로 tokenizer를 불러옵니다. SentencePiece와 다른 점은 두 가지입니다. 먼저 정규식으로 단어, 숫자, 구두점 덩어리를 나눈 뒤 그 안에서만 병합해서, 숫자가 최대 세 자리로 묶입니다. 그리고 바이트 단위라 byte fallback이 따로 필요 없는 대신, “냈다”처럼 토큰 경계가 글자 중간에 올 수 있습니다. 초고속이라는 건 라이브러리 속도 얘기지 모델 성능과는 별개입니다. (2분)</aside></section>
+<section class="slide layout-quantitative" data-sec="5" data-section-label="LLaMA와 연결" data-nav="같은 뜻이어도 한국어는 Llama 2에서 2.5배 길었습니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>같은 뜻이어도 한국어는<br>Llama 2에서 2.5배 길었습니다</h2><p>같은 내용을 영어·한국어로 쓰고 토큰 수를 셌습니다. Llama 2에서 한국어는 <b>30토큰</b>으로 영어(12)의 2.5배, Llama 3에서는 <b>12 대 11</b>로 거의 같습니다.</p>
+<p class="small">playground에 직접 넣어 본 두 문장도 같은 경향입니다. 영어는 Llama 2·3 모두 5토큰인데, 한국어는 9 → 7로 줄었습니다. 두 문장은 번역쌍이 아니라 참고용입니다.</p>
+<p class="note">Petrov et al.(2023): 같은 텍스트의 번역이 언어에 따라 토큰 길이가 최대 15배까지 차이 납니다.</p></div>
+<div class="vis"><div class="chart-heading"><span class="tag blue">실행 관찰</span><strong>토큰 수 · 같은 축 0–30</strong></div>
+<div class="pair-row"><div class="pair-lab"><span class="tag">EN</span> I am studying the Llama 2 paper today.</div>
+<div class="pair-bar"><span>Llama 2</span><div class="hbar-track"><div class="hbar-fill gray" style="width:40.0%"></div></div><strong>12</strong></div>
+<div class="pair-bar"><span>Llama 3</span><div class="hbar-track"><div class="hbar-fill blue" style="width:36.7%"></div></div><strong>11</strong></div></div>
+<div class="pair-row"><div class="pair-lab"><span class="tag">KO</span> 나는 오늘 라마 2 논문을 공부하고 있다.</div>
+<div class="pair-bar"><span>Llama 2</span><div class="hbar-track"><div class="hbar-fill gray" style="width:100.0%"></div></div><strong>30</strong></div>
+<div class="pair-bar"><span>Llama 3</span><div class="hbar-track"><div class="hbar-fill blue" style="width:40.0%"></div></div><strong>12</strong></div></div>
+<div class="pair-row"><div class="pair-lab"><span class="tag">EN</span> She is really dumb.</div>
+<div class="pair-bar"><span>Llama 2</span><div class="hbar-track"><div class="hbar-fill gray" style="width:16.7%"></div></div><strong>5</strong></div>
+<div class="pair-bar"><span>Llama 3</span><div class="hbar-track"><div class="hbar-fill blue" style="width:16.7%"></div></div><strong>5</strong></div></div>
+<div class="pair-row"><div class="pair-lab"><span class="tag">KO</span> 정민이는 바부다.</div>
+<div class="pair-bar"><span>Llama 2</span><div class="hbar-track"><div class="hbar-fill gray" style="width:30.0%"></div></div><strong>9</strong></div>
+<div class="pair-bar"><span>Llama 3</span><div class="hbar-track"><div class="hbar-fill blue" style="width:23.3%"></div></div><strong>7</strong></div></div>
+<p class="cap">위 두 쌍: BOS 제외 · Llama 2는 맨 앞 ▁ 포함(HF와 동일) · llama-tokenizer-js 1.2.2 / llama3-tokenizer-js 1.2.0<br>아래 두 문장: Llama 1·2 / Llama 3 playground 화면 값 (맨 앞 ▁ 미포함)</p></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/2305.15425">Petrov et al. 2023 (NeurIPS)</a> · <a href="https://arxiv.org/abs/2407.21783">Llama 3 · §3.2</a> · <a href="https://lenml.github.io/llama-tokenizer-playground/">Llama 1·2 playground</a> · <a href="https://belladoreai.github.io/llama3-tokenizer-js/example-demo/build/">Llama 3 playground</a></span><span></span></footer></div>
+<aside class="speaker-notes">같은 뜻의 문장을 영어와 한국어로 넣어 봤습니다. Llama 2에서는 한국어가 2.5배 길고, Llama 3에서는 거의 같아졌습니다. 제가 playground에서 넣어 본 “She is really dumb”과 “정민이는 바부다.”도 같은 경향인데, 두 문장은 뜻이 같은 번역쌍이 아니라서 참고로만 봅니다. 토큰이 길면 같은 context 길이에 담을 수 있는 내용이 줄고, 계산 비용도 커집니다. (1.5분)</aside></section>
+<section class="slide layout-process" data-sec="6" data-section-label="한국어와 tokenizer" data-nav="LLaMA가 영어에 강한 이유: 데이터도 영어, 토큰도 영어에 싸다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>LLaMA가 영어에 강한 이유:<br>데이터도 영어, 토큰도 영어에 싸다</h2><p><b>① 데이터</b> — 원문이 밝힌 이유입니다. LLaMA 1은 웹(82%)에서 영어가 아닌 페이지를 버렸고, Wikipedia 20개 언어에도 한국어는 없습니다. Llama 2도 영어 89.70%, 한국어 0.06%입니다.</p>
+<p><b>② tokenizer</b> — 같은 내용이 한국어로는 2.5배의 토큰을 씁니다. 이건 원문이 아니라 발표자 해석입니다.</p></div>
+<div class="vis"><div class="g c2">
+<div class="bx blue"><div class="k tb">① 원문이 직접 쓴 문장 · Llama 2</div>
+<p class="quote">“Most data is in English, meaning that Llama 2 will perform best for English-language use cases.” — Table 10 설명</p>
+<p class="quote">“the model’s performance in languages other than English remains fragile and should be used with caution.” — §5.2</p></div>
+<div class="bx orange"><div class="k to">② 같은 4K context에 담기는 내용 · 직접 계산</div>
+<div class="chips-row"><b class="muted">같은 뜻 문장</b> 영어 12토큰 · 한국어 30토큰 (12장)</div>
+<div class="metric">≈ 40<small>%</small></div>
+<div class="d">한국어로는 같은 4K context에 영어 대비 약 12/30 ≈ 40%의 내용만 들어갑니다. 학습 토큰 2T도 한국어로는 같은 비율만큼 적은 내용입니다.</div>
+<div class="m">문장 1쌍에서 낸 거친 추정 · 일반화하려면 더 많은 번역쌍이 필요</div></div>
+</div>
+<div class="annotation"><strong>주의</strong><span>원문은 ①만 말합니다. ②는 Petrov et al.(2023)의 관찰과 12장 실행 결과에 기댄 해석이고, 성능 차이의 원인을 실험으로 나눈 것은 아닙니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/pdf/2302.13971v1#page=2">LLaMA 1 v1 · §2.1</a> · <a href="https://arxiv.org/pdf/2307.09288v2#page=22">Llama 2 v2 · §4.1 · Table 10</a> · <a href="https://arxiv.org/abs/2307.09288v2">Llama 2 v2 · §5.2</a> · <a href="https://arxiv.org/abs/2305.15425">Petrov et al. 2023</a></span><span></span></footer></div>
+<aside class="speaker-notes">LLaMA 논문만 봐도 영어에 강하다고 하는데, 왜 그런지 두 갈래로 나눠 보겠습니다. 첫째는 데이터입니다. 이건 원문이 직접 말합니다. LLaMA 1은 웹 데이터에서 영어가 아닌 페이지를 버렸고, 위키피디아 20개 언어에도 한국어는 없습니다. Llama 2도 영어가 89.7%이고, 논문 스스로 영어 사용에서 가장 잘 동작하고 다른 언어에서는 성능이 불안정하다고 씁니다. 둘째는 tokenizer입니다. 같은 뜻의 문장이 한국어로는 2.5배 토큰을 쓰니까, 같은 4K context에 담기는 내용이 영어의 40% 정도입니다. 다만 이건 원문 주장이 아니라 제 해석이고, 문장 한 쌍으로 낸 거친 추정입니다. (2분)</aside></section>
+<section class="slide layout-process" data-sec="6" data-section-label="한국어와 tokenizer" data-nav="“segmentation 문제”와 “어휘 배분 문제”는 다릅니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>“segmentation 문제”와<br>“어휘 배분 문제”는 다릅니다</h2><p><b>Segmentation</b>은 무엇을 한 단위로 볼지의 문제입니다. 한국어는 띄어쓰기가 있지만 어절 하나에 단어와 조사·어미가 붙는 교착어라, 공백으로만 자르면 “정민이는·정민이가·정민이를”이 모두 다른 단어가 됩니다.</p>
+<p>12장의 길이 차이는 주로 <b>어휘 배분</b> 문제입니다. Llama 2 tokenizer는 한국어 병합을 거의 배우지 못했습니다.</p></div>
+<div class="vis"><div class="g c2">
+<div class="bx blue"><div class="k tb">① Segmentation · 단위를 어떻게 자를까</div>
+<div class="chips-row"><b class="muted">어절</b><span class="toks sm"><span class="tk ">정민이는</span></span> <b class="muted">→ 형태소</b><span class="toks sm"><span class="tk ">정민</span><span class="tk ">이</span><span class="tk ">는</span></span></div>
+<div class="m">공백 단위로 자르면 조사·어미가 붙은 어절마다 새 단어가 생깁니다. SentencePiece 논문은 “기존 도구는 입력이 이미 단어로 나뉘었다고 가정한다”고 지적하고, 원문 문장에서 바로 학습하는 방식을 제안했습니다.</div></div>
+<div class="bx orange"><div class="k to">② 어휘 배분 · 한국어 조각이 어휘에 얼마나 있나</div>
+<div class="chips-row"><b class="muted">Llama 2</b><span class="toks sm"><span class="tk sp">▁</span><span class="tk ">정</span><span class="tk ">민</span><span class="tk ">이</span><span class="tk ">는</span><span class="tk sp">▁</span><span class="tk ">바</span><span class="tk ">부</span><span class="tk ">다</span><span class="tk ">.</span></span> 10</div>
+<div class="chips-row"><b class="muted">Llama 3</b><span class="toks sm"><span class="tk ">정</span><span class="tk ">민</span><span class="tk new">이는</span><span class="tk "> 바</span><span class="tk ">부</span><span class="tk ">다</span><span class="tk ">.</span></span> 7</div>
+<div class="m">Llama 2는 음절이 거의 다 따로입니다. Llama 3는 “이는”을 한 토큰으로 배웠습니다. 자르는 규칙이 아니라 <b>배운 병합</b>의 차이입니다.</div></div>
+</div>
+<div class="annotation"><strong>질문에 대한 답</strong><span>playground에서 본 차이는 ②가 주원인입니다. ①은 교착어인 한국어의 tokenizer를 설계할 때 처음부터 따라오는 배경 문제입니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/1808.06226">SentencePiece · Kudo &amp; Richardson 2018 · Abstract</a> · <a href="https://arxiv.org/abs/2305.15425">Petrov et al. 2023</a> · <a href="https://lenml.github.io/llama-tokenizer-playground/">Llama 1·2 playground</a> · <a href="https://belladoreai.github.io/llama3-tokenizer-js/example-demo/build/">Llama 3 playground</a></span><span></span></footer></div>
+<aside class="speaker-notes">playground에서 영어가 훨씬 적게 나온 게 SentencePiece가 말하는 segmentation 문제인지 질문이 있었습니다. 엄밀히는 다른 문제입니다. Segmentation은 무엇을 한 단위로 볼지의 문제이고, 제가 본 길이 차이는 tokenizer가 한국어 조각을 어휘에 얼마나 배정했느냐의 문제입니다. Llama 2는 정, 민, 이, 는이 다 따로인데 Llama 3는 “이는”을 한 토큰으로 배웠습니다. 다만 한국어가 교착어라서 어절과 단어가 다르다는 점은 한국어 tokenizer를 설계할 때 항상 따라오는 문제라서, 다음 장에서 이걸 어떻게 풀어 왔는지 봅니다. (2분)</aside></section>
+<section class="slide layout-reference" data-sec="6" data-section-label="한국어와 tokenizer" data-nav="한국어가 BPE에 약한가? 그냥 쓰면 불리할 뿐입니다">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>한국어가 BPE에 약한가?<br>그냥 쓰면 불리할 뿐입니다</h2><p>BPE는 “자주 붙어 나오는 쌍”만 봅니다. 이 기준이 한국어와 세 군데에서 어긋납니다.</p>
+<p>하지만 같은 BPE라도 형태소를 고려하거나(HyperCLOVA X) 한국어 어휘를 늘리면(Llama 3) 한국어 길이가 크게 줄었습니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl tight"><thead><tr><th style="width:20%">어긋나는 곳</th><th>무슨 일이 생기나</th><th style="width:24%">근거</th></tr></thead><tbody>
+<tr><td><b>① 글자 수가 많다</b></td><td>한글 음절은 <b>11,172개</b>(영어 알파벳 26개). 글자 단위면 드문 음절이 어휘 밖으로 밀려 byte fallback, 바이트 단위면 음절 하나가 3바이트라 병합을 배워야 겨우 한 글자가 됩니다.</td><td>유니코드 U+AC00–D7A3 (직접 계산) · HyperCLOVA 2021</td></tr>
+<tr><td><b>② 빈도만 본다</b></td><td>형태소 경계를 모른 채 합쳐서, 조각이 형태소를 가로지르거나 지나치게 잘게 쪼개집니다.</td><td>KLUE 2021 · Lee et al. 2024 (과분절)</td></tr>
+<tr><td><b>③ 데이터가 적으면<br>병합을 못 배운다</b></td><td>한국어 0.06%로는 “이는” 같은 병합이 생기지 않아 음절이 다 따로 남습니다.</td><td>Llama 2 Table 10 · 14장</td></tr>
+</tbody></table></div>
+<div class="annotation green"><strong>결론</strong><span>“한국어는 BPE에 취약하다”보다 “영어 위주 데이터에서 빈도만 보고 학습한 BPE가 한국어에 불리하다”가 정확합니다.</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://arxiv.org/abs/2109.04650">HyperCLOVA 2021</a> · <a href="https://arxiv.org/abs/2105.09680">KLUE 2021</a> · <a href="https://preview.aclanthology.org/add_acl24_videos/2024.findings-acl.135">Lee et al. 2024 · ACL Findings</a> · <a href="https://arxiv.org/pdf/2307.09288v2#page=22">Llama 2 · Table 10</a></span><span></span></footer></div>
+<aside class="speaker-notes">그럼 한국어는 BPE에 약한 걸까요? BPE 자체가 안 맞는다기보다, 그냥 쓰면 세 군데서 불리합니다. 첫째, 한글은 음절이 11,172개나 돼서 글자 단위로는 드문 음절이 어휘 밖으로 밀리고, 바이트 단위로는 음절 하나가 3바이트라 병합을 배워야 겨우 한 글자가 됩니다. 둘째, BPE는 빈도만 보고 합치기 때문에 형태소 경계를 모릅니다. 셋째, 데이터가 적으면 병합 자체를 못 배웁니다. 그런데 같은 BPE를 쓰면서도 HyperCLOVA X나 Llama 3는 한국어를 잘 처리합니다. 그래서 BPE에 취약하다기보다 영어 데이터로 빈도만 보고 학습한 BPE가 불리하다고 보는 게 정확합니다. (2분)</aside></section>
+<section class="slide layout-reference" data-sec="6" data-section-label="한국어와 tokenizer" data-nav="그럼 한국어엔 무엇을? 형태소 + 충분한 어휘">
+<div class="card"><div class="inner">
+<div class="txt"><div class="ey"></div><h2>그럼 한국어엔 무엇을?<br>형태소 + 충분한 어휘</h2><p>BPE냐 WordPiece냐보다 <b>형태소 경계를 지키는지</b>와 <b>한국어가 어휘에 충분히 들어갔는지</b>가 중요합니다. KLUE 논문은 같은 tokenizer를 BPE·WordPiece 두 이름으로 부를 정도입니다.</p></div>
+<div class="vis"><div class="table-wrap"><table class="tbl tight alg dense"><thead><tr><th>모델·연구</th><th style="width:42%">방식</th><th>결과·특징</th></tr></thead><tbody>
+<tr><td><b>WordPiece</b><br><span class="small muted">2012 · ICASSP</span></td><td>한글 약 11,000자에서 likelihood 기준 병합, 200k 단위</td><td>일·한 음성 검색용 출발점 · 형태소는 다루지 않음</td></tr>
+<tr><td><b>Park et al.</b><br><span class="small muted">2020 · AACL</span></td><td>형태소 분석 → BPE</td><td>한국어 과제 대부분에서 최고 (KorQuAD는 BPE 단독)</td></tr>
+<tr><td><b>KLUE</b><br><span class="small muted">2021 · BERT·RoBERTa</span></td><td>MeCab-ko 형태소 → WordPiece, 32k</td><td>학습 때만 형태소 분석, 쓸 때는 subword만</td></tr>
+<tr class="em"><td><b>HyperCLOVA X</b><br><span class="small muted">2024</span></td><td>형태소 인식 byte-level BPE, 100k</td><td>비교 모델 중 한국어 압축률 최고</td></tr>
+<tr><td><b>Llama 3</b><br><span class="small muted">2024</span></td><td>BPE + 비영어 토큰 28K</td><td>한국어 30 → 12토큰 (12장)</td></tr>
+</tbody></table></div>
+<div class="annotation blue"><strong>열린 질문</strong><span>① LLM tokenizer에 형태소 분석을 넣으면 무엇을 잃을까? (언어 독립성·속도) ② 한국어 어휘를 늘리면 다른 언어 성능은 어떻게 될까?</span></div></div></div>
+<footer class="src"><span>근거: <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/37842.pdf">WordPiece · Schuster &amp; Nakajima 2012 · §3</a> · <a href="https://arxiv.org/abs/2010.02534">Park et al. 2020</a> · <a href="https://arxiv.org/abs/2105.09680">KLUE 2021</a> · <a href="https://arxiv.org/abs/2404.01954">HyperCLOVA X 2024</a> · <a href="https://arxiv.org/abs/2407.21783">Llama 3 · §3.2</a></span><span></span></footer></div>
+<aside class="speaker-notes">그럼 한국어에는 무엇을 써야 할까요? 처음에는 WordPiece를 써야 하나 싶었는데, 찾아보니 알고리즘 이름보다 두 가지가 중요했습니다. 형태소 경계를 지키는지, 그리고 한국어가 어휘에 충분히 들어갔는지입니다. 제가 찾은 2012년 WordPiece 논문은 일본어·한국어 음성 검색에서 데이터로 단위를 배운다는 출발점이지만 형태소를 직접 다루진 않습니다. 형태소로 먼저 나눈 뒤 BPE를 한 방식이 한국어 과제 대부분에서 가장 좋았고, KLUE는 MeCab으로 형태소를 나눈 뒤 subword를 학습했습니다. 네이버 HyperCLOVA X는 형태소를 고려한 byte-level BPE로 한국어 압축률이 가장 좋았고, Llama 3는 비영어 어휘를 늘려 한국어 길이를 크게 줄였습니다. (2분)</aside></section>
+  </main>
+  <nav class="nav" aria-label="슬라이드 이동">
+    <button class="btn" id="prev" type="button" aria-label="이전 슬라이드">이전</button>
+    <select id="jump" aria-label="슬라이드 선택"></select>
+    <span class="count" id="count" aria-live="polite" aria-atomic="true"></span>
+    <button class="btn next" id="next" type="button" aria-label="다음 슬라이드">다음</button>
+    <button class="btn mode" id="mode" type="button" aria-pressed="false">읽기 모드</button>
+  </nav>
+</div>
+<script>
+(() => {
+  'use strict';
+  const root = document.documentElement;
+  const slides = [...document.querySelectorAll('.slide')];
+  const stage = document.getElementById('stage');
+  const jump = document.getElementById('jump');
+  const count = document.getElementById('count');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  const modeButton = document.getElementById('mode');
+  const prog = document.getElementById('prog');
+  const sections = {};
+  slides.forEach(slide => {
+    const key = slide.dataset.sec || '1';
+    sections[key] ||= slide.dataset.sectionLabel || key;
+  });
+  const storageKey = 'paper-study-' + document.title;
+  const mq = window.matchMedia('(min-width:820px) and (min-height:540px)');
+  let mode = 'auto';
+  try { mode = localStorage.getItem(storageKey + '-mode') || 'auto'; } catch (_) {}
+  if (!['auto','slide','read'].includes(mode)) mode = 'auto';
+  const groups = new Map();
+  const dots = [];
+  let current = 0;
+  const scrollRegions = [...document.querySelectorAll('.table-wrap,.diagram-scroll')];
+  scrollRegions.forEach(region => {
+    region.tabIndex = 0;
+    region.setAttribute('role','region');
+    const isTable = region.classList.contains('table-wrap');
+    if (!region.hasAttribute('aria-label')) region.setAttribute('aria-label',isTable ? '근거 표 · 가로 스크롤 가능' : '설명 도식 · 가로 스크롤 가능');
+    const hint = document.createElement('p');
+    hint.className = 'scroll-hint';
+    hint.textContent = isTable ? '↔ 표를 좌우로 밀면 나머지 열을 볼 수 있습니다.' : '↔ 도식을 좌우로 밀어 연결 경로를 확인하세요.';
+    hint.hidden = true;
+    region.insertAdjacentElement('afterend',hint);
+    region._scrollHint = hint;
+  });
+  function scrollHints() {
+    scrollRegions.forEach(region => {
+      region._scrollHint.hidden = !region.offsetWidth || region.scrollWidth <= region.clientWidth + 2;
+    });
+  }
+  slides.forEach((slide, index) => {
+    const key = slide.dataset.sec || '1';
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(index);
+    slide.id ||= 'slide-' + (index + 1);
+    slide.setAttribute('role','group');
+    slide.setAttribute('aria-roledescription','슬라이드');
+    slide.setAttribute('aria-label',(index + 1) + ' / ' + slides.length + ': ' + (slide.dataset.nav || ''));
+    const option = document.createElement('option');
+    option.value = index;
+    option.textContent = (index + 1) + '. ' + (slide.dataset.nav || '슬라이드');
+    jump.append(option);
+  });
+  groups.forEach((indices, key) => {
+    const group = document.createElement('div');
+    group.className = 'psec';
+    const label = document.createElement('span');
+    label.className = 'lab';
+    label.textContent = sections[key] || key;
+    group.append(label);
+    indices.forEach((index, sectionIndex) => {
+      const dot = document.createElement('button');
+      dot.type = 'button';
+      dot.className = 'dot';
+      dot.setAttribute('aria-label',(index + 1) + '. ' + slides[index].dataset.nav);
+      dot.setAttribute('aria-controls',slides[index].id);
+      dot.addEventListener('click',() => show(index));
+      dots[index] = dot;
+      group.append(dot);
+      const eyebrow = slides[index].querySelector('.ey');
+      if (eyebrow && !eyebrow.textContent.trim()) {
+        eyebrow.textContent = (sections[key] || key) + ' · ' + (sectionIndex + 1) + ' / ' + indices.length;
+      }
+    });
+    prog.append(group);
+  });
+  function scale() {
+    if (!root.classList.contains('fit')) return;
+    const rect = stage.getBoundingClientRect();
+    const ratio = Math.min((rect.width - 36) / 1280,(rect.height - 12) / 720,1);
+    root.style.setProperty('--s',Math.max(.1,ratio).toFixed(4));
+  }
+  function show(index, updateHistory = true) {
+    if (!slides.length) {
+      prev.disabled = next.disabled = jump.disabled = true;
+      count.textContent = '0 / 0';
+      return;
+    }
+    current = Math.max(0,Math.min(slides.length - 1,index));
+    slides.forEach((slide,i) => {
+      const active = i === current;
+      slide.classList.toggle('on',active);
+      slide.inert = !active;
+      slide.setAttribute('aria-hidden',String(!active));
+    });
+    dots.forEach((dot,i) => {
+      dot.classList.toggle('cur',i === current);
+      dot.classList.toggle('seen',i < current);
+      if (i === current) dot.setAttribute('aria-current','step');
+      else dot.removeAttribute('aria-current');
+    });
+    jump.value = String(current);
+    count.textContent = (current + 1) + ' / ' + slides.length;
+    prev.disabled = current === 0;
+    next.disabled = current === slides.length - 1;
+    if (updateHistory) {
+      try { history.replaceState(null,'','#s' + (current + 1)); } catch (_) {}
+      if (!root.classList.contains('fit')) window.scrollTo({top:0,behavior:'instant'});
+    }
+    scrollHints();
+  }
+  function layout() {
+    const fit = mq.matches && (mode === 'slide' || mode === 'auto');
+    root.classList.toggle('fit',fit);
+    modeButton.hidden = !mq.matches;
+    modeButton.textContent = fit ? '읽기 모드' : '슬라이드 모드';
+    modeButton.setAttribute('aria-pressed',String(!fit));
+    scale();
+    scrollHints();
+  }
+  function readHash() {
+    const match = /^#s(\d+)$/.exec(location.hash);
+    return match ? Number(match[1]) - 1 : 0;
+  }
+  prev.addEventListener('click',() => show(current - 1));
+  next.addEventListener('click',() => show(current + 1));
+  jump.addEventListener('change',() => show(Number(jump.value)));
+  modeButton.addEventListener('click',() => {
+    mode = root.classList.contains('fit') ? 'read' : 'slide';
+    try { localStorage.setItem(storageKey + '-mode',mode); } catch (_) {}
+    layout();
+  });
+  document.addEventListener('keydown',event => {
+    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    const tag = event.target.tagName;
+    if (['INPUT','TEXTAREA','SELECT'].includes(tag) || event.target.isContentEditable) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2 && ['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+    let target;
+    if (event.key === 'ArrowRight' || event.key === 'PageDown') target = current + 1;
+    else if (event.key === 'ArrowLeft' || event.key === 'PageUp') target = current - 1;
+    else if (event.key === 'Home') target = 0;
+    else if (event.key === 'End') target = slides.length - 1;
+    else if (event.key === ' ' && root.classList.contains('fit') && tag !== 'BUTTON' && tag !== 'A') target = current + 1;
+    if (target !== undefined) { event.preventDefault(); show(target); }
+  });
+  window.addEventListener('hashchange',() => show(readHash(),false));
+  let raf;
+  window.addEventListener('resize',() => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(layout);
+  });
+  if (mq.addEventListener) mq.addEventListener('change',layout);
+  let touchStart = null;
+  stage.addEventListener('touchstart',event => {
+    touchStart = null;
+    // Reading mode is a vertically scrolling document; use navigation buttons there.
+    if (!root.classList.contains('fit') || event.touches.length !== 1) return;
+    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2) return;
+    touchStart = {x:event.touches[0].clientX,y:event.touches[0].clientY};
+  },{passive:true});
+  stage.addEventListener('touchend',event => {
+    if (!touchStart) return;
+    const dx = event.changedTouches[0].clientX - touchStart.x;
+    const dy = event.changedTouches[0].clientY - touchStart.y;
+    touchStart = null;
+    if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1));
+  },{passive:true});
+  stage.addEventListener('touchcancel',() => { touchStart = null; },{passive:true});
+  // Read-only diagnostics for authoring. No automatic shrinking of dense slides.
+  window.deckCheck = () => {
+    const saved = current;
+    const results = slides.map((slide,index) => {
+      show(index,false);
+      const inner = slide.querySelector('.inner');
+      const card = slide.querySelector('.card');
+      return {
+        slide:index + 1,title:slide.dataset.nav,
+        innerOverflow:!!inner && (inner.scrollHeight > inner.clientHeight + 2 || inner.scrollWidth > inner.clientWidth + 2),
+        cardOverflow:!!card && (card.scrollHeight > card.clientHeight + 2 || card.scrollWidth > card.clientWidth + 2),
+        hasSource:!!slide.querySelector('.src,.slide-source')
+      };
+    });
+    show(saved,false);
+    return results;
+  };
+  show(readHash(),false);
+  layout();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+})();
+</script>
+</body>
+</html>
