@@ -29,6 +29,10 @@
   - **함께 읽을 자료와 범위:** [PPO §3](https://arxiv.org/abs/1707.06347v2)에서 clipped policy update의 목적만 확인한다. 이어 Llama 2 §3.2.3와 Eq. (3)–(4), Figures 7–8을 읽어 K-sample selection, 이전 version sample을 함께 보존한 변화, PPO reward objective와 KL penalty를 순서대로 연결한다. 이 주차에서는 reward-model ranking loss를 다시 유도하지 않고, 앞 목표의 RM을 fixed reward estimator로 받아 쓴다.
   - **원문에서 읽을 부분:** [Llama 2 §3.2.3, Eq. (3)–(4), Figures 7–8, §5.1–§5.2](https://arxiv.org/abs/2307.09288v2). RLHF V4 이전의 rejection sampling과 이후 PPO 결합, safety prompt에서 safety RM 우선 사용, reference-policy KL이 높은 RM score와 낮은 human evaluation으로 나타나는 reward hacking을 완화하려는 경계를 확인한다.
 
+## 발표자료
+
+- Post-training · §3–§3.2.1 (SFT · 선호 데이터): [슬라이드](post-training/index.html) · 원본 [slides.json](post-training/slides.json) — 덱에서 `N` 키로 대본을 봅니다.
+
 ## 팀별 분석
 
 ### Architecture & Pre-training
