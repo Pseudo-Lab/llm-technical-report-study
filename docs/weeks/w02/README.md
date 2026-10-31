@@ -31,7 +31,16 @@
 
 ## 발표자료
 
-- Post-training · §3–§3.2.1 (SFT · 선호 데이터): [슬라이드](post-training/index.html) · 원본 [slides.json](post-training/slides.json) — 덱에서 `N` 키로 대본을 봅니다.
+- [통합 발표자료](index.html): 팀원 자료를 [#180](https://github.com/Pseudo-Lab/llm-technical-report-study/issues/180) 분담 순서로 묶은 98장입니다. 장마다 근거 줄에 Llama 2 원문 쪽과 팀원 자료 쪽 링크가 있습니다.
+- 파트별 원본(`slides/`, 받은 그대로):
+  - 사전학습 & 아키텍처 · 이경민: [슬라이드](slides/w02-llama2-pretraining-architecture.html)
+  - Data · 정호찬: [슬라이드](slides/llama2_data.html)
+  - 데이터 & Post-training · 송용우: [§3–§3.2.1 SFT와 선호 데이터](slides/llama2_sft_preference_data.html) · 원본 [JSON](slides/llama2_sft_preference_data.json) — 덱에서 `N` 키로 대본을 봅니다 · [§3–§3.2 SFT와 RLHF](slides/llama2_sft_rlhf.html)
+  - 데이터 & Post-training · 임병극: [§3.3–§3.4 GAtt와 평가](slides/W02_Llama2_GAtt_Evaluation.html)
+  - Alignment & RL · 김민제: [RLHF 개요 · §3.2.1–§3.2.2 Reward Model](slides/llama2_rl_part1.html)
+  - Background · 이정민: [Tokenizer · BPE · Byte Fallback](slides/tokenizer-bpe.html)
+  - Background · 김민선: [위치 인코딩: Transformer → GPT-3 → RoPE](slides/llama2-background-RoPE.html)
+- [Llama 2 읽기 지도](llama2-reading-map.html) · [Markdown](llama2-reading-map.md): 다섯 파트의 범위 · 질문 · 개념 설명 페이지입니다. 발표자료의 근거 링크가 이 페이지를 가리킵니다. 파트별 범위는 2026-10-24 스터디 배정을 따릅니다.
 
 ## 팀별 분석
 
