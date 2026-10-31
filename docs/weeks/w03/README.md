@@ -29,8 +29,8 @@
 
 ## 발표자료
 
-- Architecture & Pre-training · 우성현: [슬라이드](qwen-architecture-deck.html)
-- Tokenizer · Data & Synthesis · Alignment & RL · RoPE와 Long-Context(Background) · 김현우: [슬라이드](alignment-background-study.html) · 원본 [JSON](alignment-background-study.json) — 덱에서 `N` 키로 대본을 봅니다.
+- Architecture & Pre-training · 우성현: [슬라이드](qwen-architecture-deck.html) — 받은 원본 그대로입니다. 덱 안의 `../w02/` 링크가 맞도록 `slides/`가 아닌 이 폴더에 둡니다.
+- Tokenizer · Data & Synthesis · Alignment & RL · RoPE와 Long-Context(Background) · 김현우: [슬라이드](slides/alignment-background-study.html) · 원본 [JSON](slides/alignment-background-study.json) — 덱에서 `N` 키로 대본을 봅니다.
 
 ## 팀별 분석
 
