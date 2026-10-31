@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """Render reviewed slide HTML fragments into the bundled standalone shell."""
 import argparse
+import base64
 import html
 import json
+import mimetypes
 import re
 from pathlib import Path
 
@@ -40,6 +42,19 @@ def render(spec, shell):
             .replace("<!-- SLIDES -->", "\n".join(sections)))
 
 
+def inline_images(page, base):
+    """Embed local <img src="relative/path"> files as data URIs so the HTML stays standalone."""
+    def embed(match):
+        src = match.group(2)
+        path = base / src
+        if src.startswith(("data:", "http:", "https:")) or not path.is_file():
+            return match.group(0)
+        mime = mimetypes.guess_type(path.name)[0] or "application/octet-stream"
+        data = base64.b64encode(path.read_bytes()).decode("ascii")
+        return f'{match.group(1)}data:{mime};base64,{data}{match.group(3)}'
+    return re.sub(r'(<img\b[^>]*?\bsrc=")([^"]+)(")', embed, page)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("input", type=Path, help="Reviewed slide JSON")
@@ -47,7 +62,7 @@ def main():
     args = parser.parse_args()
     shell = Path(__file__).resolve().parents[1] / "assets" / "deck-shell.html"
     spec = json.loads(args.input.read_text(encoding="utf-8"))
-    result = render(spec, shell.read_text(encoding="utf-8"))
+    result = inline_images(render(spec, shell.read_text(encoding="utf-8")), args.input.resolve().parent)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(result, encoding="utf-8")
     print(f"{args.output}: {len(spec['slides'])} slides")
