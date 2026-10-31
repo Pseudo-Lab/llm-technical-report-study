@@ -40,7 +40,6 @@
   - Alignment & RL · 김민제: [RLHF 개요 · §3.2.1–§3.2.2 Reward Model](slides/llama2_rl_part1.html)
   - Background · 이정민: [Tokenizer · BPE · Byte Fallback](slides/tokenizer-bpe.html)
   - Background · 김민선: [위치 인코딩: Transformer → GPT-3 → RoPE](slides/llama2-background-RoPE.html)
-- [Llama 2 읽기 지도](llama2-reading-map.html) · [Markdown](llama2-reading-map.md): 다섯 파트의 범위 · 질문 · 개념 설명 페이지입니다. 발표자료의 근거 링크가 이 페이지를 가리킵니다. 파트별 범위는 2026-10-24 스터디 배정을 따릅니다.
 
 ## 팀별 분석
 

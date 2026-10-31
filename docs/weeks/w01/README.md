@@ -17,7 +17,6 @@
 - [발표자료 회고](notes/retrospective.md): Skills 초안 · 중간본 · 최종본을 비교한 반성과 규칙입니다.
 - [LLM 생애주기 지도](notes/lifecycle-map.html): 발표자료 12장의 네 묶음 · 11단계를 단계마다 정하는 것과 스터디 주차로 펼친 페이지입니다. 상단 버튼으로 LLaMA 1이 다룬 칸을 표시할 수 있습니다.
 - [벤치마크 실제 예시](notes/benchmark-examples.md): LLaMA 1이 쓴 벤치마크 20개의 실제 문항 · 출처 · 라이선스.
-- [LLaMA 1 읽기 지도](llama1-reading-map.html) · [Markdown](llama1-reading-map.md): Skills 1([#170](https://github.com/Pseudo-Lab/llm-technical-report-study/issues/170))로 만든 63쪽 읽기 지도입니다. 다섯 파트 개요와 협업 제안, 파트별 질문, 개념별 설명 페이지, Background 빈 영역 표로 되어 있습니다. 사람 검토 전 상태입니다.
 
 HTML 파일을 내려받아 브라우저에서 열면 됩니다. `←` / `→`로 슬라이드를 넘기고 `Home` / `End`로 처음과 끝으로 이동합니다.
 
