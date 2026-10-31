@@ -43,10 +43,6 @@
     {
      "label": "Qwen2 · §2.1",
      "url": "https://arxiv.org/pdf/2407.10671v4#page=3"
-    },
-    {
-     "label": "W02 Tokenizer 로드맵",
-     "url": "../../w02/llama2-reading-map.html#c-tok-roadmap"
     }
    ],
    "note": "채울 것: □ cl100k 100,277은 tiktoken에서 직접 확인한 값 — 원문은 '약 152K'만 적음 Mistral · Llama 3 tokenizer: Hugging Face mistralai/Mistral-7B-v0.1 · NousResearch/Meta-Llama-3-8B(미러). Llama 3는 Llama 2 대비 영어 3.17 → 3.94 chars/token.",
@@ -86,10 +82,6 @@
     {
      "label": "Unicode · UTF-8 (RFC 3629)",
      "url": "https://www.rfc-editor.org/rfc/rfc3629"
-    },
-    {
-     "label": "W02 GPT-2 byte-level BPE",
-     "url": "../../w02/llama2-reading-map.html#c-tok-gpt2-bytelevel"
     }
    ],
    "note": "왜 번호(U+D558)를 바로 토큰 단위로 쓰지 않나: 유니코드 글자는 15만 개가 넘어서, 글자를 기본 단위로 하면 출발 어휘부터 거대해지고 그래도 빠지는 글자가 생긴다. 바이트는 256개뿐이라 출발 어휘가 작고, 어떤 글자든 표현된다(GPT-2가 byte-level을 고른 이유, W02). 대신 글자를 다시 조립하는 일을 BPE 합치기가 맡는다. UTF-8 규칙: 한글처럼 U+0800–U+FFFF 범위의 글자는 3바이트, 첫 바이트는 1110 + 번호의 위 4비트, 둘째는 10 + 다음 6비트, 셋째는 10 + 마지막 6비트. 그래서 같은 위 10비트를 가진 64개 번호(2^6)는 앞 2바이트가 같다. 한글 음절 11,172자는 앞 2바이트 조합 175가지로 나뉜다(직접 계산)."
@@ -136,14 +128,6 @@
     {
      "label": "Qwen · §2.2",
      "url": "https://arxiv.org/pdf/2309.16609v1#page=6"
-    },
-    {
-     "label": "W02 Byte fallback과 숫자 분리",
-     "url": "../../w02/llama2-reading-map.html#c-tok-byte-fallback"
-    },
-    {
-     "label": "W02 SentencePiece",
-     "url": "../../w02/llama2-reading-map.html#c-tok-sentencepiece"
     }
    ],
    "note": "1단계 차이: SentencePiece는 문장을 나누지 않고 공백만 ▁로 바꾼다. byte-level은 정규식으로 먼저 덩어리를 나누고, 이후 merge가 덩어리 경계를 넘지 못한다. 결과 토큰과 1단계 결과(Llama 2 normalizer 출력, Qwen2 pre-tokenizer 출력)는 tokenizer.json을 직접 실행한 값이고, 2–3단계는 동작 순서를 풀어 쓴 설명이다."
@@ -167,14 +151,6 @@
     {
      "label": "Qwen · §2.2",
      "url": "https://arxiv.org/pdf/2309.16609v1#page=6"
-    },
-    {
-     "label": "W02 Byte fallback과 숫자 분리",
-     "url": "../../w02/llama2-reading-map.html#c-tok-byte-fallback"
-    },
-    {
-     "label": "W02 SentencePiece",
-     "url": "../../w02/llama2-reading-map.html#c-tok-sentencepiece"
     }
    ],
    "note": "token_id는 Llama 2 tokenizer.json(NousResearch 미러)과 Qwen2 tokenizer.json으로 직접 뽑은 값."
@@ -194,10 +170,6 @@
     {
      "label": "tiktoken",
      "url": "https://github.com/openai/tiktoken"
-    },
-    {
-     "label": "W02 GPT-2 byte-level BPE",
-     "url": "../../w02/llama2-reading-map.html#c-tok-gpt2-bytelevel"
     }
    ],
    "note": "cl100k는 r50k보다 어휘가 두 배라 한국어 · 중국어 · 코드가 짧아졌지만, 한국어는 여전히 글자 중간에서 잘린다(③). Qwen은 여기서 출발해 숫자 규칙을 바꾸고 다국어 토큰을 더했다(다음 장들). 영어 문장(The quick brown fox …)은 r50k · cl100k · Qwen 모두 10토큰으로 같았다. GPT-4o 이후는 o200k_base를 쓴다. 표 기준: 모델 이름은 tiktoken 라이브러리의 모델→어휘 대응표(model.py)에 적힌 이름이다. code-davinci-002는 2021–22년 OpenAI 코드 모델(옛 Codex 계열)로, 지금의 Codex 코딩 에이전트와는 다르다. 직접 실행 · 모델 연결은 tiktoken 0.14의 model.py 기준 · cl100k 정규식은 숫자를 3자리까지 묶음."
@@ -248,10 +220,6 @@
     {
      "label": "tiktoken cl100k_base",
      "url": "https://github.com/openai/tiktoken"
-    },
-    {
-     "label": "W02 Byte fallback과 숫자 분리",
-     "url": "../../w02/llama2-reading-map.html#c-tok-byte-fallback"
     }
    ],
    "note": "Llama 2 · Mistral도 숫자를 한 자리씩 나눈다(SentencePiece 옵션). 숫자를 한 자리씩 나누면 같은 숫자는 늘 같은 토큰이 되어 산술에 유리하다는 것이 LLaMA · PaLM 쪽의 일반적 설명이고, Qwen 원문은 이유를 적지 않았다."
@@ -271,10 +239,6 @@
     {
      "label": "Qwen-7B qwen.tiktoken",
      "url": "https://huggingface.co/Qwen/Qwen-7B/tree/ef3c5c9c57b252f3149c1408daf4d649ec8b6c85"
-    },
-    {
-     "label": "W02 BPE 학습: merge를 쌓아 어휘를 만든다",
-     "url": "../../w02/llama2-reading-map.html#c-tok-bpe-train"
     }
    ],
    "note": "원문(§2.2)은 '자주 쓰는 중국어 문자 · 단어와 다른 언어를 어휘에 추가했다'고만 쓴다. 새 규칙 52,487개를 어떤 데이터로 어떻게 학습했는지는 미기술이다. 새 규칙이 뒤에 붙어 있으므로 새 규칙이 끼어들 일이 없는 영어 · 코드는 cl100k와 거의 같게 잘린다(숫자 제외, 직접 확인한 예: 영어 문장 10토큰 · 코드 11토큰으로 같음). tiktoken 파일에는 merges 목록이 따로 없고 '바이트열 + 순위'만 있는데, 순위가 곧 합치기 우선순위다. Hugging Face 형식(tokenizer.json)은 같은 내용을 merges 151,387줄로 적는다(예: 녕 = 144,114번째 줄 = 144,370 − 256). 규칙 번호 = qwen.tiktoken · cl100k의 순위. Qwen2 tokenizer.json의 merges 151,387줄은 '번호 − 256'(바이트 256개 제외)과 같은 순서다. 직접 실행 · Qwen 순위가 cl100k보다 1,100 작은 것은 숫자 토큰 1,100개를 빼고 앞으로 당겼기 때문 (순서는 그대로). 읽는 법: 순위 = 합쳐 만든 결과 토큰의 token_id, 작은 것부터 적용(merges.txt 줄 번호 = 순위 − 255)."
@@ -325,10 +289,6 @@
     {
      "label": "Llama 2 tokenizer.json (NousResearch 미러)",
      "url": "https://huggingface.co/NousResearch/Llama-2-7b-hf/blob/main/tokenizer.json"
-    },
-    {
-     "label": "W02 Byte fallback과 숫자 분리",
-     "url": "../../w02/llama2-reading-map.html#c-tok-byte-fallback"
     }
    ],
    "note": "byte fallback이 없으면 '녕'은 <unk> 하나가 되어 정보가 사라진다. Mistral 7B는 같은 방식이지만 어휘에 '짜'와 😀가 있어서 그 둘은 한 토큰이 된다."
@@ -375,10 +335,6 @@
     {
      "label": "tiktoken (BPE 인코딩 구현)",
      "url": "https://github.com/openai/tiktoken"
-    },
-    {
-     "label": "W02 학습된 merge로 분절하기",
-     "url": "../../w02/llama2-reading-map.html#c-tok-bpe-apply"
     }
    ],
    "note": "[왜 두 조각씩] BPE 학습은 '학습 데이터에서 가장 자주 붙어 나오는 두 토큰을 하나로 합친다'를 반복해 규칙표를 만든다. 그래서 규칙은 모두 '왼쪽 조각 + 오른쪽 조각' 꼴이고, 적용할 때도 이웃한 두 조각만 본다. 세 조각을 한 번에 합치는 규칙은 없다. [왜 EB + 85부터] 1단계 후보는 EB 85와 85 95 둘뿐인데, 85 95는 규칙표에 없다. EB 85만 있으니 EB + 85. [우선순위] 길이 순이 아니라 token_id 순이다. 작은 번호일수록 학습 때 먼저 만들어진(학습 데이터에서 더 자주 나온) 규칙이다. [구현] tiktoken의 byte_pair_merge가 이 방식(이웃 쌍의 rank 중 최소를 합치기 반복). Hugging Face tokenizers는 merges.txt의 줄 순서를 같은 우선순위로 쓴다."
@@ -444,10 +400,6 @@
     {
      "label": "Qwen tokenization_note.md (Vocabulary Expansion)",
      "url": "https://github.com/QwenLM/Qwen/blob/main/tokenization_note.md"
-    },
-    {
-     "label": "W02 BPE 학습",
-     "url": "../../w02/llama2-reading-map.html#c-tok-bpe-train"
     }
    ],
    "note": "[차이 한 줄] 학습은 '어떤 규칙을 만들지'를 빈도로 정하고(데이터 전체를 봄), 적용은 '있는 규칙 중 무엇을 먼저 쓸지'를 번호로 정한다(글 하나만 봄). 학습 2단계의 동률(只+猫 35 = 是一+只 35)은 더 짧은 문자열을 고르는 규칙(best_pair_sort_key)으로 只猫가 이겼다. 是一+只는 그 뒤 只가 只猫로 묶여 사라졌다. 적용 1단계에서 我+是一, 是一+只는 규칙표에 없어서 후보가 아니고, 只+猫만 있어서 그걸 합친다. 一只猫(151,851) 규칙은 이 글에는 '一只'라는 조각이 없어 쓰이지 않는다. add_merges.py: 학습 = learn_bpe(min(pairs, key=best_pair_sort_key), 키는 −빈도 · 길이 …), 적용 = bpe(min(pairs, key=merges.get(…)))."
@@ -570,10 +522,6 @@
     {
      "label": "Llama 3 · §3.1.1",
      "url": "https://arxiv.org/pdf/2407.21783v3#page=5"
-    },
-    {
-     "label": "W01 · W02 읽기 지도",
-     "url": "../../w02/llama2-reading-map.html#c-pretrain-corpus"
     }
    ],
    "note": "Llama 2 토큰 수는 Llama 2 보고서 기준 2T(Llama 3 보고서는 1.8T로 적음). Mistral 7B 보고서는 데이터를 적지 않는다. Llama 3 칸은 §3.1.1(p.5)에서 확인."
@@ -1119,10 +1067,6 @@
     {
      "label": "Qwen2 · §4.3",
      "url": "https://arxiv.org/pdf/2407.10671v4#page=8"
-    },
-    {
-     "label": "W02 RLHF 3단계 골격",
-     "url": "../../w02/llama2-reading-map.html#c-rlhf-pipeline"
     }
    ],
    "note": "이 장의 그림을 DPO 장과 alignment tax 장에서 다시 보여 준다. 채울 것: □ 바뀐 칸에 표시 · □ 모델 수 4 → 2 → 3을 표 아래에 적기",
@@ -1195,10 +1139,6 @@
     {
      "label": "Qwen · §3.2.1",
      "url": "https://arxiv.org/pdf/2309.16609v1#page=11"
-    },
-    {
-     "label": "W02 ranking loss",
-     "url": "../../w02/llama2-reading-map.html#c-ranking-loss"
     }
    ],
    "note": "",
@@ -1219,10 +1159,6 @@
     {
      "label": "transformers modeling_qwen2.py (v4.46)",
      "url": "https://github.com/huggingface/transformers/blob/v4.46.0/src/transformers/models/qwen2/modeling_qwen2.py"
-    },
-    {
-     "label": "W02 ranking loss",
-     "url": "../../w02/llama2-reading-map.html#c-ranking-loss"
     }
    ],
    "note": "원문: 'we have incorporated a pooling layer into the original QWEN model to extract the reward for a sentence based on a specific end token.' 그 이상은 적지 않는다. Hugging Face 코드는 Qwen의 RM 구현이 아니라 같은 구조를 이해하기 위한 공개 예시다(sequence_lengths = 첫 pad 위치 − 1, pooled_logits = logits[배치, sequence_lengths]). ChatML의 <|im_end|>가 그 끝 토큰일 가능성이 있지만 원문은 밝히지 않았다(추출자 추측)."
@@ -1268,10 +1204,6 @@
     {
      "label": "Qwen · §3.2.2",
      "url": "https://arxiv.org/pdf/2309.16609v1#page=11"
-    },
-    {
-     "label": "W02 PPO · KL",
-     "url": "../../w02/llama2-reading-map.html"
     }
    ],
    "note": "[KL 벌점] 토큰마다 log π_policy − log π_ref를 재서, policy가 시작 모델과 다르게 말할수록 점수를 깎는다. RM의 허점을 파고드는 이상한 답(reward hacking)을 막는 장치. [advantage] 실제로 받은 점수가 value 예측보다 높으면 '예상보다 잘했다' → 그 토큰을 더 자주 내도록, 낮으면 덜 내도록. 원문은 PPO 내부 식(GAE, clip ε)을 적지 않았다."
@@ -1301,10 +1233,6 @@
     {
      "label": "Qwen · §3.2.2",
      "url": "https://arxiv.org/pdf/2309.16609v1#page=11"
-    },
-    {
-     "label": "W02 PPO 설정 비교",
-     "url": "../../w02/llama2-reading-map.html#c-ppo-settings"
     },
     {
      "label": "InstructGPT App. C.4",
@@ -1400,10 +1328,6 @@
     {
      "label": "DPO §4 · Eq. 7",
      "url": "https://arxiv.org/abs/2305.18290"
-    },
-    {
-     "label": "W02 ranking loss",
-     "url": "../../w02/llama2-reading-map.html#c-ranking-loss"
     }
    ],
    "note": "",
@@ -1478,8 +1402,8 @@
    "visual": "<div class=\"table-wrap\" tabindex=\"0\" role=\"region\" aria-label=\"표\"><table class=\"tbl \"><thead><tr><th>주제</th><th>다음에 나오는 곳</th></tr></thead><tbody><tr><td>Qwen2.5의 offline · online RL</td><td>W04 (Qwen2.5 → Qwen3)</td></tr><tr><td>GRPO (value 없는 RL)</td><td>W07 (DeepSeek-R1)</td></tr><tr><td>PPO · KL penalty 기본</td><td>W02 읽기 지도</td></tr></tbody></table></div><div class=\"annotation green\"><span><b>채울 것</b> □ W04 담당 파트와 넘길 질문 한 줄</span></div>",
    "sources": [
     {
-     "label": "W02 PPO 이후: DPO · GRPO",
-     "url": "../../w02/llama2-reading-map.html#c-align-followup"
+     "label": "주차 목록 · W04 · W07",
+     "url": "../../README.md"
     }
    ],
    "note": "",
@@ -1616,10 +1540,6 @@
     {
      "label": "DPO §4 · Eq. 3–7 · App. A.1",
      "url": "https://arxiv.org/abs/2305.18290"
-    },
-    {
-     "label": "W02 Bradley–Terry",
-     "url": "../../w02/llama2-reading-map.html#c-bradley-terry"
     }
    ],
    "note": "",
@@ -1647,10 +1567,6 @@
     {
      "label": "Qwen2 · §3.2",
      "url": "https://arxiv.org/pdf/2407.10671v4#page=6"
-    },
-    {
-     "label": "W02 2K → 4K context",
-     "url": "../../w02/llama2-reading-map.html#c-context-4k"
     }
    ],
    "note": "채울 것: □ Qwen-7B 공개 config의 seq_length가 8K인 점(보고서는 2K 학습) — 갱신판 여부 확인 Mistral SWA는 구조라 학습과 추론 모두에 쓰인다(원문은 구조 변경으로만 기술, 추출자 해석). Llama 3 · Qwen2는 밑값 근거로 같은 Xiong et al. 2023을 인용(그 논문 값은 500,000).",
@@ -1740,10 +1656,6 @@
     {
      "label": "EleutherAI 블로그 · Rotary Embeddings",
      "url": "https://blog.eleuther.ai/rotary-embeddings/"
-    },
-    {
-     "label": "W01 RoPE",
-     "url": "../../w01/llama1-reading-map.html#c-rope"
     }
    ],
    "note": "Meta · GPT-NeoX 구현은 행렬을 만들지 않고 cos · sin 표를 미리 계산해 원소별로 곱한다(EleutherAI 블로그). 다음 장에서 쌍마다 파장이 얼마인지 본다."
@@ -1763,10 +1675,6 @@
     {
      "label": "Qwen2 · Table 1",
      "url": "https://arxiv.org/pdf/2407.10671v4#page=5"
-    },
-    {
-     "label": "W02 RoPE 돌려 보기",
-     "url": "../../w02/llama2-reading-map.html#c-pos-rope-calc"
     }
    ],
    "note": "밑값을 키우면 i = 1(가장 빠른 쌍)은 그대로이고 느린 쌍만 더 느려진다. 그래서 같은 길이에서 '한 바퀴를 못 도는' 쌍이 늘어, 긴 위치에서도 각도가 학습 때 본 범위 근처에 머문다(추출자 해석). 다음 장들의 NTK · YaRN · 밑값 1,000,000이 모두 이 각도 범위를 다룬다."
@@ -2057,14 +1965,6 @@
     {
      "label": "Qwen2",
      "url": "https://arxiv.org/abs/2407.10671v4"
-    },
-    {
-     "label": "W01 읽기 지도",
-     "url": "../../w01/llama1-reading-map.html"
-    },
-    {
-     "label": "W02 읽기 지도",
-     "url": "../../w02/llama2-reading-map.html"
     }
    ],
    "note": "마무리. Tokenizer → 데이터 → 정렬 → 긴 입력 순서로 한 줄씩 다시 짚는다. Llama 3의 128K는 보고서의 Llama 3.1 기준이고, 2024.4에 처음 공개된 Llama 3는 8K. 날짜는 공개 시점이고 Qwen2 보고서는 2024.7."
