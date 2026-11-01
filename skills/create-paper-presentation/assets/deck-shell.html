@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
 <title>{{TITLE}}</title>
-<style>
+<style id="shell-base">
 /* Paper-study presentation shell. Visual principles adapted from research-idea-deck;
    its research-proposal narrative and example content are deliberately not included. */
 :root{
@@ -157,7 +157,7 @@ html:not(.fit) .nav{position:sticky;bottom:0;z-index:10;border-top:1px solid var
   a{text-decoration:none}.card>.src,.card>.slide-source{padding:13px 54px 15px}
 }
 </style>
-<style>
+<style id="shell-layouts">
 /* Four information layouts: narrative overview, processes, quantitative comparison,
    and full-width references. Charts use fixed, explicitly labelled scales. */
 .txt h2,.slide h2{font-size:34px;line-height:1.28;letter-spacing:-.035em}
@@ -324,6 +324,296 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
  .scroll-hint{display:none!important}.diagram-scroll{overflow:visible}.table-wrap{overflow:visible}.tbl{min-width:0}
 }
 </style>
+<style id="shell-v2">
+/* Shell v2 — opt-in with <html data-shell="2"> (build_deck.py "shell_version": 2).
+   Every rule starts with html[data-shell="2"], or with a state class only the v2 script sets
+   (html.fs, html.print-ev), so decks built without shell_version 2 render exactly as before.
+   Colours come from the :root tokens in #shell-base. */
+
+/* Body text and slide id */
+html[data-shell="2"] .txt p{font-size:20px;line-height:1.65}
+html[data-shell="2"] .txt p.lead{font-size:23px;line-height:1.6}
+html[data-shell="2"] .txt p.small{font-size:16px;line-height:1.6}
+html[data-shell="2"] .txt p.note{font-size:15px;line-height:1.6}
+html[data-shell="2"] .txt p.cap{font-size:14px;line-height:1.6}
+html[data-shell="2"] .ey .sid{color:var(--blue);font-weight:700;font-variant-numeric:tabular-nums}
+html[data-shell="2"] .slide dfn{font-style:normal;font-weight:700}
+html[data-shell="2"] #stage:focus{outline:none}
+
+/* Progress: only the current section shows dots, the others fold into pills */
+html[data-shell="2"] .prog{gap:8px 14px}
+html[data-shell="2"] .psec.cur-sec .lab{color:var(--ink);font-weight:700}
+html[data-shell="2"] .psec.fold{display:inline-flex;flex:none;flex-wrap:nowrap;align-items:center;gap:6px;height:26px;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted);font-size:12px;font-weight:500;line-height:1;white-space:nowrap}
+html[data-shell="2"] .psec.fold.seen{background:var(--gray-s)}
+html[data-shell="2"] .psec.fold:hover{color:var(--blue);border-color:var(--blue)}
+html[data-shell="2"] .fold-n{font-size:11px;font-weight:600;color:var(--faint);font-variant-numeric:tabular-nums}
+
+/* Navigation bar additions */
+html[data-shell="2"] .nav [hidden]{display:none!important}
+html[data-shell="2"] .nav #xref-back{color:var(--blue);border-color:var(--blue);background:var(--blue-s);font-weight:600;font-variant-numeric:tabular-nums}
+html[data-shell="2"].show-notes .nav #notes-nav{background:var(--ink);color:var(--box);border-color:var(--ink)}
+html[data-shell="2"] .nav #fs[aria-pressed="true"]{color:var(--ink);border-color:var(--wire)}
+html[data-shell="2"] .notes-btn{display:none}
+html[data-shell="2"] #end-hint{position:fixed;left:50%;bottom:86px;z-index:70;transform:translateX(-50%);max-width:calc(100vw - 32px);padding:9px 18px;border-radius:999px;background:var(--ink);color:var(--box);font-size:14px;font-weight:600;line-height:1.4;text-align:center;pointer-events:none;opacity:0;box-shadow:0 8px 22px -10px #141C2899}
+html[data-shell="2"] #end-hint.on{opacity:1}
+
+/* Speaker notes: readable size at any slide scale; in reading mode a block under the current slide */
+html[data-shell="2"].fit.show-notes .slide.on .speaker-notes{zoom:calc(1 / var(--s))}
+html[data-shell="2"].show-notes:not(.fit) .slide.on .speaker-notes{position:static;left:auto;bottom:auto;transform:none;width:auto;max-height:none;margin-top:12px;box-shadow:none}
+
+/* Cross-references */
+html[data-shell="2"] .slide a.xref{padding:0 4px;border-radius:4px;background:var(--blue-s);color:var(--blue);font-weight:600;font-variant-numeric:tabular-nums;text-decoration:none;white-space:nowrap}
+html[data-shell="2"] .slide a.xref:hover{text-decoration:underline}
+
+/* Source line (footer): 1–2 identifiers, id list, main-end label, evidence button */
+html[data-shell="2"] .card>.src{align-items:center}
+html[data-shell="2"] .src-line{min-width:0;flex:1 1 360px}
+html[data-shell="2"] .src-side{display:inline-flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:6px 12px;margin-left:auto}
+html[data-shell="2"] .src-ids{font-variant-numeric:tabular-nums}
+html[data-shell="2"] .src-more{display:inline-flex;align-items:center;height:22px;margin-left:6px;padding:0 8px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--blue);font-size:12px;font-weight:600;vertical-align:1px}
+html[data-shell="2"] .src-more:hover{border-color:var(--blue)}
+html[data-shell="2"] .main-end{display:inline-flex;align-items:center;height:22px;padding:0 9px;border:1px solid var(--orange);border-radius:999px;background:var(--orange-s);color:var(--orange);font-size:12px;font-weight:600;white-space:nowrap}
+html[data-shell="2"] .ev-btn{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px;border:1px solid var(--blue);border-radius:999px;background:var(--blue-s);color:var(--blue);font-size:13px;font-weight:600;white-space:nowrap}
+html[data-shell="2"] .slide.ev-open .ev-btn{background:var(--blue);color:var(--box)}
+html[data-shell="2"] .ev-btn kbd,html[data-shell="2"] .ev-close kbd,html[data-shell="2"] .zoom-dlg kbd{font:600 11px/1 var(--f);padding:2px 5px;border:1px solid currentColor;border-radius:4px;opacity:.7}
+
+/* Evidence panel: right 62% overlay in slide mode, block under the card in reading mode */
+html[data-shell="2"] .slide.has-ev{position:relative}
+html[data-shell="2"] .slide .evidence{display:block;background:var(--box);color:var(--ink2);font-size:16px;line-height:1.65}
+html[data-shell="2"] .slide .evidence[hidden]{display:none}
+html[data-shell="2"] .slide .evidence:focus{outline:none}
+html[data-shell="2"].fit .slide.has-ev>.evidence{position:absolute;top:0;right:0;bottom:0;z-index:5;width:62%;overflow-y:auto;overscroll-behavior:contain;padding:0 34px 32px;border-left:1px solid var(--line);border-radius:0 18px 18px 0;box-shadow:-26px 0 48px -26px #141C2866}
+html[data-shell="2"]:not(.fit) .slide.has-ev>.evidence{margin-top:12px;padding:4px 24px 22px;border:1px solid var(--line);border-radius:14px}
+html[data-shell="2"] .ev-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 12px;border-bottom:1px solid var(--line);background:var(--box)}
+html[data-shell="2"].fit .ev-head{position:sticky;top:0;z-index:2;padding-top:24px}
+html[data-shell="2"] .ev-head strong{font-size:15px;font-weight:700;color:var(--ink)}
+html[data-shell="2"] .ev-close{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted);font-size:13px;font-weight:500}
+html[data-shell="2"] .ev-close:hover{color:var(--ink);border-color:var(--wire)}
+html[data-shell="2"] .ev-body{display:flex;flex-direction:column;gap:14px;padding-top:16px;min-width:0}
+html[data-shell="2"] .ev-body p{margin:0}
+html[data-shell="2"] .ev-body>ul,html[data-shell="2"] .ev-body>ol:not(.derive){margin:0;padding-left:1.3em}
+html[data-shell="2"] .ev-body h3{margin:6px 0 0;font-size:16px;font-weight:700;color:var(--ink)}
+html[data-shell="2"] .ev-sources{margin-top:22px;padding-top:14px;border-top:1px dashed var(--line);font-size:14px;line-height:1.6;color:var(--muted)}
+html[data-shell="2"] .ev-sources>strong{display:block;margin-bottom:6px;font-size:13px;font-weight:700;color:var(--ink2)}
+html[data-shell="2"] .ev-sources ol{margin:0;padding-left:1.4em}
+html[data-shell="2"] .ev-sources li+li{margin-top:4px}
+/* Original tables in the panel keep their natural width and scroll sideways instead of squeezing:
+   headers stay on one line, cells wrap only at spaces (no mid-word breaks). */
+html[data-shell="2"] .evidence .table-wrap{overflow-x:auto;overscroll-behavior-x:contain}
+html[data-shell="2"] .evidence .tbl{table-layout:auto;width:auto;min-width:100%}
+html[data-shell="2"] .evidence .tbl th{white-space:nowrap}
+html[data-shell="2"] .evidence .tbl td{overflow-wrap:normal;word-break:keep-all}
+
+/* Evidence chips: one label per evidence kind; text must stay the Korean label */
+html[data-shell="2"] .ev-chip{display:inline-flex;align-items:baseline;margin-right:.4em;padding:0 8px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted);font-size:13px;font-weight:600;line-height:1.5;letter-spacing:0;text-indent:0;white-space:nowrap}
+html[data-shell="2"] .ev-chip:is([data-ev="orig"],[data-ev="table"],[data-ev="config"],[data-ev="cite"]){border-color:var(--faint);color:var(--ink2)}
+html[data-shell="2"] .ev-chip[data-ev="calc"]{border-color:var(--green);background:var(--green-s);color:var(--green)}
+html[data-shell="2"] .ev-chip:is([data-ev="est"],[data-ev="assume"]){border-color:var(--orange);background:var(--orange-s);color:var(--orange)}
+html[data-shell="2"] .ev-chip[data-ev="nd"]{border-style:dotted;border-color:var(--faint);background:var(--gray-s);color:var(--muted)}
+html[data-shell="2"] .ev-chip:is([data-ev="interp"],[data-ev="hyp"]){border-color:var(--blue);background:var(--blue-s);color:var(--blue)}
+html[data-shell="2"] .ev-chip[data-ev="illus"]{border-style:dashed;border-color:var(--wire);color:var(--ink2)}
+
+/* Condition line (0–1 per slide), comparison-pair line, substitution line, quote */
+html[data-shell="2"] .slide p.cond{margin:0;padding-top:10px;border-top:1px dashed var(--faint);font-size:16px;line-height:1.55;color:var(--ink2)}
+html[data-shell="2"] .slide p.pair-line{margin:0;font-size:18px;line-height:1.55;color:var(--ink2)}
+html[data-shell="2"] .slide p.pair-line b{display:inline-block;margin-right:8px;padding:1px 9px;border-radius:999px;background:var(--blue-s);color:var(--blue);font-size:13px;font-weight:700;vertical-align:2px}
+html[data-shell="2"] .slide p.subst{margin:0;padding:9px 13px;border-radius:8px;background:var(--gray-s);color:var(--ink);font-size:16px;line-height:1.6;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+html[data-shell="2"] .slide blockquote.ev-quote{margin:0;padding:12px 16px;border-left:3px solid var(--wire);border-radius:0 8px 8px 0;background:var(--gray-s);color:var(--ink);font-size:16px;line-height:1.6}
+html[data-shell="2"] .slide blockquote.ev-quote cite{display:block;margin-top:6px;font-size:13px;font-style:normal;color:var(--muted)}
+html[data-shell="2"] .slide blockquote.ev-quote cite::before{content:"— "}
+
+/* Source crop: proof, small, zoomable */
+html[data-shell="2"] .slide figure.crop{margin:0;display:flex;flex-direction:column;gap:8px;min-width:0}
+html[data-shell="2"] .slide figure.crop img{display:block;max-width:100%;height:auto;border:1px solid var(--line);border-radius:6px;background:var(--box)}
+html[data-shell="2"] .slide .evidence figure.crop img{width:auto;max-height:360px;align-self:flex-start}
+html[data-shell="2"] .slide figure.crop figcaption{font-size:13px;line-height:1.5;color:var(--muted)}
+html[data-shell="2"] .slide :is(figure.crop img,.evidence img,img[data-zoom]){cursor:zoom-in}
+html[data-shell="2"] .slide img[role="button"]:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+
+/* Derivation card: at most 4 numbered steps, then the answer line */
+html[data-shell="2"] .derive{counter-reset:dv;list-style:none;margin:0;padding:6px 22px;display:grid;grid-template-columns:30px fit-content(58%) minmax(0,1fr);column-gap:16px;background:var(--box);border:1px solid var(--line);border-radius:12px;min-width:0}
+html[data-shell="2"] .derive>li{counter-increment:dv;grid-column:1/-1;display:grid;grid-template-columns:subgrid;align-items:center;padding:13px 0;border-top:1px solid var(--line);min-width:0}
+html[data-shell="2"] .derive>li:first-child{border-top:0}
+html[data-shell="2"] .derive>li::before{content:counter(dv);display:grid;place-items:center;width:28px;height:28px;border:1.5px solid var(--blue);border-radius:50%;color:var(--blue);font-size:13px;font-weight:700}
+html[data-shell="2"] .dv-eq{min-width:0;overflow-x:auto;overflow-y:hidden;font-size:20px;color:var(--ink)}
+html[data-shell="2"] .dv-why{min-width:0;font-size:16px;line-height:1.5;color:var(--muted)}
+html[data-shell="2"] .derive>li.dv-end{counter-increment:none;display:block;margin:4px -22px -6px;padding:14px 22px;border-top:1.5px solid var(--blue);border-radius:0 0 11px 11px;background:var(--blue-s);color:var(--ink);font-size:18px;font-weight:700;line-height:1.5}
+html[data-shell="2"] .derive>li.dv-end::before{content:none}
+@supports not (grid-template-columns:subgrid){
+ html[data-shell="2"] .derive>li{grid-template-columns:30px minmax(0,auto) minmax(0,1fr);column-gap:16px}
+}
+
+/* Factor decomposition: bars on one zero-based axis + the factors that multiply to the result */
+html[data-shell="2"] .factor{margin:0;display:flex;flex-direction:column;gap:18px;min-width:0;padding:22px 24px;border:1px solid var(--line);border-radius:12px;background:var(--box)}
+html[data-shell="2"] .fx-bars{display:flex;flex-direction:column;gap:12px}
+html[data-shell="2"] .fx-row{display:grid;grid-template-columns:128px minmax(0,1fr) 108px;gap:14px;align-items:center}
+html[data-shell="2"] .fx-name{font-size:16px;font-weight:600;line-height:1.3}
+html[data-shell="2"] .fx-track{position:relative;display:block;height:30px;background:var(--gray-s);border-left:2px solid var(--wire)}
+html[data-shell="2"] .fx-track i{display:block;height:100%;min-width:2px;border-radius:0 4px 4px 0;background:var(--faint)}
+html[data-shell="2"] .fx-new .fx-track i{background:var(--blue)}
+html[data-shell="2"] .fx-val{font-size:20px;font-weight:700;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+html[data-shell="2"] .fx-new .fx-val{color:var(--blue)}
+html[data-shell="2"] .fx-terms{list-style:none;margin:0;padding:0;display:flex;align-items:stretch;gap:22px}
+html[data-shell="2"] .fx-terms>li{position:relative;display:flex;flex-direction:column;gap:3px;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--box)}
+html[data-shell="2"] .fx-terms>li+li::before{content:"×";position:absolute;left:-17px;top:50%;transform:translateY(-50%);font-size:16px;color:var(--faint)}
+html[data-shell="2"] .fx-terms>li.fx-chg{flex:1.6 1 0;border:1.5px solid var(--blue);background:var(--blue-s)}
+html[data-shell="2"] .fx-terms>li.fx-same{flex:1 1 0;border-style:dashed;background:var(--gray-s)}
+html[data-shell="2"] .fx-k{font-size:13px;font-weight:600;color:var(--muted)}
+html[data-shell="2"] .fx-ab{font-size:17px;line-height:1.4;color:var(--ink);font-variant-numeric:tabular-nums}
+html[data-shell="2"] .fx-r{font-size:26px;line-height:1.2;font-weight:700;color:var(--blue);font-variant-numeric:tabular-nums}
+html[data-shell="2"] .fx-same .fx-ab{font-size:15px;color:var(--muted)}
+html[data-shell="2"] .fx-same .fx-r{align-self:flex-start;margin-top:2px;padding:0 7px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--muted);font-size:12px;font-weight:600;line-height:1.6}
+html[data-shell="2"] .fx-sum{padding-top:12px;border-top:1px solid var(--line);font-size:18px;font-weight:700;line-height:1.5;color:var(--ink)}
+
+/* Claim-annotated table: presenter marks are fills/outlines, never bold (bold = source bold) */
+html[data-shell="2"] .claim-table{display:flex;flex-direction:column;gap:10px;min-width:0}
+html[data-shell="2"] .tbl.ct th{font-size:14px}
+html[data-shell="2"] .tbl.ct td{font-size:18px}
+html[data-shell="2"] .tbl.ct tr.ct-vs>td:first-child{color:var(--muted)}
+html[data-shell="2"] .tbl.ct tr.ct-focus>td:first-child{color:var(--blue);box-shadow:inset 3px 0 0 var(--blue)}
+html[data-shell="2"] :is(.tbl td,.claim-legend i).cl-hi{background:var(--blue-s);box-shadow:inset 0 -3px 0 var(--blue)}
+html[data-shell="2"] :is(.tbl td,.claim-legend i).cl-vs{background:var(--gray-s);box-shadow:inset 0 -3px 0 var(--faint)}
+html[data-shell="2"] :is(.tbl td,.claim-legend i).cl-par{background:var(--green-s);box-shadow:inset 0 -3px 0 var(--green)}
+html[data-shell="2"] :is(.tbl td,.claim-legend i).cl-x{background:var(--red-s);box-shadow:inset 0 0 0 2px var(--red);color:var(--red)}
+html[data-shell="2"] .slide p.claim-legend{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0;font-size:13px;line-height:1.5;color:var(--muted)}
+html[data-shell="2"] .claim-legend>span{display:inline-flex;align-items:center;gap:6px}
+html[data-shell="2"] .claim-legend i{display:inline-block;flex:none;width:15px;height:15px;border-radius:3px}
+html[data-shell="2"] .verdict{display:flex;flex-wrap:wrap;overflow:hidden;border:1px solid var(--line);border-radius:10px;background:var(--box);font-size:16px;line-height:1.5}
+html[data-shell="2"] .vd-claim{flex:1 1 320px;min-width:0;padding:10px 14px;color:var(--ink2)}
+html[data-shell="2"] .vd-res{flex:1 1 240px;min-width:0;padding:10px 14px;border-left:4px solid var(--line);font-weight:650;color:var(--ink)}
+html[data-shell="2"] .vd-res.vd-ok{border-left-color:var(--green);background:var(--green-s);color:var(--green)}
+html[data-shell="2"] .vd-res.vd-part{border-left-color:var(--orange);background:var(--orange-s);color:var(--orange)}
+html[data-shell="2"] .vd-res.vd-no{border-left-color:var(--red);background:var(--red-s);color:var(--red)}
+
+/* Before → after pair */
+html[data-shell="2"] .ba{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:14px;align-items:stretch;min-width:0}
+html[data-shell="2"] .ba-side{min-width:0;display:flex;flex-direction:column;gap:10px;padding:18px 20px;border:1px solid var(--line);border-radius:12px;background:var(--box)}
+html[data-shell="2"] .ba-after{border:1.5px solid var(--blue)}
+html[data-shell="2"] .ba-tag{align-self:flex-start;padding:2px 10px;border-radius:999px;background:var(--gray-s);color:var(--muted);font-size:13px;font-weight:700;line-height:1.5}
+html[data-shell="2"] .ba-after .ba-tag{background:var(--blue-s);color:var(--blue)}
+html[data-shell="2"] .ba-arrow{align-self:center;font-size:28px;line-height:1;color:var(--wire)}
+html[data-shell="2"] .ba svg{display:block;max-width:100%;height:auto}
+html[data-shell="2"] .ba .ba-diff{border-radius:6px;background:var(--blue-s);box-shadow:inset 0 0 0 1.5px var(--blue);color:var(--blue)}
+html[data-shell="2"] .ba svg .ba-diff{background:none;box-shadow:none}
+html[data-shell="2"] .ba .ba-same{opacity:.5}
+
+/* Model profile cards (cover / intro) */
+html[data-shell="2"] .profile{display:flex;flex-direction:column;gap:12px;min-width:0;padding:20px 22px;border:1px solid var(--line);border-top:4px solid var(--faint);border-radius:12px;background:var(--box)}
+html[data-shell="2"] .profile.pf-cur{border-top-color:var(--blue)}
+html[data-shell="2"] .pf-head{display:flex;flex-direction:column;gap:2px}
+html[data-shell="2"] .pf-head strong{font-size:24px;font-weight:700;line-height:1.3;letter-spacing:-.02em;color:var(--ink)}
+html[data-shell="2"] .pf-cur .pf-head strong{color:var(--blue)}
+html[data-shell="2"] .pf-head span{font-size:13px;color:var(--muted)}
+html[data-shell="2"] .pf-grid{display:grid;gap:10px;margin:0}
+html[data-shell="2"] .pf-grid>div{display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:baseline;padding-top:10px;border-top:1px solid var(--line)}
+html[data-shell="2"] .pf-grid dt{font-size:13px;font-weight:600;color:var(--muted)}
+html[data-shell="2"] .pf-grid dd{margin:0;font-size:17px;line-height:1.45;color:var(--ink);font-variant-numeric:tabular-nums}
+html[data-shell="2"] .slide p.pf-note{margin:0;font-size:14px;line-height:1.55;color:var(--muted)}
+
+/* Two-column summary (kept / changed), each line links back with [[@key]] */
+html[data-shell="2"] .summary-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;min-width:0}
+html[data-shell="2"] .sc-col{min-width:0;padding:18px 22px;border:1px solid var(--line);border-top:4px solid var(--faint);border-radius:12px;background:var(--box)}
+html[data-shell="2"] .sc-col+.sc-col{border-top-color:var(--blue)}
+html[data-shell="2"] .sc-col h3{margin:0 0 10px;font-size:19px;font-weight:700;color:var(--ink)}
+html[data-shell="2"] .sc-col ul{margin:0;padding-left:1.15em;font-size:18px;line-height:1.6;color:var(--ink2)}
+html[data-shell="2"] .sc-col li+li{margin-top:8px}
+
+/* KaTeX output written by build_deck.py */
+html[data-shell="2"] .math-inline{white-space:nowrap}
+html[data-shell="2"] .math-block{display:block;max-width:100%;padding:2px 0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:thin;text-align:center}
+html[data-shell="2"] .math-block .katex-display{margin:.35em 0}
+html[data-shell="2"] .math-block>:is(.math-wide,.math-narrow-live){display:block}
+html[data-shell="2"] .math-block [hidden]{display:none!important}
+html[data-shell="2"] .math-fallback{padding:1px 6px;border-radius:5px;background:var(--gray-s);color:var(--ink);font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.88em;white-space:pre-wrap;overflow-wrap:anywhere}
+html[data-shell="2"] .math-block>.math-fallback{display:block;padding:8px 12px;text-align:left}
+
+/* Phone tables and variants */
+html[data-shell="2"] .tbl.sticky1 tr>:first-child{position:sticky;left:0;z-index:1;background:var(--box);box-shadow:inset -1px 0 0 var(--line)}
+html[data-shell="2"] .tbl.sticky1 thead tr>:first-child{background:var(--gray-s)}
+@media(min-width:521px){html[data-shell="2"] .only-narrow{display:none!important}}
+@media(max-width:520px){html[data-shell="2"] .only-wide{display:none!important}}
+
+/* Image zoom dialog (created on first use) */
+html[data-shell="2"] .zoom-dlg{max-width:min(96vw,1800px);max-height:94vh;padding:0;border:0;border-radius:14px;overflow:hidden;background:var(--box);color:var(--ink);box-shadow:0 24px 60px -20px #141C28B3}
+html[data-shell="2"] .zoom-dlg[open]{display:flex;flex-direction:column}
+html[data-shell="2"] .zoom-dlg::backdrop{background:rgba(26,29,35,.72)}
+html[data-shell="2"] .zd-bar{display:flex;flex:none;align-items:center;gap:10px;padding:10px 12px 10px 18px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted)}
+html[data-shell="2"] .zd-cap{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html[data-shell="2"] .zoom-dlg button{display:inline-flex;align-items:center;gap:7px;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--box);color:var(--ink2);font-size:13px;font-weight:500;white-space:nowrap}
+html[data-shell="2"] .zd-box{min-height:0;overflow:auto;overscroll-behavior:contain;background:var(--gray-s);cursor:zoom-out}
+html[data-shell="2"] .zd-box img{display:block;max-width:none;height:auto}
+html[data-shell="2"] .zoom-dlg.zd-fit .zd-box{cursor:zoom-in}
+html[data-shell="2"] .zoom-dlg.zd-fit .zd-box img{width:auto!important;max-width:100%;max-height:calc(94vh - 54px);margin:0 auto}
+
+/* Presenting (F / 전체화면): header hidden, card scaled up to 4x, nav a 56px band that fades */
+html.fs .top{display:none}
+html.fs .stage{padding:0}
+html.fs .nav{height:56px;padding-top:0;padding-bottom:0;border-top:0;transition:opacity .3s}
+html.fs.idle .nav:not(:focus-within){opacity:0}
+html.fs.idle,html.fs.idle *{cursor:none!important}
+html.fs #mode{display:none!important}
+
+@media(max-width:819px){
+ html[data-shell="2"] .txt p{font-size:18px}
+ html[data-shell="2"]:not(.fit) .slide.has-ev>.evidence{padding:2px 18px 18px}
+ html[data-shell="2"] .derive{display:block;padding:4px 16px}
+ html[data-shell="2"] .derive>li{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:12px;row-gap:4px}
+ html[data-shell="2"] .derive>li::before{grid-row:1/3}
+ html[data-shell="2"] .derive>li>:is(.dv-eq,.dv-why){grid-column:2}
+ html[data-shell="2"] .derive>li.dv-end{margin:4px -16px -4px;padding:12px 16px;font-size:17px}
+ html[data-shell="2"] .fx-row{grid-template-columns:92px minmax(0,1fr) 86px;gap:10px}
+ html[data-shell="2"] .fx-name{font-size:14px}
+ html[data-shell="2"] .fx-val{font-size:17px}
+ html[data-shell="2"] .fx-r{font-size:22px}
+ html[data-shell="2"] .factor{padding:18px 16px}
+ html[data-shell="2"] .ba{grid-template-columns:minmax(0,1fr)}
+ html[data-shell="2"] .ba-arrow{justify-self:center;transform:rotate(90deg)}
+ html[data-shell="2"] .tbl.ct td{font-size:16px}
+}
+@media(max-width:520px){
+ html[data-shell="2"] .top-row{flex-wrap:nowrap}
+ html[data-shell="2"] .ttl{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+ html[data-shell="2"] .sub{display:none}
+ html[data-shell="2"] .prog{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;gap:8px 10px}
+ html[data-shell="2"] .prog::-webkit-scrollbar{display:none}
+ html[data-shell="2"] .psec{flex:none;flex-wrap:nowrap;max-width:none}
+ html[data-shell="2"] .nav .btn.mode{flex-basis:auto;max-width:none}
+ html[data-shell="2"] .nav select{flex:1 1 96px}
+ html[data-shell="2"] .nav #fs{display:none!important}
+ html[data-shell="2"] .summary-cols{grid-template-columns:minmax(0,1fr)}
+ html[data-shell="2"] .fx-terms{flex-direction:column;gap:8px}
+ html[data-shell="2"] .fx-terms>li:is(.fx-chg,.fx-same){flex:none;display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:12px;padding:10px 12px}
+ html[data-shell="2"] .fx-terms>li+li::before{content:none}
+ html[data-shell="2"] .fx-same .fx-r{align-self:center;margin-top:0}
+ html[data-shell="2"] .tbl.sticky1{table-layout:auto}
+ html[data-shell="2"] .tbl.sticky1 tr>:first-child{white-space:nowrap}
+ html[data-shell="2"] .pf-grid>div{grid-template-columns:72px minmax(0,1fr)}
+ html[data-shell="2"] .vd-res{border-left:0;border-top:4px solid var(--line)}
+ html[data-shell="2"] .vd-res:is(.vd-ok,.vd-part,.vd-no){border-left:0}
+ html[data-shell="2"] .vd-res.vd-ok{border-top-color:var(--green)}
+ html[data-shell="2"] .vd-res.vd-part{border-top-color:var(--orange)}
+ html[data-shell="2"] .vd-res.vd-no{border-top-color:var(--red)}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards{min-width:0;table-layout:auto}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards thead{display:none}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards :is(tbody,tr,td){display:block}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards tr{padding:10px 14px;border-bottom:1px solid var(--line)}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards tbody tr:last-child{border-bottom:0}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards td{display:grid;grid-template-columns:minmax(0,40%) minmax(0,1fr);gap:10px;padding:4px 0;border:0;text-align:left;white-space:normal}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards td::before{content:attr(data-label);font-size:13px;font-weight:600;color:var(--muted)}
+ html[data-shell="2"]:not(.fit) .tbl.rowcards td:not([data-label])::before{content:none}
+}
+@media print{
+ html[data-shell="2"] .slide .evidence,html[data-shell="2"] .ev-btn,html[data-shell="2"] .src-more{display:none!important}
+ html[data-shell="2"] .zoom-dlg,html[data-shell="2"] #end-hint{display:none!important}
+ html[data-shell="2"] .math-block>.math-wide{display:block!important}
+ html[data-shell="2"] .math-block>.math-narrow-live{display:none!important}
+ html.print-ev .slide.has-ev{height:auto!important}
+ html.print-ev .slide.has-ev>.evidence{display:block!important;position:static!important;width:1280px!important;min-height:720px;max-height:none!important;overflow:visible!important;margin:0!important;padding:46px 72px 40px!important;border:0!important;border-radius:0!important;box-shadow:none!important;break-before:page;page-break-before:always;font-size:17px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+ html[data-shell="2"] .evidence .table-wrap{overflow:visible}
+ html.print-ev .slide.has-ev>.evidence .ev-head{position:static!important}
+ html.print-ev .slide.has-ev>.evidence .ev-close{display:none!important}
+}
+</style>
 </head>
 <body>
 <div class="app">
@@ -342,10 +632,13 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
     <button class="btn mode" id="mode" type="button" aria-pressed="false">읽기 모드</button>
   </nav>
 </div>
-<script>
+<script id="shell-main">
 (() => {
   'use strict';
   const root = document.documentElement;
+  // v2 is opt-in: build_deck.py writes <html data-shell="2"> only for "shell_version": 2 decks.
+  // When it is false every line below behaves exactly like the v1 shell.
+  const v2 = root.dataset.shell === '2';
   const slides = [...document.querySelectorAll('.slide')];
   const stage = document.getElementById('stage');
   const jump = document.getElementById('jump');
@@ -367,15 +660,31 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
   const groups = new Map();
   const dots = [];
   let current = 0;
-  const scrollRegions = [...document.querySelectorAll('.table-wrap,.diagram-scroll')];
+  // v2-only state (never touched when v2 is false).
+  const partLabels = {main:'본편',appendix:'부록',review:'검토 기록'};
+  const partOf = slide => Object.prototype.hasOwnProperty.call(partLabels,slide.dataset.part) ? slide.dataset.part : 'main';
+  const zoomSel = 'figure.crop img,.evidence img,img[data-zoom]';
+  const sectionNodes = new Map();
+  let openPanel = null, endArmed = false, endTimer = 0, hintTimer = 0, viaXref = false, backIndex = -1;
+  let presenting = false, idleTimer = 0, printEvUrl = false, zoomModal = false;
+  let xrefBack = null, notesNav = null, fsButton = null, endHint = null;
+  let zoomDlg = null, zoomImg = null, zoomCap = null, zoomBox = null, zoomToggleButton = null, zoomCloseButton = null, zoomOpener = null;
+  // v2 also lets wide display math scroll sideways; v1 keeps the original two selectors.
+  const scrollSel = v2 ? '.table-wrap,.diagram-scroll,.math-block' : '.table-wrap,.diagram-scroll';
+  const scrollRegions = [...document.querySelectorAll(scrollSel)];
   scrollRegions.forEach(region => {
-    region.tabIndex = 0;
-    region.setAttribute('role','region');
     const isTable = region.classList.contains('table-wrap');
-    if (!region.hasAttribute('aria-label')) region.setAttribute('aria-label',isTable ? '근거 표 · 가로 스크롤 가능' : '설명 도식 · 가로 스크롤 가능');
+    const isMath = v2 && region.classList.contains('math-block');
+    // v2 math blocks become a focusable scroll region only while they overflow (see scrollHints).
+    if (isMath) region._mathRegion = {label:region.getAttribute('aria-label'),on:false};
+    else {
+      region.tabIndex = 0;
+      region.setAttribute('role','region');
+      if (!region.hasAttribute('aria-label')) region.setAttribute('aria-label',isTable ? '근거 표 · 가로 스크롤 가능' : '설명 도식 · 가로 스크롤 가능');
+    }
     const hint = document.createElement('p');
     hint.className = 'scroll-hint';
-    hint.textContent = isTable ? '↔ 표를 좌우로 밀면 나머지 열을 볼 수 있습니다.' : '↔ 도식을 좌우로 밀어 연결 경로를 확인하세요.';
+    hint.textContent = isTable ? '↔ 표를 좌우로 밀면 나머지 열을 볼 수 있습니다.' : isMath ? '↔ 수식을 좌우로 밀어 끝까지 보세요.' : '↔ 도식을 좌우로 밀어 연결 경로를 확인하세요.';
     hint.hidden = true;
     region.insertAdjacentElement('afterend',hint);
     region._scrollHint = hint;
@@ -383,8 +692,25 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
   function scrollHints() {
     scrollRegions.forEach(region => {
       region._scrollHint.hidden = !region.offsetWidth || region.scrollWidth <= region.clientWidth + 2;
+      if (region._mathRegion) mathRegion(region,!region._scrollHint.hidden);
     });
   }
+  function mathRegion(region, on) {
+    const state = region._mathRegion;
+    // Keep a focused block as is; the next scrollHints() after blur settles it.
+    if (state.on === on || (!on && document.activeElement === region)) return;
+    state.on = on;
+    if (on) {
+      region.tabIndex = 0;
+      region.setAttribute('role','region');
+      if (state.label === null) region.setAttribute('aria-label','수식 · 가로 스크롤 가능');
+    } else {
+      region.removeAttribute('tabindex');
+      region.removeAttribute('role');
+      if (state.label === null) region.removeAttribute('aria-label');
+    }
+  }
+  const optgroups = {};
   slides.forEach((slide, index) => {
     const key = slide.dataset.sec || '1';
     if (!groups.has(key)) groups.set(key, []);
@@ -395,8 +721,20 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
     slide.setAttribute('aria-label',(index + 1) + ' / ' + slides.length + ': ' + (slide.dataset.nav || ''));
     const option = document.createElement('option');
     option.value = index;
-    option.textContent = (index + 1) + '. ' + (slide.dataset.nav || '슬라이드');
-    jump.append(option);
+    if (v2) {
+      // Grouped by part: 본편 · 부록 · 검토 기록; text is "{id} · {nav}".
+      option.textContent = (slide.dataset.id ? slide.dataset.id + ' · ' : '') + (slide.dataset.nav || '슬라이드');
+      const part = partOf(slide);
+      if (!optgroups[part]) {
+        optgroups[part] = document.createElement('optgroup');
+        optgroups[part].label = partLabels[part];
+        jump.append(optgroups[part]);
+      }
+      optgroups[part].append(option);
+    } else {
+      option.textContent = (index + 1) + '. ' + (slide.dataset.nav || '슬라이드');
+      jump.append(option);
+    }
   });
   groups.forEach((indices, key) => {
     const group = document.createElement('div');
@@ -409,7 +747,7 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
       const dot = document.createElement('button');
       dot.type = 'button';
       dot.className = 'dot';
-      dot.setAttribute('aria-label',(index + 1) + '. ' + slides[index].dataset.nav);
+      dot.setAttribute('aria-label',v2 ? (slides[index].dataset.id || String(index + 1)) + ' · ' + slides[index].dataset.nav : (index + 1) + '. ' + slides[index].dataset.nav);
       dot.setAttribute('aria-controls',slides[index].id);
       dot.addEventListener('click',() => show(index));
       dots[index] = dot;
@@ -419,12 +757,14 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
         eyebrow.textContent = (sections[key] || key) + ' · ' + (sectionIndex + 1) + ' / ' + indices.length;
       }
     });
-    prog.append(group);
+    // v2 redraws the progress bar on every show(): current section as dots, others folded.
+    if (v2) sectionNodes.set(key,{group,fold:foldButton(sections[key] || key,indices.length,indices[0])});
+    else prog.append(group);
   });
   function scale() {
     if (!root.classList.contains('fit')) return;
     const rect = stage.getBoundingClientRect();
-    const ratio = Math.min((rect.width - 36) / 1280,(rect.height - 12) / 720,1);
+    const ratio = presenting ? Math.min(rect.width / 1280,rect.height / 720,4) : Math.min((rect.width - 36) / 1280,(rect.height - 12) / 720,1);
     root.style.setProperty('--s',Math.max(.1,ratio).toFixed(4));
   }
   function show(index, updateHistory = true) {
@@ -433,7 +773,9 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
       count.textContent = '0 / 0';
       return;
     }
+    const previous = current;
     current = Math.max(0,Math.min(slides.length - 1,index));
+    if (v2 && current !== previous) leaveSlide();
     slides.forEach((slide,i) => {
       const active = i === current;
       slide.classList.toggle('on',active);
@@ -454,15 +796,17 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
       try { history.replaceState(null,'','#s' + (current + 1)); } catch (_) {}
       if (!root.classList.contains('fit')) window.scrollTo({top:0,behavior:'instant'});
     }
+    if (v2) enterSlide();
     scrollHints();
   }
   function layout() {
-    const fit = mq.matches && (mode === 'slide' || mode === 'auto');
+    const fit = mq.matches && (presenting || mode === 'slide' || mode === 'auto');
     root.classList.toggle('fit',fit);
     modeButton.hidden = !mq.matches;
     modeButton.textContent = fit ? '읽기 모드' : '슬라이드 모드';
     modeButton.setAttribute('aria-pressed',String(!fit));
     scale();
+    if (v2) mathNarrow(!fit && window.innerWidth <= 520);
     scrollHints();
   }
   function readHash() {
@@ -478,10 +822,12 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
     layout();
   });
   document.addEventListener('keydown',event => {
-    if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) return;
+    // v2: Shift+E / Shift+F act like e / f (as Shift+N already does); every other modified key is left alone.
+    if (event.altKey || event.ctrlKey || event.metaKey || (event.shiftKey && !(v2 && shiftLetter(event)))) return;
     const tag = event.target.tagName;
     if (['INPUT','TEXTAREA','SELECT'].includes(tag) || event.target.isContentEditable) return;
-    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    if (v2 && v2Key(event)) return;
+    const scrolling = event.target.closest(scrollSel);
     if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2 && ['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
     let target;
     if (event.key === 'ArrowRight' || event.key === 'PageDown') target = current + 1;
@@ -489,7 +835,11 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
     else if (event.key === 'Home') target = 0;
     else if (event.key === 'End') target = slides.length - 1;
     else if (event.key === ' ' && root.classList.contains('fit') && tag !== 'BUTTON' && tag !== 'A') target = current + 1;
-    if (target !== undefined) { event.preventDefault(); show(target); }
+    if (target !== undefined) {
+      event.preventDefault();
+      if (v2 && target === current + 1 && event.key !== 'End' && gateMainEnd()) return;
+      show(target);
+    }
   });
   window.addEventListener('hashchange',() => show(readHash(),false));
   let raf;
@@ -503,8 +853,9 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
     touchStart = null;
     // Reading mode is a vertically scrolling document; use navigation buttons there.
     if (!root.classList.contains('fit') || event.touches.length !== 1) return;
-    const scrolling = event.target.closest('.table-wrap,.diagram-scroll');
+    const scrolling = event.target.closest(scrollSel);
     if (scrolling && scrolling.scrollWidth > scrolling.clientWidth + 2) return;
+    if (v2 && event.target.closest('.evidence')) return;
     touchStart = {x:event.touches[0].clientX,y:event.touches[0].clientY};
   },{passive:true});
   stage.addEventListener('touchend',event => {
@@ -512,7 +863,11 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
     const dx = event.changedTouches[0].clientX - touchStart.x;
     const dy = event.changedTouches[0].clientY - touchStart.y;
     touchStart = null;
-    if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) show(current + (dx < 0 ? 1 : -1));
+    if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+      const step = dx < 0 ? 1 : -1;
+      if (v2 && step === 1 && gateMainEnd()) return;
+      show(current + step);
+    }
   },{passive:true});
   stage.addEventListener('touchcancel',() => { touchStart = null; },{passive:true});
   // Read-only diagnostics for authoring. No automatic shrinking of dense slides.
@@ -522,26 +877,484 @@ html:not(.fit) .cover-graphic{padding:25px 0 5px;border:0;border-top:1px solid v
       show(index,false);
       const inner = slide.querySelector('.inner');
       const card = slide.querySelector('.card');
-      return {
+      const item = {
         slide:index + 1,title:slide.dataset.nav,
         innerOverflow:!!inner && (inner.scrollHeight > inner.clientHeight + 2 || inner.scrollWidth > inner.clientWidth + 2),
         cardOverflow:!!card && (card.scrollHeight > card.clientHeight + 2 || card.scrollWidth > card.clientWidth + 2),
         hasSource:!!slide.querySelector('.src,.slide-source')
       };
+      if (v2) {
+        item.id = slide.dataset.id || '';
+        item.part = partOf(slide);
+        item.hasEvidence = !!panelOf(slide);
+        item.srcVisible = isShown(slide.querySelector('.src-line') || slide.querySelector('.src,.slide-source'));
+      }
+      return item;
     });
     show(saved,false);
     return results;
   };
+
+  // ---------------------------------------------------------------- v2 only
+  function foldButton(text, n, first, seen) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'psec fold' + (seen ? ' seen' : '');
+    button.setAttribute('aria-label',text + ' · ' + n + '장 · 첫 장으로');
+    button.append(text + ' ');
+    const num = document.createElement('span');
+    num.className = 'fold-n';
+    num.textContent = String(n);
+    button.append(num);
+    button.addEventListener('click',() => show(first));
+    return button;
+  }
+  function renderProg() {
+    const curKey = slides[current].dataset.sec || '1';
+    const hadFocus = prog.contains(document.activeElement);
+    const nodes = [];
+    let run = null; // consecutive appendix sections fold into one '부록 n' pill
+    const flush = () => {
+      if (run) nodes.push(foldButton(partLabels.appendix,run.count,run.first,run.seen));
+      run = null;
+    };
+    groups.forEach((indices, key) => {
+      const node = sectionNodes.get(key);
+      if (key === curKey) {
+        flush();
+        node.group.classList.add('cur-sec');
+        nodes.push(node.group);
+        return;
+      }
+      node.group.classList.remove('cur-sec');
+      const seen = indices[indices.length - 1] < current;
+      if (partOf(slides[indices[0]]) === 'appendix') {
+        if (!run) run = {count:0,first:indices[0],seen:true};
+        run.count += indices.length;
+        run.seen = run.seen && seen;
+        return;
+      }
+      flush();
+      node.fold.classList.toggle('seen',seen);
+      nodes.push(node.fold);
+    });
+    flush();
+    prog.replaceChildren(...nodes);
+    const dot = dots[current];
+    if (hadFocus && !prog.contains(document.activeElement) && dot) dot.focus({preventScroll:true});
+    if (dot && prog.scrollWidth > prog.clientWidth + 2) {
+      const d = dot.getBoundingClientRect(), p = prog.getBoundingClientRect();
+      if (d.left < p.left || d.right > p.right) prog.scrollLeft += d.left - p.left - (p.width - d.width) / 2;
+    }
+  }
+  function leaveSlide() {
+    closePanel(false);
+    endArmed = false;
+    clearTimeout(endTimer);
+    hideHint();
+    if (!viaXref && xrefBack) xrefBack.hidden = true;
+  }
+  function enterSlide() {
+    renderProg();
+    const atEnd = slides[current].classList.contains('is-main-end') && current < slides.length - 1;
+    const label = atEnd ? partLabels[partOf(slides[current + 1])] : '';
+    next.textContent = atEnd ? label + ' →' : '다음';
+    next.setAttribute('aria-label',atEnd ? label + '으로 이동' : '다음 슬라이드');
+  }
+  // Main-end gate: the first →/PageDown/Space/swipe on the last main slide only warns.
+  function gateMainEnd() {
+    if (!slides[current].classList.contains('is-main-end') || current >= slides.length - 1) return false;
+    if (endArmed) {
+      endArmed = false;
+      clearTimeout(endTimer);
+      return false;
+    }
+    endArmed = true;
+    clearTimeout(endTimer);
+    endTimer = setTimeout(() => { endArmed = false; },4000);
+    hint('본편 끝 — 한 번 더 누르면 ' + partLabels[partOf(slides[current + 1])],4000);
+    return true;
+  }
+  function hint(text, ms) {
+    if (!endHint) return;
+    const bar = document.querySelector('.nav');
+    const top = bar ? bar.getBoundingClientRect().top : window.innerHeight - 70;
+    endHint.style.bottom = Math.max(12,Math.round(window.innerHeight - top + 12)) + 'px';
+    endHint.textContent = text;
+    endHint.classList.add('on');
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(hideHint,ms);
+  }
+  function hideHint() {
+    clearTimeout(hintTimer);
+    if (!endHint) return;
+    endHint.classList.remove('on');
+    endHint.textContent = '';
+  }
+  function panelOf(slide) {
+    return slide ? slide.querySelector(':scope > .evidence') : null;
+  }
+  function setExpanded(slide, on) {
+    slide.querySelectorAll('.ev-btn,.src-more').forEach(button => button.setAttribute('aria-expanded',String(on)));
+  }
+  function closePanel(focusBack) {
+    if (!openPanel) return;
+    const panel = openPanel, slide = panel.closest('.slide');
+    openPanel = null;
+    panel.hidden = true;
+    slide.classList.remove('ev-open');
+    setExpanded(slide,false);
+    if (focusBack) {
+      const button = slide.querySelector('.ev-btn');
+      if (button) button.focus({preventScroll:true});
+    }
+  }
+  // open: true/false, or undefined to toggle. Returns whether the current panel is open.
+  function setPanel(open, opts = {}) {
+    const slide = slides[current];
+    const panel = panelOf(slide);
+    if (!panel) {
+      if (opts.hint) hint('이 장은 근거 패널이 없습니다',2000);
+      return false;
+    }
+    const want = open === undefined ? panel.hidden : !!open;
+    if (!want) {
+      if (openPanel === panel) closePanel(!!opts.focusBack);
+      return false;
+    }
+    if (openPanel && openPanel !== panel) closePanel(false);
+    panel.hidden = false;
+    slide.classList.add('ev-open');
+    setExpanded(slide,true);
+    openPanel = panel;
+    scrollHints();
+    const sources = opts.sources ? panel.querySelector('.ev-sources') : null;
+    const fit = root.classList.contains('fit');
+    if (fit) panel.scrollTop = sources ? Math.max(0,sources.offsetTop - 70) : 0;
+    panel.focus({preventScroll:true});
+    if (!fit) (sources || panel).scrollIntoView({block:sources ? 'center' : 'nearest'});
+    return true;
+  }
+  function followXref(link) {
+    const match = /^#s(\d+)$/.exec(link.getAttribute('href') || '');
+    const target = match ? Number(match[1]) - 1 : -1;
+    if (target < 0 || target >= slides.length) return false;
+    const from = current;
+    viaXref = true;
+    try { show(target); } finally { viaXref = false; }
+    if (current !== from && xrefBack) {
+      backIndex = from;
+      const id = slides[from].dataset.id || String(from + 1);
+      xrefBack.textContent = '← ' + id;
+      xrefBack.setAttribute('aria-label',id + ' 장으로 돌아가기');
+      xrefBack.hidden = false;
+    }
+    stage.focus({preventScroll:true});
+    return true;
+  }
+  function isShown(el) {
+    if (!el || !el.getClientRects().length) return false;
+    return typeof el.checkVisibility === 'function' ? el.checkVisibility({checkOpacity:true,checkVisibilityCSS:true}) : true;
+  }
+  function mathNarrow(on) {
+    document.querySelectorAll('.math-block[data-has-narrow]').forEach(block => {
+      const wide = block.querySelector(':scope > .math-wide');
+      const tpl = block.querySelector(':scope > template.math-narrow');
+      let live = block.querySelector(':scope > .math-narrow-live');
+      if (on && !live && tpl) {
+        live = document.createElement('span');
+        live.className = 'math-narrow-live';
+        live.append(tpl.content.cloneNode(true));
+        tpl.before(live);
+      } else if (!on && live) {
+        live.remove();
+        live = null;
+      }
+      if (wide) wide.hidden = !!live;
+    });
+  }
+  function ensureZoom() {
+    if (zoomDlg) return;
+    zoomDlg = document.createElement('dialog');
+    zoomDlg.id = 'zoom-dlg';
+    zoomDlg.className = 'zoom-dlg';
+    zoomDlg.setAttribute('aria-label','이미지 확대');
+    const bar = document.createElement('div');
+    bar.className = 'zd-bar';
+    zoomCap = document.createElement('span');
+    zoomCap.className = 'zd-cap';
+    zoomToggleButton = document.createElement('button');
+    zoomToggleButton.type = 'button';
+    zoomToggleButton.className = 'zd-toggle';
+    zoomCloseButton = document.createElement('button');
+    zoomCloseButton.type = 'button';
+    zoomCloseButton.className = 'zd-close';
+    zoomCloseButton.setAttribute('aria-label','확대 닫기');
+    zoomCloseButton.append('닫기 ');
+    const key = document.createElement('kbd');
+    key.textContent = 'Esc';
+    zoomCloseButton.append(key);
+    bar.append(zoomCap,zoomToggleButton,zoomCloseButton);
+    zoomBox = document.createElement('div');
+    zoomBox.className = 'zd-box';
+    zoomImg = document.createElement('img');
+    zoomImg.className = 'zd-img';
+    zoomImg.alt = '';
+    zoomBox.append(zoomImg);
+    zoomDlg.append(bar,zoomBox);
+    document.body.append(zoomDlg);
+    zoomToggleButton.addEventListener('click',zoomToggle);
+    zoomBox.addEventListener('click',zoomToggle);
+    zoomCloseButton.addEventListener('click',closeZoom);
+    zoomDlg.addEventListener('click',event => { if (event.target === zoomDlg) closeZoom(); });
+    zoomDlg.addEventListener('close',() => {
+      const opener = zoomOpener;
+      zoomOpener = null;
+      if (opener && opener.isConnected) opener.focus({preventScroll:true});
+    });
+  }
+  function zoomIsOpen() {
+    return !!zoomDlg && zoomDlg.hasAttribute('open');
+  }
+  function openZoom(img) {
+    ensureZoom();
+    zoomOpener = img;
+    zoomImg.src = img.currentSrc || img.src;
+    zoomImg.alt = img.alt || '';
+    zoomCap.textContent = img.alt || '';
+    zoomDlg.classList.remove('zd-fit');
+    zoomImg.style.width = img.naturalWidth ? img.naturalWidth + 'px' : '';
+    zoomToggleButton.textContent = '화면에 맞춤';
+    zoomModal = typeof zoomDlg.showModal === 'function';
+    if (zoomModal) zoomDlg.showModal();
+    else zoomDlg.setAttribute('open','');
+    zoomBox.style.maxHeight = 'calc(94vh - ' + Math.ceil(zoomDlg.querySelector('.zd-bar').getBoundingClientRect().height) + 'px)';
+    zoomBox.scrollTop = 0;
+    zoomBox.scrollLeft = 0;
+    zoomCloseButton.focus({preventScroll:true});
+  }
+  function closeZoom() {
+    if (!zoomIsOpen()) return;
+    if (zoomModal && typeof zoomDlg.close === 'function') zoomDlg.close();
+    else {
+      zoomDlg.removeAttribute('open');
+      zoomDlg.dispatchEvent(new Event('close'));
+    }
+  }
+  function zoomToggle() {
+    const fitted = zoomDlg.classList.toggle('zd-fit');
+    zoomToggleButton.textContent = fitted ? '원본 크기' : '화면에 맞춤';
+  }
+  const fsApi = !!(root.requestFullscreen || root.webkitRequestFullscreen);
+  const isFs = () => !!(document.fullscreenElement || document.webkitFullscreenElement);
+  function exitFullscreen() {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen;
+    if (!exit) return;
+    try {
+      const result = exit.call(document);
+      if (result && result.catch) result.catch(() => {});
+    } catch (_) {}
+  }
+  function toggleFullscreen() {
+    if (presenting && !isFs()) { present(false); return; }
+    if (!fsApi) { present(!presenting); return; }
+    if (isFs()) { exitFullscreen(); return; }
+    try {
+      const result = (root.requestFullscreen || root.webkitRequestFullscreen).call(root);
+      if (result && result.catch) result.catch(() => present(true));
+    } catch (_) { present(true); }
+  }
+  function wake() {
+    root.classList.remove('idle');
+    clearTimeout(idleTimer);
+    if (presenting) idleTimer = setTimeout(() => { if (presenting) root.classList.add('idle'); },2000);
+  }
+  // Presenting view: header hidden, nav a thin band below the card, scale up to 4x.
+  function present(on) {
+    const want = on === undefined ? !presenting : !!on;
+    presenting = want;
+    root.classList.toggle('fs',want);
+    if (!want && isFs()) exitFullscreen();
+    if (fsButton) {
+      fsButton.textContent = want ? '전체화면 종료' : '전체화면';
+      fsButton.setAttribute('aria-pressed',String(want));
+    }
+    clearTimeout(idleTimer);
+    root.classList.remove('idle');
+    layout();
+    if (want) {
+      wake();
+      stage.focus({preventScroll:true});
+    }
+    return presenting;
+  }
+  function shiftLetter(event) {
+    return ['KeyE','KeyF'].includes(event.code) || event.key === 'E' || event.key === 'F';
+  }
+  // Fullscreen: ask Chrome to hand short Esc presses to the page (holding Esc still exits), so Esc keeps
+  // its order zoom → panel → fullscreen. Browsers without the Keyboard Lock API exit on the first Esc.
+  function escLock(on) {
+    const kb = navigator.keyboard;
+    try {
+      if (on && kb && kb.lock) {
+        const result = kb.lock(['Escape']);
+        if (result && result.catch) result.catch(() => {});
+      } else if (!on && kb && kb.unlock) kb.unlock();
+    } catch (_) {}
+  }
+  function v2Key(event) {
+    const key = event.key, code = event.code, el = event.target;
+    if (zoomIsOpen()) {
+      // A modal dialog closes itself on Esc; the fallback 'open' dialog needs help.
+      if (key === 'Escape' && !zoomModal) { event.preventDefault(); closeZoom(); }
+      return true;
+    }
+    if ((key === 'Enter' || key === ' ') && el.matches && el.matches(zoomSel) && el.closest('.slide')) {
+      event.preventDefault();
+      openZoom(el);
+      return true;
+    }
+    if (key === 'Escape') {
+      if (openPanel) {
+        event.preventDefault();
+        closePanel(true);
+        return true;
+      }
+      // Only reached while Escape is keyboard-locked; a held Esc (repeat) is left to the browser.
+      if (isFs() && !event.repeat) {
+        event.preventDefault();
+        exitFullscreen();
+        return true;
+      }
+      return false;
+    }
+    if (code === 'KeyE' || key === 'e' || key === 'E') {
+      event.preventDefault();
+      // Works on Korean layouts too (code KeyE). Closing from inside the panel parks focus on
+      // the stage so the next Space still advances instead of re-pressing the button.
+      const inside = !!openPanel && openPanel.contains(document.activeElement);
+      if (!setPanel(undefined,{hint:true}) && inside) stage.focus({preventScroll:true});
+      return true;
+    }
+    if (code === 'KeyF' || key === 'f' || key === 'F') {
+      if (window.innerWidth > 520) {
+        event.preventDefault();
+        toggleFullscreen();
+      }
+      return true;
+    }
+    // Focus inside an overflowing panel: vertical keys scroll the panel, ← → still change slides.
+    if (openPanel && openPanel.contains(document.activeElement) && openPanel.scrollHeight > openPanel.clientHeight + 2 &&
+        ['ArrowUp','ArrowDown','PageUp','PageDown',' '].includes(key)) return true;
+    return false;
+  }
+  function navButton(id, className, text) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.id = id;
+    button.className = className;
+    button.textContent = text;
+    return button;
+  }
+  function setupV2() {
+    stage.tabIndex = -1;
+    xrefBack = navButton('xref-back','btn mode','');
+    xrefBack.hidden = true;
+    prev.before(xrefBack);
+    notesNav = navButton('notes-nav','btn mode notes-nav','대본');
+    notesNav.title = '대본 보기 (N)';
+    notesNav.setAttribute('aria-pressed','false');
+    fsButton = navButton('fs','btn mode fs-btn','전체화면');
+    fsButton.title = '전체화면 (F)';
+    fsButton.setAttribute('aria-pressed','false');
+    modeButton.after(notesNav,fsButton);
+    endHint = document.createElement('div');
+    endHint.id = 'end-hint';
+    endHint.setAttribute('role','status');
+    endHint.setAttribute('aria-atomic','true');
+    (document.querySelector('.app') || document.body).append(endHint);
+    xrefBack.addEventListener('click',() => {
+      const target = backIndex;
+      backIndex = -1;
+      xrefBack.hidden = true;
+      if (target >= 0) show(target);
+      stage.focus({preventScroll:true});
+    });
+    fsButton.addEventListener('click',toggleFullscreen);
+    const onFs = () => { escLock(isFs()); present(isFs()); };
+    document.addEventListener('fullscreenchange',onFs);
+    document.addEventListener('webkitfullscreenchange',onFs);
+    document.addEventListener('mousemove',() => { if (presenting) wake(); },{passive:true});
+    document.querySelectorAll(zoomSel).forEach(img => {
+      if (!img.closest('.slide')) return;
+      img.tabIndex = 0;
+      img.setAttribute('role','button');
+      img.setAttribute('aria-label','확대: ' + (img.alt || '이미지'));
+    });
+    document.addEventListener('click',event => {
+      const el = event.target instanceof Element ? event.target : null;
+      if (!el || !el.closest('.slide')) return;
+      const link = el.closest('a.xref');
+      if (link) {
+        if (followXref(link)) event.preventDefault();
+        return;
+      }
+      const opener = el.closest('.ev-btn,.src-more');
+      if (opener) {
+        // .ev-btn toggles; +N always opens (it stays visible beside an open panel) and scrolls to the source list.
+        const more = opener.classList.contains('src-more');
+        setPanel(more ? true : undefined,{sources:more});
+        return;
+      }
+      if (el.closest('.ev-close')) {
+        closePanel(true);
+        return;
+      }
+      if (el.matches(zoomSel)) {
+        event.preventDefault();
+        openZoom(el);
+      }
+    });
+    try { printEvUrl = new URLSearchParams(location.search).get('print') === 'evidence'; } catch (_) {}
+    if (printEvUrl) root.classList.add('print-ev');
+    window.deckShell = {
+      version:2,
+      current:() => current,
+      show:index => { show(Number(index)); return current; },
+      present:on => present(on),
+      toggleEvidence:open => setPanel(open === undefined ? undefined : !!open),
+      toggleNotes:on => {
+        const state = root.classList.contains('show-notes');
+        const want = on === undefined ? !state : !!on;
+        if (want !== state) notesNav.click();
+        return root.classList.contains('show-notes');
+      },
+      printWith:(opts = {}) => {
+        if (opts && opts.evidence) root.classList.add('print-ev');
+        else if (!printEvUrl) root.classList.remove('print-ev');
+        const done = () => {
+          window.removeEventListener('afterprint',done);
+          if (!printEvUrl) root.classList.remove('print-ev');
+        };
+        window.addEventListener('afterprint',done);
+        window.print();
+      }
+    };
+  }
+  if (v2) setupV2();
   show(readHash(),false);
   layout();
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
 })();
 </script>
 <button class="notes-btn" type="button" aria-pressed="false" title="대본 보기 (N)">대본 · N</button>
-<script>(()=>{const r=document.documentElement,b=document.querySelector('.notes-btn');
-const set=v=>{r.classList.toggle('show-notes',v);b.setAttribute('aria-pressed',v);try{localStorage.setItem('deck-notes',v?'1':'0')}catch(e){}};
-try{set(localStorage.getItem('deck-notes')==='1')}catch(e){}
+<script id="shell-notes">(()=>{const r=document.documentElement,b=document.querySelector('.notes-btn'),v2=r.dataset.shell==='2',nav=v2?document.getElementById('notes-nav'):null;
+const set=v=>{r.classList.toggle('show-notes',v);b.setAttribute('aria-pressed',v);if(nav)nav.setAttribute('aria-pressed',v);if(!v2){try{localStorage.setItem('deck-notes',v?'1':'0')}catch(e){}}};
+// v2 decks (data-shell="2") neither read nor write the saved notes state; the nav-bar button and N/KeyN toggle it.
+if(!v2){try{set(localStorage.getItem('deck-notes')==='1')}catch(e){}}
 b.addEventListener('click',()=>set(!r.classList.contains('show-notes')));
-addEventListener('keydown',e=>{if((e.key==='n'||e.key==='N')&&!e.metaKey&&!e.ctrlKey&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))set(!r.classList.contains('show-notes'))});})();</script>
+if(nav)nav.addEventListener('click',()=>set(!r.classList.contains('show-notes')));
+// v2 also ignores N with Alt, inside contenteditable, and while the zoom dialog is open.
+addEventListener('keydown',e=>{if(v2&&(e.altKey||(e.target&&e.target.isContentEditable)||document.querySelector('#zoom-dlg[open]')))return;if((e.key==='n'||e.key==='N'||(v2&&e.code==='KeyN'))&&!e.metaKey&&!e.ctrlKey&&!/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName))set(!r.classList.contains('show-notes'))});})();</script>
 </body>
 </html>
