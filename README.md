@@ -72,7 +72,7 @@ Transformer와 LLM의 기본적인 학습 과정을 이해하고, 기술보고�
 | --- | --- | --- |
 | W01 | [LLaMA 1](https://arxiv.org/abs/2302.13971v1) | 기존 Transformer 개선의 recipe · optimizer · compute/token budget |
 | W02 | [Llama 2](https://arxiv.org/abs/2307.09288v2) | LLaMA 1 recipe의 유지와 구조 변화 · preference reward model · iterative RLHF |
-| W03 | [Qwen1.5 공식 자료](https://qwenlm.github.io/blog/qwen1.5/) → [Qwen2](https://arxiv.org/abs/2407.10671v4) | 7B MHA→GQA · long-context 처리 · dense-to-MoE initialization · instruction pool과 scalable synthesis |
+| W03 | [Qwen](https://arxiv.org/abs/2309.16609v1) → [Qwen2](https://arxiv.org/abs/2407.10671v4) | 7B MHA→GQA · long-context 처리 · dense-to-MoE initialization · instruction pool과 scalable synthesis |
 | W04 | [Qwen2.5](https://arxiv.org/abs/2412.15115v2) → [Qwen3](https://arxiv.org/abs/2505.09388v1) | Qwen2.5 합성·검증과 계승 경계 · 생각/비생각 모드 통합 · 생각 예산 · strong-to-weak distillation |
 | W05 | [DeepSeek-V2](https://arxiv.org/abs/2405.04434v5) | MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형 |
 | W06 | [DeepSeek-V3](https://arxiv.org/abs/2412.19437v2) | 채택한 auxiliary-loss-free MoE 균형 · sequential MTP · FP8 mixed-precision 학습 |
