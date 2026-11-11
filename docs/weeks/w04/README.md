@@ -25,6 +25,10 @@
   - **함께 읽을 자료와 범위:** [Qwen3 §4.5](https://arxiv.org/abs/2505.09388v1)에서 `/think`·`/no think` teacher response를 모두 쓰는 off-policy 단계와 학생 생성 sequence에서 logit을 맞추는 on-policy 단계를 읽고, §4.7 Table 21의 동일 checkpoint 직접 RL 비교로 이어 간다.
   - **원문에서 읽을 부분:** [Qwen3 §4.5·§4.7, Table 21](https://arxiv.org/abs/2505.09388v1). Qwen2.5의 offline DPO/online GRPO는 배경 recipe이지만 Qwen3 strong-to-weak two-phase loss와 같은 방법으로 합치지 않는다.
 
+## 발표자료
+
+- Post-training · 송용우: [슬라이드](slides/qwen25-qwen3-post-training.html) — 받은 원본 그대로입니다.
+
 ## 팀별 분석
 
 ### Architecture & Pre-training
