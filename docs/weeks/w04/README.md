@@ -28,6 +28,7 @@
 ## 발표자료
 
 - Post-training · 송용우: [슬라이드](slides/qwen25-qwen3-post-training.html) — 받은 원본 그대로입니다.
+- Background · 김민선: [Qwen2.5 · Qwen3의 Long Context Extension](slides/week04-long-context.html) — 받은 원본 그대로입니다.
 
 ## 팀별 분석
 
