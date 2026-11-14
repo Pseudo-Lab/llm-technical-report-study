@@ -39,7 +39,7 @@
   - 데이터 & Post-training · 임병극: [§3.3–§3.4 GAtt와 평가](slides/W02_Llama2_GAtt_Evaluation.html)
   - Alignment & RL · 김민제: [RLHF 개요 · §3.2.1–§3.2.2 Reward Model](slides/llama2_rl_part1.html)
   - Background · 이정민: [Tokenizer · BPE · Byte Fallback](slides/tokenizer-bpe.html)
-  - Background · 김민선: [위치 인코딩: Transformer → GPT-3 → RoPE](slides/llama2-background-RoPE.html)
+  - Background · 김민선: [위치 인코딩: Transformer → GPT-3 → RoPE](slides/llama2-background-RoPE.html) · [RoPE의 등장 배경과 위치 인코딩](slides/week02-rope.html)
 - [모임 Q&A](qna.md): 2026-10-24 모임 채팅에 남은 질문 · 의견을 파트별로 묶고, 원문으로 확인한 보충을 더했습니다.
 
 ## 팀별 분석
