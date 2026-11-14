@@ -2,7 +2,7 @@
 
 [W00 — OT 발표자료](w00/README.md): 프로젝트 소개 · 운영 방식 · 팀원 소개
 
-기술 보고서 21편과 Qwen1.5 공식 출시 자료를 16주에 나누어 읽습니다. LLaMA 1·Llama 2는 각각 한 주로, Qwen1.5·Qwen2와 Qwen2.5·Qwen3는 두 모델씩 묶습니다.
+기술 보고서 22편을 16주에 나누어 읽습니다. LLaMA 1·Llama 2는 각각 한 주로, Qwen·Qwen2와 Qwen2.5·Qwen3는 두 모델씩 묶습니다.
 
 [Background 읽기 지도](../background/README.md#week-map)는 본문 구성요소별 필요한 이유, 배경 원전과 읽을 범위, 해당 보고서의 변경점을 연결합니다. 전체 목록을 개인별 필수 정독 과제로 삼지 않으며, 앞 주차의 개념은 연결된 설명을 재사용합니다.
 
@@ -12,7 +12,7 @@
 | --- | --- | --- |
 | [W01](w01/README.md) | LLaMA 1 | 기존 Transformer 개선의 recipe · optimizer · compute/token budget |
 | [W02](w02/README.md) | Llama 2 | LLaMA 1 recipe의 유지와 구조 변화 · preference reward model · iterative RLHF |
-| [W03](w03/README.md) | Qwen1.5 → Qwen2 | 7B MHA→GQA · long-context 처리 · dense-to-MoE initialization · instruction pool과 scalable synthesis |
+| [W03](w03/README.md) | Qwen → Qwen2 | 7B MHA→GQA · long-context 처리 · dense-to-MoE initialization · instruction pool과 scalable synthesis |
 | [W04](w04/README.md) | Qwen2.5 → Qwen3 | Qwen2.5 합성·검증과 계승 경계 · 생각/비생각 모드 통합 · 생각 예산 · strong-to-weak distillation |
 | [W05](w05/README.md) | DeepSeek-V2 | MLA의 KV 압축·위치 분리 · DeepSeekMoE의 expert 분할·공유와 통신 균형 |
 | [W06](w06/README.md) | DeepSeek-V3 | 채택한 auxiliary-loss-free MoE 균형 · sequential MTP · FP8 mixed-precision 학습 |
@@ -28,5 +28,17 @@
 | [W16](w16/README.md) | Solar Open → Solar Open 2 | 저자원 언어 데이터·tokenizer·curriculum · NoPE 상태 · 선택적 weight transfer |
 
 정규 주차 사이에는 계열의 이전 보고서와 후속 버전을 함께 보는 [보충 세션](supplementary.md)을 정규 모임 다음 주에 엽니다.
+
+## 주차 폴더 구성
+
+| 경로 | 담는 것 |
+| --- | --- |
+| `README.md` | 주차 페이지: 학습목표와 이 폴더의 발표자료 목록 |
+| `index.html` | 통합 발표자료(있을 때) |
+| `qna.md` | 모임 Q&A: 모임 채팅에 남은 질문 · 의견과 원문으로 확인한 보충 |
+| `slides/` | 파트별 발표자료. 받은 원본은 그대로 두고, Skills로 만든 덱은 같은 이름의 `.json` 원본을 옆에, 원문 그림은 `slides/figures/`에 둡니다 |
+| `notes/` | 대본 · 회고 · 부속 페이지 |
+
+`README.md` · `index.html`은 공개 페이지 주소와 다른 덱의 링크가 걸려 있어 옮기지 않습니다.
 
 [보충 세션](supplementary.md) · [주간 템플릿](../../templates/week.md) · [프로젝트 소개](../../README.md)

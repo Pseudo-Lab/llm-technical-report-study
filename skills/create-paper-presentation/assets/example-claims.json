@@ -1,0 +1,738 @@
+{
+  "deck": "논문 슬라이드 예시 — LLaMA 1 → Llama 2",
+  "claims": [
+    {
+      "id": "l2-table1-context",
+      "statement": "문맥 길이는 LLaMA 1 2k, Llama 2 4k",
+      "kind": "table",
+      "layer": "main",
+      "display": "4k",
+      "sources": [
+        {
+          "label": "Llama 2 Table 1 (p.6)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=6"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      },
+      "checks": [
+        "A.2.1 (p.47): 2048 → 4096 tokens와 같음"
+      ]
+    },
+    {
+      "id": "l2-table1-gqa",
+      "statement": "Llama 2는 34B · 70B에만 GQA를 쓴다",
+      "kind": "table",
+      "layer": "main",
+      "scope": "KV cache",
+      "display": "34B · 70B만 GQA",
+      "sources": [
+        {
+          "label": "Llama 2 Table 1 (p.6)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=6"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      },
+      "checks": [
+        "Table 1 LLaMA 1 행은 전 크기 GQA ✗ = MHA"
+      ]
+    },
+    {
+      "id": "l1-prenorm",
+      "statement": "LLaMA는 각 sub-layer의 출력 대신 입력을 정규화한다(pre-norm)",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "정규화",
+      "display": "pre-norm",
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "l1-prenorm-why",
+      "statement": "저자: pre-norm을 쓴 이유는 학습 안정성이다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "정규화",
+      "display": "학습 안정성",
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "l1-rmsnorm",
+      "statement": "LLaMA는 정규화 함수로 RMSNorm을 쓴다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "정규화",
+      "display": "RMSNorm",
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "l1-rmsnorm-why-nd",
+      "statement": "RMSNorm을 고른 이유는 LLaMA 원문에 없다",
+      "kind": "nd",
+      "layer": "main",
+      "scope": "정규화",
+      "display": "미기술",
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "high"
+      },
+      "checks": [
+        "§2.2는 RMSNorm을 Zhang & Sennrich(2019) 인용으로만 소개한다"
+      ]
+    },
+    {
+      "id": "rmsnorm-def",
+      "statement": "RMSNorm은 평균을 빼지 않고 RMS로만 나눈다",
+      "kind": "cite",
+      "layer": "evidence",
+      "scope": "정규화",
+      "formula": "\\mathrm{RMSNorm}(a)_i = \\frac{a_i}{\\mathrm{RMS}(a)}\\, g_i",
+      "sources": [
+        {
+          "label": "RMSNorm §3 · §4",
+          "url": "https://arxiv.org/abs/1910.07467v1"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "l1-swiglu",
+      "statement": "LLaMA는 FFN의 ReLU를 SwiGLU로 바꾼다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "SwiGLU",
+      "display": "ReLU 자리에",
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "l1-swiglu-dim",
+      "statement": "LLaMA는 FFN 중간 폭으로 PaLM의 4d 대신 (2/3)·4d를 쓴다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "SwiGLU",
+      "display": "(2/3)·4d",
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "ffn-width-83",
+      "statement": "파라미터 수를 같게 두면 3dh = 8d²에서 h = (8/3)d, 곧 4d의 2/3",
+      "kind": "calc",
+      "layer": "main",
+      "scope": "SwiGLU",
+      "value": 0.6666666666666666,
+      "unit": "× 4d",
+      "display": "2/3",
+      "expr": "8/3/4",
+      "formula": "3dh = 8d^2 \\Rightarrow h = \\tfrac{8}{3}d",
+      "conditions": [
+        "bias 없음",
+        "ReLU FFN 2행렬 · SwiGLU FFN 3행렬"
+      ],
+      "inputs": [
+        "l1-swiglu-dim",
+        "swiglu-cite"
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "swiglu-cite",
+      "statement": "SwiGLU 원 제안은 두 행렬 FFN과 파라미터 수 · 계산량을 같게 두려고 중간 폭을 2/3로 줄였다",
+      "kind": "cite",
+      "layer": "evidence",
+      "scope": "SwiGLU",
+      "sources": [
+        {
+          "label": "SwiGLU (Shazeer 2020) §2",
+          "url": "https://arxiv.org/abs/2002.05202v1"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "low"
+      },
+      "checks": [
+        "LLaMA 본문은 이 이유를 다시 적지 않는다"
+      ]
+    },
+    {
+      "id": "l1-table2-7b",
+      "statement": "LLaMA-7B(6.7B)의 dimension은 4,096",
+      "kind": "table",
+      "layer": "evidence",
+      "scope": "SwiGLU",
+      "sources": [
+        {
+          "label": "LLaMA v1 Table 2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "low",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "ffn-7b-illus",
+      "statement": "d = 4,096이면 (8/3)d = 10,922.7",
+      "kind": "illus",
+      "layer": "evidence",
+      "scope": "SwiGLU",
+      "value": 10922.666666666666,
+      "display": "10,922.7",
+      "expr": "8*4096/3",
+      "tol": 1e-06,
+      "inputs": [
+        "ffn-width-83",
+        "l1-table2-7b"
+      ],
+      "importance": {
+        "technical": "low",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "ffn-int-nd",
+      "statement": "정수로 맞춘 실제 FFN 폭은 LLaMA 원문에 없다",
+      "kind": "nd",
+      "layer": "evidence",
+      "scope": "SwiGLU",
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 · Table 2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "low",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "l1-table2-65b",
+      "statement": "LLaMA-65B(65.2B)는 dimension 8,192 · head 64 · 층 80",
+      "kind": "table",
+      "layer": "evidence",
+      "scope": "KV cache",
+      "sources": [
+        {
+          "label": "LLaMA v1 Table 2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "low"
+      },
+      "checks": [
+        "head 차원 128 = 8,192 ÷ 64",
+        "MHA라 KV head 수 = head 수 64"
+      ]
+    },
+    {
+      "id": "l2-70b-config",
+      "statement": "Llama 2-70B 공개 config: 층 80 · query head 64 · KV head 8 · hidden 8,192",
+      "kind": "config",
+      "layer": "evidence",
+      "scope": "KV cache",
+      "sources": [
+        {
+          "label": "Llama-2-70b-hf config",
+          "url": "https://huggingface.co/meta-llama/Llama-2-70b-hf/blob/main/config.json"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "low"
+      },
+      "checks": [
+        "head 차원 128 = 8,192 ÷ 64",
+        "층 80 = LLaMA-65B Table 2 층 수와 같음",
+        "KV head 8 = A.2.1의 '8 KV projections'와 같음"
+      ]
+    },
+    {
+      "id": "gqa-group-8",
+      "statement": "Llama 2-70B에서는 query head 8개가 K · V 한 쌍을 함께 쓴다",
+      "kind": "calc",
+      "layer": "main",
+      "scope": "KV cache",
+      "display": "query head 8개",
+      "value": 8,
+      "unit": "query head / KV head",
+      "expr": "64/8",
+      "inputs": [
+        "l2-70b-config",
+        "l2-table1-gqa"
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "kv-65b",
+      "statement": "LLaMA-65B 토큰당 KV cache는 2,560 KiB",
+      "kind": "calc",
+      "layer": "main",
+      "scope": "KV cache",
+      "value": 2621440,
+      "unit": "B",
+      "display": "2,560 KiB",
+      "expr": "2*80*64*128*2",
+      "formula": "2 \\times L \\times n_{kv} \\times d_h \\times b",
+      "conditions": [
+        "fp16 2 B",
+        "K+V",
+        "80층 합산",
+        "batch 1"
+      ],
+      "inputs": [
+        "l1-table2-65b"
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      },
+      "checks": [
+        "2,621,440 B ÷ 1,024 = 2,560 KiB"
+      ]
+    },
+    {
+      "id": "kv-70b",
+      "statement": "Llama 2-70B 토큰당 KV cache는 320 KiB",
+      "kind": "calc",
+      "layer": "main",
+      "scope": "KV cache",
+      "value": 327680,
+      "unit": "B",
+      "display": "320 KiB",
+      "expr": "2*80*8*128*2",
+      "formula": "2 \\times L \\times n_{kv} \\times d_h \\times b",
+      "conditions": [
+        "fp16 2 B",
+        "K+V",
+        "80층 합산",
+        "batch 1"
+      ],
+      "inputs": [
+        "l2-70b-config"
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      },
+      "checks": [
+        "327,680 B ÷ 1,024 = 320 KiB"
+      ]
+    },
+    {
+      "id": "kv-ratio",
+      "statement": "토큰당 KV cache 감소 8배는 KV head 64 → 8에서 모두 나온다",
+      "kind": "calc",
+      "layer": "main",
+      "scope": "KV cache",
+      "value": 8,
+      "unit": "×",
+      "ratio_of": [
+        "kv-65b",
+        "kv-70b"
+      ],
+      "factors": [
+        {
+          "name": "KV head",
+          "from": 64,
+          "to": 8
+        },
+        {
+          "name": "층",
+          "from": 80,
+          "to": 80
+        },
+        {
+          "name": "head 차원",
+          "from": 128,
+          "to": 128
+        }
+      ],
+      "screen_condition": "fp16 2 B",
+      "inputs": [
+        "kv-65b",
+        "kv-70b"
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "kv-2048-65b",
+      "statement": "LLaMA-65B, 2,048 토큰 KV cache는 5 GiB",
+      "kind": "calc",
+      "layer": "appendix",
+      "scope": "KV cache",
+      "value": 5368709120,
+      "unit": "B",
+      "display": "5 GiB",
+      "expr": "2621440*2048",
+      "conditions": [
+        "fp16 2 B",
+        "K+V",
+        "80층 합산",
+        "batch 1",
+        "2,048 토큰"
+      ],
+      "inputs": [
+        "kv-65b"
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "kv-2048-70b",
+      "statement": "Llama 2-70B, 2,048 토큰 KV cache는 640 MiB",
+      "kind": "calc",
+      "layer": "appendix",
+      "scope": "KV cache",
+      "value": 671088640,
+      "unit": "B",
+      "display": "640 MiB",
+      "expr": "327680*2048",
+      "conditions": [
+        "fp16 2 B",
+        "K+V",
+        "80층 합산",
+        "batch 1",
+        "2,048 토큰"
+      ],
+      "inputs": [
+        "kv-70b"
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "t7-values",
+      "statement": "Table 7 GSM8k: Minerva-62B 52.4 · +maj1@k 68.5, LLaMA-65B 50.9 · +maj1@k 69.7",
+      "kind": "table",
+      "layer": "main",
+      "scope": "수학 추론",
+      "conditions": [
+        "GSM8k",
+        "정확도 %",
+        "maj1@k는 k = 100"
+      ],
+      "cells": {
+        "Minerva 62B|GSM8k": "52.4",
+        "Minerva 62B|+maj1@k": "68.5",
+        "LLaMA 65B|GSM8k": "50.9",
+        "LLaMA 65B|+maj1@k": "69.7"
+      },
+      "sources": [
+        {
+          "label": "LLaMA v1 Table 7 (p.6)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=6"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "t7-k",
+      "statement": "GSM8k 다수결(maj1@k)은 문제당 k = 100개를 생성한다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "수학 추론",
+      "screen_condition": "k = 100",
+      "sources": [
+        {
+          "label": "LLaMA v1 Table 7 캡션 (p.6)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=6"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      },
+      "checks": [
+        "Minerva 540B만 GSM8k k = 40 — 비교 대상 62B는 k = 100"
+      ]
+    },
+    {
+      "id": "t7-minerva-ft",
+      "statement": "Minerva는 수학 데이터 38.5B 토큰으로 추가 학습한 PaLM이고, LLaMA는 수학 데이터로 추가 학습하지 않았다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "수학 추론",
+      "screen_condition": "38.5B",
+      "sources": [
+        {
+          "label": "LLaMA v1 §3.4 (p.5)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=5"
+        }
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "high"
+      },
+      "checks": [
+        "원문 한 문장: 'Minerva is … finetuned on 38.5B tokens … while neither PaLM or LLaMA are finetuned on mathematical data' — 비교 조건 한 쌍이라 한 claim으로 둔다"
+      ]
+    },
+    {
+      "id": "t7-claim-minerva",
+      "statement": "저자: GSM8k에서 LLaMA-65B가 Minerva-62B를 앞선다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "수학 추론",
+      "display": "LLaMA-65B가 Minerva-62B를 앞선다",
+      "sources": [
+        {
+          "label": "LLaMA v1 §3.4 (p.5)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=5"
+        },
+        {
+          "label": "LLaMA v1 Table 7 캡션 (p.6)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=6"
+        }
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "t7-verdict",
+      "statement": "표에서는 다수결(k = 100)에서만 앞서고(69.7 > 68.5, +1.2) 다수결 없이는 뒤진다(50.9 < 52.4, −1.5)",
+      "kind": "verdict",
+      "layer": "main",
+      "scope": "수학 추론",
+      "inputs": [
+        "t7-values",
+        "t7-claim-minerva"
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "t7-cite",
+      "statement": "Table 7의 PaLM · Minerva 값은 LLaMA가 Lewkowycz et al.(2022)에서 옮긴 값이다",
+      "kind": "cite",
+      "layer": "evidence",
+      "scope": "수학 추론",
+      "sources": [
+        {
+          "label": "LLaMA v1 §3.4 (p.5)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=5"
+        },
+        {
+          "label": "Minerva (Lewkowycz 2022)",
+          "url": "https://arxiv.org/abs/2206.14858"
+        }
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "t7-shot-nd",
+      "statement": "GSM8k의 shot 수와 다수결 없는 생성 설정은 §3.4 · Table 7에 없다",
+      "kind": "nd",
+      "layer": "evidence",
+      "scope": "수학 추론",
+      "sources": [
+        {
+          "label": "LLaMA v1 §3.4 (p.5)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=5"
+        },
+        {
+          "label": "LLaMA v1 Table 7 (p.6)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=6"
+        }
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "low"
+      }
+    },
+    {
+      "id": "t3-values",
+      "statement": "Table 3: LLaMA-65B 85.3 · 82.8 · 52.3 · 84.2 · 77.0, Chinchilla-70B 83.7 · 81.8 · 51.3 · 80.8 · 74.9 (BoolQ · PIQA · SIQA · HellaSwag · WinoGrande)",
+      "kind": "table",
+      "layer": "main",
+      "scope": "상식 추론",
+      "conditions": [
+        "zero-shot",
+        "정확도"
+      ],
+      "cells": {
+        "LLaMA 65B|BoolQ": "85.3",
+        "LLaMA 65B|PIQA": "82.8",
+        "LLaMA 65B|SIQA": "52.3",
+        "LLaMA 65B|HellaSwag": "84.2",
+        "LLaMA 65B|WinoGrande": "77.0",
+        "Chinchilla 70B|BoolQ": "83.7",
+        "Chinchilla 70B|PIQA": "81.8",
+        "Chinchilla 70B|SIQA": "51.3",
+        "Chinchilla 70B|HellaSwag": "80.8",
+        "Chinchilla 70B|WinoGrande": "74.9"
+      },
+      "screen_condition": "zero-shot",
+      "sources": [
+        {
+          "label": "LLaMA v1 Table 3 (p.4)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=4"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      },
+      "checks": [
+        "Chinchilla 70B 행은 ARC-e · ARC-c · OBQA가 '-'라 비교할 수 있는 항목은 5개"
+      ]
+    },
+    {
+      "id": "t3-claim-chinchilla",
+      "statement": "저자: LLaMA-65B는 BoolQ를 뺀 모든 보고 항목에서 Chinchilla-70B를 앞선다",
+      "kind": "orig",
+      "layer": "main",
+      "scope": "상식 추론",
+      "display": "BoolQ를 뺀 모든 항목에서",
+      "sources": [
+        {
+          "label": "LLaMA v1 §3.1 (p.5)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=5"
+        }
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "t3-verdict",
+      "statement": "표에서는 BoolQ도 65B가 높아(85.3 > 83.7, +1.6) 본문의 예외가 표와 맞지 않는다",
+      "kind": "verdict",
+      "layer": "main",
+      "scope": "상식 추론",
+      "inputs": [
+        "t3-values",
+        "t3-claim-chinchilla"
+      ],
+      "importance": {
+        "technical": "medium",
+        "presentation": "high"
+      },
+      "checks": [
+        "같은 문단의 PaLM-540B 문장(BoolQ · WinoGrande 제외)은 표와 맞음: 88.0 > 85.3, 81.1 > 77.0"
+      ]
+    },
+    {
+      "id": "l2-adopt-l1",
+      "statement": "저자: Llama 2는 사전학습 설정과 모델 구조 대부분을 LLaMA 1에서 가져왔다",
+      "kind": "orig",
+      "layer": "main",
+      "display": "구조 대부분을",
+      "sources": [
+        {
+          "label": "Llama 2 §2.2 (p.5)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=5"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      }
+    },
+    {
+      "id": "l2-arch-diff",
+      "statement": "저자: LLaMA 1 대비 주된 구조 차이는 문맥 길이 증가와 GQA 두 가지다",
+      "kind": "orig",
+      "layer": "main",
+      "display": "문맥 2k → 4k",
+      "sources": [
+        {
+          "label": "Llama 2 §2.2 (p.5)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=5"
+        }
+      ],
+      "importance": {
+        "technical": "high",
+        "presentation": "high"
+      },
+      "checks": [
+        "세부와 ablation은 A.2.1 (p.47–48)"
+      ]
+    }
+  ]
+}

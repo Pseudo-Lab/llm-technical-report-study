@@ -1,58 +1,308 @@
 {
-  "title": "논문 슬라이드 예시 — LLaMA 1",
-  "subtitle": "구조·조건별 결과 · 3장 예시 / 전체 논문 발표 아님",
+  "title": "논문 슬라이드 예시 — LLaMA 1 → Llama 2",
+  "subtitle": "v2 형식 예시 · 장 8개 / 전체 논문 발표 아님",
+  "shell_version": 2,
+  "budget_minutes": 7,
+  "compare_pair": "LLaMA-65B ↔ Llama 2-70B",
+  "scope_terms": [
+    "정규화",
+    "SwiGLU",
+    "KV cache",
+    "수학 추론",
+    "상식 추론"
+  ],
+  "out_of_scope_terms": [
+    "RoPE"
+  ],
+  "known_terms": [
+    "LLaMA",
+    "Llama",
+    "PaLM",
+    "Chinchilla",
+    "Minerva",
+    "KiB",
+    "MiB",
+    "GiB",
+    "ReLU",
+    "FFN",
+    "MHA",
+    "LayerNorm",
+    "RMSNorm",
+    "GSM",
+    "MATH",
+    "BoolQ",
+    "PIQA",
+    "SIQA",
+    "HellaSwag",
+    "WinoGrande",
+    "ARC",
+    "OpenBookQA"
+  ],
+  "claims_file": "example-claims.json",
   "slides": [
     {
-      "title": "정규화의 위치와<br>함수를 따로 봅니다",
-      "body": "<p>LLaMA는 각 sublayer의 입력을 정규화하고 RMSNorm을 사용합니다. 원 Transformer의 post-norm과 비교하면 순서가 바뀝니다.</p><p>아래 식은 잔차 경로를 설명하는 축약입니다. pre-norm의 위치 선택과 RMSNorm이라는 함수 선택은 서로 다른 축입니다.</p>",
-      "visual": "<div class=\"norm-pair\"><div class=\"diagram-panel\"><div class=\"diagram-title\"><span>원 Transformer</span><strong>Post-norm</strong></div><div class=\"diagram-scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Post-norm 잔차 연결도 · 가로로 스크롤 가능\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 630 210\" role=\"img\" aria-label=\"원 Transformer: sublayer와 잔차를 더한 후 LayerNorm\"><defs><marker id=\"post\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"4\" orient=\"auto\"><path d=\"M0,0 L8,4 L0,8 Z\" fill=\"#5D6570\"/></marker></defs><path d=\"M50 80H98\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#post)\"/><rect x=\"100\" y=\"52\" width=\"140\" height=\"56\" rx=\"10\" fill=\"#FFFFFF\" stroke=\"#959BA5\" stroke-width=\"1.6\"/><text x=\"170.0\" y=\"87.0\" text-anchor=\"middle\" class=\"sv-label\">Sublayer</text><path d=\"M240 80H301\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#post)\"/><circle cx=\"320\" cy=\"80\" r=\"18\" fill=\"#FFFFFF\" stroke=\"#5D6570\" stroke-width=\"1.6\"/><text x=\"320\" y=\"87\" text-anchor=\"middle\" class=\"sv-label\">+</text><path d=\"M338 80H388\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#post)\"/><rect x=\"390\" y=\"52\" width=\"140\" height=\"56\" rx=\"10\" fill=\"#FFFFFF\" stroke=\"#959BA5\" stroke-width=\"1.6\"/><text x=\"460.0\" y=\"87.0\" text-anchor=\"middle\" class=\"sv-label\">LayerNorm</text><path d=\"M530 80H585\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#post)\"/><path d=\"M62 80V158H320V101\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#post)\"/><text x=\"28\" y=\"87\" class=\"sv-label\">x</text><text x=\"595\" y=\"87\" class=\"sv-label\">y</text><text x=\"180\" y=\"184\" text-anchor=\"middle\" class=\"sv-note\">잔차 경로</text></svg></div><div class=\"formula\">LayerNorm(x + Sublayer(x))</div></div><div class=\"diagram-panel emphasized\"><div class=\"diagram-title\"><span>LLaMA</span><strong>Pre-norm + RMSNorm</strong></div><div class=\"diagram-scroll\" tabindex=\"0\" role=\"region\" aria-label=\"Pre-norm 잔차 연결도 · 가로로 스크롤 가능\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 630 210\" role=\"img\" aria-label=\"LLaMA: RMSNorm 이후 sublayer, 입력 잔차를 더함\"><defs><marker id=\"pre\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"4\" orient=\"auto\"><path d=\"M0,0 L8,4 L0,8 Z\" fill=\"#5D6570\"/></marker></defs><path d=\"M50 80H98\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#pre)\"/><rect x=\"100\" y=\"52\" width=\"140\" height=\"56\" rx=\"10\" fill=\"#EEF2FA\" stroke=\"#2E55A5\" stroke-width=\"1.6\"/><text x=\"170.0\" y=\"87.0\" text-anchor=\"middle\" class=\"sv-label\">RMSNorm</text><path d=\"M240 80H278\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#pre)\"/><rect x=\"280\" y=\"52\" width=\"140\" height=\"56\" rx=\"10\" fill=\"#EEF2FA\" stroke=\"#2E55A5\" stroke-width=\"1.6\"/><text x=\"350.0\" y=\"87.0\" text-anchor=\"middle\" class=\"sv-label\">Sublayer</text><path d=\"M420 80H491\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#pre)\"/><circle cx=\"510\" cy=\"80\" r=\"18\" fill=\"#FFFFFF\" stroke=\"#5D6570\" stroke-width=\"1.6\"/><text x=\"510\" y=\"87\" text-anchor=\"middle\" class=\"sv-label\">+</text><path d=\"M528 80H585\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#pre)\"/><path d=\"M62 80V158H510V101\" fill=\"none\" stroke=\"#5D6570\" stroke-width=\"2\"  marker-end=\"url(#pre)\"/><text x=\"28\" y=\"87\" class=\"sv-label\">x</text><text x=\"595\" y=\"87\" class=\"sv-label\">y</text><text x=\"284\" y=\"184\" text-anchor=\"middle\" class=\"sv-note\">잔차 경로</text></svg></div><div class=\"formula\">x + Sublayer(RMSNorm(x))</div></div></div><div class=\"annotation blue\"><strong>위치와 함수는 별개의 선택입니다.</strong><span>RMSNorm은 root mean square로 정규화하며 mean-centering을 생략합니다.</span></div>",
-      "note": "",
-      "section": "2",
-      "section_label": "데이터·설계·학습",
-      "layout": "process",
+      "id": "1-1",
+      "key": "cover",
+      "kind": "intro",
+      "section": "1",
+      "section_label": "들어가며",
+      "layout": "cover",
+      "title": "Llama 2: LLaMA 1 블록에 2배 문맥과 GQA를 더했다",
+      "body": "<p class=\"pair-line\"><b>비교 짝</b> LLaMA-65B ↔ Llama 2-70B · 가중치 계승 아님</p>",
+      "visual": "<div class=\"g c2\" data-main data-au=\"1\"><div class=\"profile pf-prev\"><div class=\"pf-head\"><strong>LLaMA 1</strong><span>arXiv 2302.13971 · 2023-02</span></div><dl class=\"pf-grid\"><div><dt>크기</dt><dd>6.7B · 13.0B · 32.5B · 65.2B</dd></div><div><dt>학습 토큰</dt><dd>1.0T · 1.4T</dd></div><div><dt>문맥</dt><dd>2k</dd></div><div><dt>attention</dt><dd>MHA (전 크기)</dd></div></dl></div><div class=\"profile pf-cur\"><div class=\"pf-head\"><strong>Llama 2</strong><span>arXiv 2307.09288 · 2023-07</span></div><dl class=\"pf-grid\"><div><dt>크기</dt><dd>7B · 13B · 34B · 70B</dd></div><div><dt>학습 토큰</dt><dd>2.0T</dd></div><div><dt>문맥</dt><dd>4k</dd></div><div><dt>attention</dt><dd>34B · 70B만 GQA</dd></div></dl><p class=\"pf-note\"><dfn>GQA</dfn>: query head 여럿이 K · V 한 쌍을 나눠 씀</p></div></div><figure class=\"crop crop-thumb only-wide\" data-au=\"0\"><img src=\"figures/llama2-table1.png\" alt=\"Llama 2 Table 1 원본(눌러서 확대)\" width=\"160\" data-glyph-px=\"14\"></figure>",
+      "evidence": "<figure class=\"crop\"><img src=\"figures/llama2-table1.png\" alt=\"Llama 2 Table 1 원문: Llama 1 · Llama 2 크기별 학습 데이터 · 파라미터 · 문맥 길이 · GQA · 토큰 · LR, 표 캡션\" data-glyph-px=\"13\" data-display-width=\"560\"><figcaption>원문 · Llama 2 Table 1 (p.6) · 표와 캡션 전체 / 발표자 표시 없음</figcaption></figure><p>LLaMA 1의 크기 · 토큰 원본(LLaMA v1 Table 2)은 [[@kv-cache|KV cache 장]]의 근거에 있습니다.</p>",
       "sources": [
         {
-          "label": "LLaMA v1 · §2.2 · Transformer §3.1 · RMSNorm §3",
+          "label": "LLaMA v1 Table 2 (p.3)",
           "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
         },
         {
-          "label": "Transformer",
-          "url": "https://arxiv.org/abs/1706.03762v7"
+          "label": "Llama 2 Table 1 (p.6)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=6",
+          "detail": "LLaMA 1 행: 문맥 2k · GQA 없음"
+        }
+      ],
+      "claims": [
+        "l2-table1-context",
+        "l2-table1-gqa"
+      ]
+    },
+    {
+      "id": "2-1",
+      "key": "norm",
+      "kind": "mechanism",
+      "term": "정규화",
+      "section": "2",
+      "section_label": "구조",
+      "layout": "wide",
+      "title": "정규화: LLaMA는 위치(pre-norm)와 함수(RMSNorm)를 함께 바꿨다",
+      "body": "<p>원문이 밝힌 이유는 pre-norm의 <b>학습 안정성</b>뿐이고, RMSNorm을 고른 이유는 <span class=\"ev-chip\" data-ev=\"nd\">미기술</span>입니다.</p>",
+      "visual": "<div class=\"ba\" data-main><div class=\"ba-side ba-before\"><span class=\"ba-tag\">원 Transformer</span><div class=\"diagram-scroll\" aria-label=\"post-norm 잔차 연결도\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 150\" role=\"img\" aria-label=\"원 Transformer post-norm: x가 sublayer F를 지나 잔차 x와 더해진 뒤, 그 합을 LayerNorm으로 정규화한다\"><defs><marker id=\"ba-post\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"4\" orient=\"auto\"><path d=\"M0,0 L8,4 L0,8 Z\" fill=\"#5D6570\"/></marker></defs><text x=\"6\" y=\"69\" class=\"sv-label\">x</text><path d=\"M22 62H44\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-post)\"/><rect x=\"46\" y=\"36\" width=\"108\" height=\"52\" rx=\"10\" fill=\"#FFFFFF\" stroke=\"#959BA5\" stroke-width=\"1.6\"/><text x=\"100\" y=\"69\" text-anchor=\"middle\" class=\"sv-label\">Sublayer</text><path d=\"M154 62H176\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-post)\"/><circle cx=\"192\" cy=\"62\" r=\"14\" fill=\"#FFFFFF\" stroke=\"#5D6570\" stroke-width=\"1.6\"/><text x=\"192\" y=\"69\" text-anchor=\"middle\" class=\"sv-label\">+</text><path d=\"M206 62H228\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-post)\"/><g class=\"ba-diff\"><rect x=\"230\" y=\"36\" width=\"120\" height=\"52\" rx=\"10\" fill=\"#EEF2FA\" stroke=\"#2E55A5\" stroke-width=\"1.6\"/><text x=\"290\" y=\"69\" text-anchor=\"middle\" class=\"sv-label\">LayerNorm</text></g><path d=\"M350 62H374\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-post)\"/><g class=\"ba-same\"><path d=\"M32 62V118H192V78\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-post)\"/><text x=\"112\" y=\"140\" text-anchor=\"middle\" class=\"sv-note\">잔차 경로</text></g><text x=\"380\" y=\"69\" class=\"sv-label\">y</text></svg></div>\\[y = \\mathrm{LayerNorm}(x + F(x))\\]</div><div class=\"ba-arrow\" aria-hidden=\"true\">→</div><div class=\"ba-side ba-after\"><span class=\"ba-tag\">LLaMA</span><div class=\"diagram-scroll\" aria-label=\"pre-norm 잔차 연결도\"><svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 400 150\" role=\"img\" aria-label=\"LLaMA pre-norm: x를 RMSNorm으로 정규화한 뒤 sublayer F에 넣고, 정규화하지 않은 잔차 x를 더한다\"><defs><marker id=\"ba-pre\" markerWidth=\"8\" markerHeight=\"8\" refX=\"6\" refY=\"4\" orient=\"auto\"><path d=\"M0,0 L8,4 L0,8 Z\" fill=\"#5D6570\"/></marker></defs><text x=\"6\" y=\"69\" class=\"sv-label\">x</text><path d=\"M22 62H44\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-pre)\"/><g class=\"ba-diff\"><rect x=\"46\" y=\"36\" width=\"108\" height=\"52\" rx=\"10\" fill=\"#EEF2FA\" stroke=\"#2E55A5\" stroke-width=\"1.6\"/><text x=\"100\" y=\"69\" text-anchor=\"middle\" class=\"sv-label\">RMSNorm</text></g><path d=\"M154 62H176\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-pre)\"/><rect x=\"178\" y=\"36\" width=\"108\" height=\"52\" rx=\"10\" fill=\"#FFFFFF\" stroke=\"#959BA5\" stroke-width=\"1.6\"/><text x=\"232\" y=\"69\" text-anchor=\"middle\" class=\"sv-label\">Sublayer</text><path d=\"M286 62H310\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-pre)\"/><circle cx=\"326\" cy=\"62\" r=\"14\" fill=\"#FFFFFF\" stroke=\"#5D6570\" stroke-width=\"1.6\"/><text x=\"326\" y=\"69\" text-anchor=\"middle\" class=\"sv-label\">+</text><path d=\"M340 62H374\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-pre)\"/><g class=\"ba-same\"><path d=\"M32 62V118H326V78\" stroke=\"#5D6570\" stroke-width=\"2\" fill=\"none\" marker-end=\"url(#ba-pre)\"/><text x=\"179\" y=\"140\" text-anchor=\"middle\" class=\"sv-note\">잔차 경로</text></g><text x=\"380\" y=\"69\" class=\"sv-label\">y</text></svg></div>\\[y = x + F(\\mathrm{RMSNorm}(x))\\]</div></div><p class=\"cond\"><span class=\"ev-chip\" data-ev=\"illus\">설명용</span> sublayer F 하나만 그린 축약 · 실제 블록은 attention · FFN 앞에 각각 RMSNorm</p>",
+      "evidence": "<blockquote class=\"ev-quote\" lang=\"en\">“To improve the training stability, we normalize the input of each transformer sub-layer”<cite>LLaMA v1 §2.2 (p.3) · 같은 문장에 “instead of normalizing the output”</cite></blockquote>\\[\\mathrm{LayerNorm}(a)_i = \\frac{a_i - \\mu}{\\sigma}\\, g_i\\]<span data-math=\"rms\"></span><p>\\(\\mu\\) · \\(\\sigma\\)는 \\(a\\)의 평균 · 표준편차, \\(g\\)는 학습되는 배율입니다. RMSNorm에는 평균을 빼는 단계가 없습니다.</p><p><span class=\"ev-chip\" data-ev=\"cite\">인용 원전</span> LayerNorm · RMSNorm 식은 RMSNorm 원 제안(Zhang &amp; Sennrich 2019 §3 · §4), 화면의 post-norm 식은 Transformer §3.1의 LayerNorm(x + Sublayer(x))에서 옮겼습니다. LLaMA는 둘 다 인용만 하고 식은 적지 않았습니다.</p>",
+      "math": {
+        "rms": {
+          "tex": "\\mathrm{RMSNorm}(a)_i = \\frac{a_i}{\\mathrm{RMS}(a)}\\, g_i,\\quad \\mathrm{RMS}(a) = \\sqrt{\\tfrac{1}{n}\\textstyle\\sum_{i=1}^{n} a_i^2}",
+          "tex_narrow": "\\begin{aligned}\\mathrm{RMSNorm}(a)_i &= \\frac{a_i}{\\mathrm{RMS}(a)}\\, g_i \\\\ \\mathrm{RMS}(a) &= \\sqrt{\\tfrac{1}{n}\\textstyle\\sum_{i=1}^{n} a_i^2}\\end{aligned}",
+          "display": true
+        }
+      },
+      "sources": [
+        {
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
         },
         {
-          "label": "RMSNorm",
-          "url": "https://arxiv.org/abs/1910.07467v1"
+          "label": "RMSNorm §3 · §4",
+          "url": "https://arxiv.org/abs/1910.07467v1",
+          "detail": "Zhang & Sennrich 2019 · LLaMA가 인용한 원 제안 · §3 LayerNorm 식 · §4 RMSNorm 식"
+        },
+        {
+          "label": "Transformer §3.1",
+          "url": "https://arxiv.org/abs/1706.03762v7",
+          "detail": "Vaswani et al. 2017 · post-norm 식 LayerNorm(x + Sublayer(x))"
         }
+      ],
+      "claims": [
+        "l1-prenorm",
+        "l1-prenorm-why",
+        "l1-rmsnorm",
+        "l1-rmsnorm-why-nd",
+        "rmsnorm-def"
       ]
     },
     {
-      "title": "수학 성능은<br>다수결 조건에 따라 달라집니다",
-      "body": "<p>GSM8k에서 LLaMA-65B와 Minerva-62B의 우열은 maj1@k 미적용과 다수결에서 달라집니다. 다수결은 여러 샘플의 답을 모아 판단합니다.</p><p>Minerva는 수학 자료로 추가 학습한 모델이고 LLaMA는 수학 전용 fine-tuning을 하지 않았습니다. 학습 조건과 추론 샘플 수를 모두 표시해야 합니다.</p>",
-      "visual": "<div class=\"condition-panels\"><div class=\"compare-panel\"><h3>maj1@k 미적용</h3><p class=\"panel-sub\">기본 보고값 · GSM8k</p><div class=\"hbar-chart \" role=\"img\" aria-label=\"GSM8k maj1@k 미적용: Minerva 52.4%, LLaMA 50.9%\"><div class=\"hbar-row\" data-value=\"52.4\"><div class=\"hbar-head\"><span>Minerva 62B</span><strong>52.4<small>%</small></strong></div><div class=\"hbar-track\"><div class=\"hbar-fill gray\" style=\"width:52.4%\"></div></div></div><div class=\"hbar-row\" data-value=\"50.9\"><div class=\"hbar-head\"><span>LLaMA 65B</span><strong>50.9<small>%</small></strong></div><div class=\"hbar-track\"><div class=\"hbar-fill blue\" style=\"width:50.9%\"></div></div></div><div class=\"chart-axis\"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div></div></div><div class=\"compare-panel\"><h3>다수결 · k = 100</h3><p class=\"panel-sub\">문제마다 100개 응답을 모아 판단</p><div class=\"hbar-chart \" role=\"img\" aria-label=\"GSM8k k100 다수결: Minerva 68.5%, LLaMA 69.7%\"><div class=\"hbar-row\" data-value=\"68.5\"><div class=\"hbar-head\"><span>Minerva 62B</span><strong>68.5<small>%</small></strong></div><div class=\"hbar-track\"><div class=\"hbar-fill gray\" style=\"width:68.5%\"></div></div></div><div class=\"hbar-row\" data-value=\"69.7\"><div class=\"hbar-head\"><span>LLaMA 65B</span><strong>69.7<small>%</small></strong></div><div class=\"hbar-track\"><div class=\"hbar-fill blue\" style=\"width:69.7%\"></div></div></div><div class=\"chart-axis\"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div></div></div></div><p class=\"cap\">두 패널 모두 accuracy (%) · 0–100% 같은 축<br>shot 수·기본 decoding 설정은 v1 §3.4/Table 7에 미기술</p>",
-      "note": "",
-      "section": "3",
-      "section_label": "실험과 관찰",
-      "layout": "process",
+      "id": "2-2",
+      "key": "swiglu",
+      "kind": "mechanism",
+      "term": "SwiGLU",
+      "section": "2",
+      "section_label": "구조",
+      "layout": "wide",
+      "title": "SwiGLU: ReLU 자리에 넣고 FFN 폭은 4d에서 (2/3)·4d로 줄였다",
+      "body": "<p><span class=\"ev-chip\" data-ev=\"calc\">계산</span> 중간 폭 \\(h\\)를 파라미터 수로 풉니다.</p>",
+      "visual": "<ol class=\"derive\" data-main aria-label=\"SwiGLU 중간 폭 유도 4단계\"><li><span class=\"dv-eq\">\\(2 \\cdot d \\cdot 4d = 8d^2\\)</span><span class=\"dv-why\">ReLU FFN: d×4d, 4d×d 두 행렬 (d = 모델 차원)</span></li><li><span class=\"dv-eq\">\\(3 \\cdot d \\cdot h = 3dh\\)</span><span class=\"dv-why\">SwiGLU: W · V (d×h), W₂ (h×d) 세 행렬</span></li><li><span class=\"dv-eq\">\\(3dh = 8d^2\\)</span><span class=\"dv-why\">파라미터 수를 같게 둔다</span></li><li><span class=\"dv-eq\">\\(h = \\tfrac{8}{3}d = \\tfrac{2}{3} \\cdot 4d\\)</span><span class=\"dv-why\">원문 표기 (2/3)·4d</span></li><li class=\"dv-end\">답: 폭을 2/3로 줄여야 행렬이 3개여도 FFN 크기가 같다</li></ol>",
+      "evidence": "<blockquote class=\"ev-quote\" lang=\"en\">“We use a dimension of 2/3 4d instead of 4d as in PaLM.”<cite>LLaMA v1 §2.2 (p.3)</cite></blockquote>\\[\\mathrm{FFN}_{\\mathrm{SwiGLU}}(x) = \\big(\\mathrm{Swish}_1(xW) \\otimes xV\\big)\\,W_2\\]<p><span class=\"ev-chip\" data-ev=\"cite\">인용 원전</span> 세 행렬 이름 W · V · W₂는 Shazeer(2020 §2)의 표기입니다. 원전은 두 행렬 FFN과 파라미터 수 · 계산량을 같게 두고 비교하려고 중간 폭을 2/3로 줄였습니다. LLaMA 본문은 이 이유를 다시 적지 않았습니다.</p><p class=\"subst\"><span class=\"ev-chip\" data-ev=\"illus\">설명용</span> LLaMA-7B: d = 4,096 → h = 8 × 4,096 ÷ 3 = 10,922.7</p><p><span class=\"ev-chip\" data-ev=\"nd\">미기술</span> 정수로 맞춘 실제 폭은 원문에 없습니다.</p><p>d = 4,096의 원본(LLaMA v1 Table 2)은 [[@kv-cache|KV cache 장]]의 근거에 있습니다.</p>",
       "sources": [
         {
-          "label": "LLaMA v1 · §3.4 · Table 7",
+          "label": "LLaMA v1 §2.2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3"
+        },
+        {
+          "label": "SwiGLU (Shazeer 2020) §2",
+          "url": "https://arxiv.org/abs/2002.05202v1",
+          "detail": "LLaMA가 인용한 원 제안 · 2/3 폭 보정"
+        },
+        {
+          "label": "LLaMA v1 Table 2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3",
+          "detail": "7B d = 4,096 (설명용 대입)"
+        }
+      ],
+      "claims": [
+        "l1-swiglu",
+        "l1-swiglu-dim",
+        "ffn-width-83",
+        "swiglu-cite",
+        "l1-table2-7b",
+        "ffn-7b-illus",
+        "ffn-int-nd"
+      ]
+    },
+    {
+      "id": "2-3",
+      "key": "kv-cache",
+      "kind": "mechanism",
+      "term": "KV cache",
+      "section": "2",
+      "section_label": "구조",
+      "layout": "wide",
+      "title": "KV cache: 토큰당 2,560 → 320 KiB, KV head 64 → 8이 전부다",
+      "body": "<p>70B는 GQA로 query head 8개가 K · V 한 쌍을 함께 써서, 층마다 저장할 K · V가 64쌍에서 8쌍으로 줄었습니다.</p>",
+      "visual": "<figure class=\"factor\" data-main role=\"img\" aria-label=\"토큰당 KV cache: LLaMA-65B 2,560 KiB, Llama 2-70B 320 KiB. KV head 64에서 8로 8배 감소, 층 80과 head 차원 128은 동일\"><div class=\"fx-bars\"><div class=\"fx-row\"><span class=\"fx-name\">LLaMA-65B</span><span class=\"fx-track\"><i style=\"width:100%\"></i></span><b class=\"fx-val\">2,560 KiB</b></div><div class=\"fx-row fx-new\"><span class=\"fx-name\">Llama 2-70B</span><span class=\"fx-track\"><i style=\"width:12.5%\"></i></span><b class=\"fx-val\">320 KiB</b></div></div><ol class=\"fx-terms\"><li class=\"fx-chg\"><span class=\"fx-k\">KV head</span><span class=\"fx-ab\">64 → 8</span><b class=\"fx-r\">÷ 8</b></li><li class=\"fx-same\"><span class=\"fx-k\">층</span><span class=\"fx-ab\">80 → 80</span><b class=\"fx-r\">동일</b></li><li class=\"fx-same\"><span class=\"fx-k\">head 차원</span><span class=\"fx-ab\">128 → 128</span><b class=\"fx-r\">동일</b></li></ol><span data-math=\"kv\"></span></figure><p class=\"cond\"><span class=\"ev-chip\" data-ev=\"calc\">계산</span> 공개 config 값 · fp16 2 B · K+V · 80층 합산 · batch 1</p><figure class=\"crop crop-thumb only-wide\" data-au=\"0\"><img src=\"figures/llama1-table2.png\" alt=\"LLaMA v1 Table 2 원본(눌러서 확대)\" width=\"200\" data-glyph-px=\"14\"></figure>",
+      "evidence": "<p>\\(L\\) 층 수 · \\(n_{kv}\\) KV head 수 · \\(d_h\\) head 차원 · \\(b\\) 값 하나의 바이트(fp16 = 2) · 맨 앞 2 = K와 V</p><p class=\"subst\">LLaMA-65B: 2 × 80 × 64 × 128 × 2 B = 2,621,440 B = 2,560 KiB</p><p class=\"subst\">Llama 2-70B: 2 × 80 × 8 × 128 × 2 B = 327,680 B = 320 KiB</p><p>막대는 0 기준 같은 축입니다(폭 = 값 ÷ 2,560 KiB). 요인 곱 8 × 1 × 1 = 8입니다.</p><p><span class=\"ev-chip\" data-ev=\"config\">config</span> 70B의 층 80 · KV head 8 · head 차원 128은 논문이 아니라 공개 config 값입니다. 65B는 Table 2의 층 80 · head 64 · 차원 8,192이고, head 차원 128 = 8,192 ÷ 64입니다.</p><figure class=\"crop\"><img src=\"figures/llama1-table2.png\" alt=\"LLaMA v1 Table 2 원문: 크기별 dimension · n heads · n layers · learning rate · batch size · n tokens\" data-glyph-px=\"14\" data-display-width=\"560\"><figcaption>원문 · LLaMA v1 Table 2 (p.3) · 전체 / 발표자 표시 없음</figcaption></figure><p>같은 2,048 토큰으로 환산한 크기는 부록 [[A-1]]에 있습니다.</p>",
+      "math": {
+        "kv": {
+          "tex": "\\text{KV/token} = 2 \\times L \\times n_{kv} \\times d_h \\times b",
+          "tex_narrow": "\\begin{aligned}\\text{KV/token} &= 2 \\times L \\times n_{kv} \\\\ &\\quad \\times d_h \\times b\\end{aligned}",
+          "display": true
+        }
+      },
+      "sources": [
+        {
+          "label": "LLaMA v1 Table 2 (p.3)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=3",
+          "detail": "65B: dimension 8,192 · n heads 64 · n layers 80"
+        },
+        {
+          "label": "Llama-2-70b-hf config",
+          "url": "https://huggingface.co/meta-llama/Llama-2-70b-hf/blob/main/config.json",
+          "detail": "num_hidden_layers 80 · num_attention_heads 64 · num_key_value_heads 8 · hidden_size 8,192"
+        },
+        {
+          "label": "Llama 2 Table 1 (p.6)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=6",
+          "detail": "70B GQA 사용"
+        }
+      ],
+      "claims": [
+        "l1-table2-65b",
+        "l2-70b-config",
+        "gqa-group-8",
+        "kv-65b",
+        "kv-70b",
+        "kv-ratio"
+      ]
+    },
+    {
+      "id": "3-1",
+      "key": "gsm8k",
+      "kind": "result",
+      "term": "수학 추론",
+      "section": "3",
+      "section_label": "평가",
+      "layout": "wide",
+      "title": "수학 추론: GSM8k 우열은 다수결이면 뒤집힌다",
+      "body": "<p><dfn>maj1@k</dfn>: 문제마다 답 k = 100개를 생성해 다수결. 비교 대상은 <b>Minerva-62B</b>.</p>",
+      "visual": "<div class=\"claim-table\" data-main><div class=\"table-wrap\"><table class=\"tbl ct rowcards\"><thead><tr><th>모델</th><th class=\"numcol\">GSM8k</th><th class=\"numcol\">+maj1@k</th></tr></thead><tbody><tr class=\"ct-vs\"><td data-label=\"모델\">Minerva 62B</td><td class=\"numcol cl-vs\" data-label=\"GSM8k\">52.4</td><td class=\"numcol cl-vs\" data-label=\"+maj1@k\">68.5</td></tr><tr class=\"ct-focus\"><td data-label=\"모델\">LLaMA 65B</td><td class=\"numcol cl-x\" data-label=\"GSM8k\">50.9</td><td class=\"numcol cl-hi\" data-label=\"+maj1@k\">69.7</td></tr></tbody></table></div><p class=\"claim-legend\"><span><i class=\"cl-hi\"></i>본문이 강조한 우위</span><span><i class=\"cl-vs\"></i>본문의 비교 대상</span><span><i class=\"cl-x\"></i>본문 주장과 표 불일치</span><span>발췌한 칸에 원문 굵게 없음</span></p><div class=\"verdict\"><span class=\"vd-claim\">저자: “GSM8k에서 LLaMA-65B가 Minerva-62B를 앞선다”</span><span class=\"vd-res vd-part\">표: 다수결에서만 69.7 &gt; 68.5 (+1.2) · 다수결 없이는 50.9 &lt; 52.4 (−1.5)</span></div><p class=\"cap\">원문 · LLaMA v1 Table 7 (p.6) · GSM8k 두 열 · 두 행 발췌 / 생략: MATH · PaLM · 다른 크기 / 칠한 칸 = 발표자 표시</p></div><p class=\"cond\">Minerva만 수학 데이터 38.5B 토큰으로 추가 학습</p><figure class=\"crop crop-thumb only-wide\" data-au=\"0\"><img src=\"figures/llama1-table7.png\" alt=\"LLaMA v1 Table 7 원본(눌러서 확대)\" width=\"51\" data-glyph-px=\"14\"></figure>",
+      "evidence": "<blockquote class=\"ev-quote\" lang=\"en\">“For majority voting, we use the same setup as Minerva, with k = 256 samples for MATH and k = 100 for GSM8k”<cite>LLaMA v1 Table 7 캡션 (p.6)</cite></blockquote><figure class=\"crop\"><img src=\"figures/llama1-table7.png\" alt=\"LLaMA v1 Table 7 원문: PaLM · Minerva · LLaMA 크기별 MATH · GSM8k 정확도와 +maj1@k 열, 표 캡션\" data-glyph-px=\"14\" data-display-width=\"442\"><figcaption>원문 · LLaMA v1 Table 7 (p.6) · 표와 캡션 전체 / 발표자 표시 없음</figcaption></figure><p><span class=\"ev-chip\" data-ev=\"cite\">인용 원전</span> PaLM · Minerva 값은 LLaMA가 Lewkowycz et al.(2022)에서 옮긴 값입니다(§3.4).</p><p><span class=\"ev-chip\" data-ev=\"nd\">미기술</span> shot 수와 다수결 없는 기본 생성 설정은 §3.4 · Table 7에 없습니다.</p>",
+      "sources": [
+        {
+          "label": "LLaMA v1 Table 7 (p.6)",
           "url": "https://arxiv.org/pdf/2302.13971v1#page=6"
+        },
+        {
+          "label": "LLaMA v1 §3.4 (p.5)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=5",
+          "detail": "Minerva는 수학 데이터 38.5B 토큰으로 추가 학습 · 저자 주장 문장"
+        },
+        {
+          "label": "Minerva (Lewkowycz 2022)",
+          "url": "https://arxiv.org/abs/2206.14858",
+          "detail": "PaLM · Minerva 값의 원 출처 · LLaMA가 인용"
         }
+      ],
+      "claims": [
+        "t7-values",
+        "t7-k",
+        "t7-minerva-ft",
+        "t7-claim-minerva",
+        "t7-verdict",
+        "t7-cite",
+        "t7-shot-nd"
       ]
     },
     {
-      "title": "MMLU에서는<br>더 높은 비교 모델이 있습니다",
-      "body": "<p>MMLU는 57개 지식 과제를 평가합니다. 기반 LLaMA-65B의 5-shot 평균은 63.4로 Chinchilla-70B와 PaLM-540B보다 낮습니다.</p><p>저자는 책과 학술 자료의 양이 상대적으로 적다는 점을 가능한 설명으로 제시합니다. 데이터 양의 차이가 원인이라는 것은 검증된 결론이 아닙니다.</p>",
-      "visual": "<div class=\"chart-heading\"><span class=\"tag blue\">기반 모델</span><strong>MMLU · 5-shot accuracy</strong></div><div class=\"hbar-chart \" role=\"img\" aria-label=\"Table 9 MMLU 5-shot LLaMA 63.4 Chinchilla 67.5 PaLM 69.3\"><div class=\"hbar-row\" data-value=\"63.4\"><div class=\"hbar-head\"><span>LLaMA 65B</span><strong>63.4<small>%</small></strong></div><div class=\"hbar-track\"><div class=\"hbar-fill blue\" style=\"width:63.4%\"></div></div></div><div class=\"hbar-row\" data-value=\"67.5\"><div class=\"hbar-head\"><span>Chinchilla 70B</span><strong>67.5<small>%</small></strong></div><div class=\"hbar-track\"><div class=\"hbar-fill gray\" style=\"width:67.5%\"></div></div></div><div class=\"hbar-row\" data-value=\"69.3\"><div class=\"hbar-head\"><span>PaLM 540B</span><strong>69.3<small>%</small></strong></div><div class=\"hbar-track\"><div class=\"hbar-fill gray\" style=\"width:69.3%\"></div></div></div><div class=\"chart-axis\"><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div></div><div class=\"annotation orange\"><strong>저자 가설</strong><span>책·학술 자료의 양이 차이를 설명할 가능성<br>원인을 확인한 통제 실험은 아닙니다.</span></div><p class=\"cap\">Table 9 평균 열 · 전체 57개 과제 · 모델 크기·학습 조건이 다릅니다.</p>",
-      "note": "가설의 주체는 저자입니다. instruction fine-tuning 전후 비교와 분리해 읽습니다.",
+      "id": "3-2",
+      "key": "table3",
+      "kind": "result",
+      "term": "상식 추론",
       "section": "3",
-      "section_label": "실험과 관찰",
-      "layout": "quantitative",
+      "section_label": "평가",
+      "layout": "wide",
+      "title": "상식 추론: 65B는 Chinchilla-70B를 보고된 5개 항목 모두에서 앞선다",
+      "body": "<p>여기서부터 비교 대상은 <b>Chinchilla-70B</b>이고, 모두 zero-shot입니다.</p>",
+      "visual": "<div class=\"claim-table\" data-main><div class=\"table-wrap\"><table class=\"tbl ct rowcards\"><thead><tr><th>모델</th><th class=\"numcol\">BoolQ</th><th class=\"numcol\">PIQA</th><th class=\"numcol\">SIQA</th><th class=\"numcol\">HellaSwag</th><th class=\"numcol\">WinoGrande</th></tr></thead><tbody><tr class=\"ct-vs\"><td data-label=\"모델\">Chinchilla 70B</td><td class=\"numcol cl-vs\" data-label=\"BoolQ\">83.7</td><td class=\"numcol cl-vs\" data-label=\"PIQA\">81.8</td><td class=\"numcol cl-vs\" data-label=\"SIQA\">51.3</td><td class=\"numcol cl-vs\" data-label=\"HellaSwag\">80.8</td><td class=\"numcol cl-vs\" data-label=\"WinoGrande\">74.9</td></tr><tr class=\"ct-focus\"><td data-label=\"모델\">LLaMA 65B</td><td class=\"numcol cl-x\" data-label=\"BoolQ\">85.3</td><td class=\"numcol cl-hi\" data-label=\"PIQA\">82.8</td><td class=\"numcol cl-hi\" data-label=\"SIQA\">52.3</td><td class=\"numcol cl-hi\" data-label=\"HellaSwag\">84.2</td><td class=\"numcol cl-hi\" data-label=\"WinoGrande\">77.0</td></tr></tbody></table></div><p class=\"claim-legend\"><span><i class=\"cl-hi\"></i>본문이 강조한 우위</span><span><i class=\"cl-vs\"></i>본문의 비교 대상</span><span><i class=\"cl-x\"></i>본문 주장과 표 불일치</span><span>원문 굵게는 옮기지 않음</span></p><div class=\"verdict\"><span class=\"vd-claim\">저자: “BoolQ를 뺀 모든 항목에서 Chinchilla-70B를 앞선다”</span><span class=\"vd-res vd-no\">표: BoolQ도 85.3 &gt; 83.7 (+1.6) · 5개 중 5개 앞섬</span></div><p class=\"cap\">원문 · LLaMA v1 Table 3 (p.4) · 두 행 발췌 / 생략: 다른 모델 · ARC · OpenBookQA / 칠한 칸 = 발표자 표시</p></div><figure class=\"crop crop-thumb only-wide\" data-au=\"0\"><img src=\"figures/llama1-table3.png\" alt=\"LLaMA v1 Table 3 원본(눌러서 확대)\" width=\"134\" data-glyph-px=\"14\"></figure>",
+      "evidence": "<blockquote class=\"ev-quote\" lang=\"en\">“LLaMA-65B outperforms Chinchilla-70B on all reported benchmarks but BoolQ.”<cite>LLaMA v1 §3.1 (p.5)</cite></blockquote><figure class=\"crop\"><img src=\"figures/llama1-table3.png\" alt=\"LLaMA v1 Table 3 원문: GPT-3 · Gopher · Chinchilla · PaLM · LLaMA의 상식 추론 8개 항목 zero-shot 점수, 표 캡션\" data-glyph-px=\"14\" data-display-width=\"560\"><figcaption>원문 · LLaMA v1 Table 3 (p.4) · 표와 캡션 전체 / 발표자 표시 없음 · 굵게는 원문</figcaption></figure><p>Chinchilla는 ARC · OpenBookQA 값을 보고하지 않아(표의 ‘-’) 비교할 수 있는 항목은 5개입니다. 같은 문단의 PaLM-540B 문장(BoolQ · WinoGrande 제외)은 표와 맞습니다: 88.0 &gt; 85.3, 81.1 &gt; 77.0.</p>",
       "sources": [
         {
-          "label": "LLaMA v1 · §3.6 · Table 9",
-          "url": "https://arxiv.org/pdf/2302.13971v1#page=7"
+          "label": "LLaMA v1 Table 3 (p.4)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=4",
+          "detail": "zero-shot · 상식 추론 8개 항목"
+        },
+        {
+          "label": "LLaMA v1 §3.1 (p.5)",
+          "url": "https://arxiv.org/pdf/2302.13971v1#page=5",
+          "detail": "Chinchilla · PaLM과 비교한 본문 문장"
         }
+      ],
+      "claims": [
+        "t3-values",
+        "t3-claim-chinchilla",
+        "t3-verdict"
+      ]
+    },
+    {
+      "id": "4-1",
+      "key": "summary",
+      "kind": "summary",
+      "section": "4",
+      "section_label": "정리",
+      "layout": "wide",
+      "title": "정리: Llama 2는 블록을 유지하고 문맥과 큰 모델의 KV head만 바꿨다",
+      "body": "<p>Llama 2는 구조 대부분을 LLaMA 1에서 가져왔다고 적습니다.</p>",
+      "visual": "<div class=\"summary-cols\" data-main><div class=\"sc-col\"><h3>유지</h3><ul><li>pre-norm + RMSNorm (고른 이유 <span class=\"ev-chip\" data-ev=\"nd\">미기술</span>) [[@norm]]</li><li>SwiGLU와 폭 (2/3)·4d [[@swiglu]]</li></ul></div><div class=\"sc-col\"><h3>바꿈</h3><ul><li>문맥 2k → 4k [[@cover]]</li><li>34B · 70B만 GQA: 70B 토큰당 KV cache는 65B의 1/8 [[@kv-cache]]</li></ul></div></div>",
+      "sources": [
+        {
+          "label": "Llama 2 §2 · §2.2 (p.5)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=5",
+          "detail": "구조 대부분을 LLaMA 1에서 가져왔다는 문장 · 바뀐 점 두 가지"
+        }
+      ],
+      "claims": [
+        "l2-adopt-l1",
+        "l2-arch-diff"
+      ]
+    },
+    {
+      "id": "A-1",
+      "key": "kv-2048",
+      "part": "appendix",
+      "section": "A",
+      "section_label": "부록",
+      "title": "부록: 같은 2,048 토큰이면 65B 5 GiB, 70B 640 MiB",
+      "body": "<p>두 모델이 모두 받는 길이 2,048로 맞춰 환산합니다.</p>",
+      "visual": "<div class=\"table-wrap\"><table class=\"tbl sticky1\"><thead><tr><th>모델</th><th class=\"numcol\">토큰당</th><th class=\"numcol\">× 2,048 토큰</th></tr></thead><tbody><tr><td>LLaMA-65B</td><td class=\"numcol\">2,560 KiB</td><td class=\"numcol\">5 GiB</td></tr><tr><td>Llama 2-70B</td><td class=\"numcol\">320 KiB</td><td class=\"numcol\">640 MiB</td></tr></tbody></table></div><p class=\"cond\"><span class=\"ev-chip\" data-ev=\"calc\">계산</span> batch 1 · fp16 · [[@kv-cache|토큰당 값]] × 2,048</p>",
+      "evidence": "<p class=\"subst\">LLaMA-65B: 2,621,440 B × 2,048 = 5,368,709,120 B = 5 GiB</p><p class=\"subst\">Llama 2-70B: 327,680 B × 2,048 = 671,088,640 B = 640 MiB</p><p>단위: 1 GiB = 1,073,741,824 B, 1 MiB = 1,048,576 B</p><p>문맥 길이 2k · 4k의 원본(Llama 2 Table 1)은 [[@cover|표지]]의 근거에 있습니다.</p>",
+      "sources": [
+        {
+          "label": "Llama 2 Table 1 (p.6)",
+          "url": "https://arxiv.org/pdf/2307.09288v2#page=6",
+          "detail": "문맥 길이: LLaMA 1 2k · Llama 2 4k"
+        }
+      ],
+      "claims": [
+        "kv-2048-65b",
+        "kv-2048-70b"
       ]
     }
   ]

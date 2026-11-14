@@ -1,0 +1,14 @@
+{
+  "name": "create-paper-presentation-scripts",
+  "private": true,
+  "version": "2.0.0",
+  "description": "Optional Node dependencies: build-time KaTeX rendering (render_math.cjs) and browser checks (check_deck.cjs).",
+  "type": "commonjs",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "katex": "0.18.11"
+  },
+  "optionalDependencies": {
+    "playwright-core": "1.64.1"
+  }
+}
