@@ -29,9 +29,11 @@
 
 ## 발표자료
 
-- Architecture & Pre-training · 우성현: [슬라이드](slides/qwen-architecture-deck.html) — 받은 원본 그대로입니다.
-- Post-training · 정지원: [슬라이드](slides/qwen-post-training.html) — 받은 원본 그대로입니다.
-- Tokenizer · Data & Synthesis · Alignment & RL · RoPE와 Long-Context(Background) · 김현우: [슬라이드](slides/alignment-background-study.html) · 원본 [JSON](slides/alignment-background-study.json) — 덱에서 `N` 키로 대본을 봅니다.
+- [통합 발표자료](index.html): 팀원 자료를 [#183](https://github.com/Pseudo-Lab/llm-technical-report-study/issues/183) 분담 순서로 묶은 188장입니다. 장마다 근거 줄에 Qwen · Qwen2 원문 쪽과 팀원 자료 쪽 링크가 있습니다.
+- 파트별 원본(`slides/`, 받은 그대로):
+  - Architecture & Pre-training · 우성현: [슬라이드](slides/qwen-architecture-deck.html)
+  - Post-training · 정지원: [슬라이드](slides/qwen-post-training.html)
+  - Tokenizer · Data & Synthesis · Alignment & RL · RoPE와 Long-Context(Background) · 김현우: [슬라이드](slides/alignment-background-study.html) · 원본 [JSON](slides/alignment-background-study.json) — 덱에서 `N` 키로 대본을 봅니다.
 - [모임 Q&A](qna.md): 2026-10-31 모임 채팅에 남은 질문 · 의견을 파트별로 묶고, 원문으로 확인한 보충을 더했습니다.
 
 ## 팀별 분석
