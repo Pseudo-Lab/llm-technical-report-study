@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>DeepSeek-V2 Data &amp; Synthesis — Pseudo-Lab</title><style>
+:root{font-family:Inter,system-ui,-apple-system,'Noto Sans KR','Malgun Gothic',sans-serif;background:#081323;color:#edf6ff;--accent:#40d5c6;--gold:#efbd6c;--muted:#90a5bd;--panel:#13243b;--border:#25415c}*{box-sizing:border-box}body{margin:0;background:#081323;color:#edf6ff}.slide{display:none;width:min(100vw,1500px);height:min(100vh,843.75px);aspect-ratio:16/9;margin:auto;position:relative;padding:4% 5%;overflow:hidden;background:radial-gradient(ellipse at 88% -20%,#18445988,transparent 55%),#081323}.slide.active{display:flex;flex-direction:column}.slide:before{content:'';position:absolute;top:0;left:0;right:0;height:7px;background:linear-gradient(90deg,#43d2c1,#4e8bd4,#ebb768)}.kicker{font-size:clamp(12px,1.3vw,19px);font-weight:800;letter-spacing:.13em;color:var(--accent);margin-bottom:1.3%}.slide h1{font-size:clamp(25px,3.0vw,49px);line-height:1.24;letter-spacing:-.045em;margin:0 0 1.0% 0;max-width:95%}.slide h1 em{font-style:normal;color:var(--accent)}.subtitle{font-size:clamp(14px,1.35vw,22px);color:#acbfd2;max-width:95%;line-height:1.5}.visual{flex:1;min-height:0;margin:3% 0 1.8%;display:flex;flex-direction:column;justify-content:center;gap:14px}.condition{color:#d2b77e;background:#382e26b8;padding:12px 18px;border-left:4px solid var(--gold);border-radius:8px;font-size:clamp(11px,1.12vw,17px);line-height:1.45}.source{font-size:clamp(10px,1vw,15px);color:#90acc2;margin-top:12px;border-top:1px solid #264055;padding-top:11px}.source a{color:#91b9df;margin-right:16px;text-decoration:none}.controls{position:fixed;bottom:14px;right:18px;background:#152b45e8;border:1px solid #33516c;border-radius:16px;display:flex;align-items:center;gap:10px;padding:7px 10px;z-index:100;font-size:13px;color:#c2d2e3}button{border:1px solid #335b77;background:#183754;color:#fff;border-radius:9px;padding:9px 12px;cursor:pointer}button:hover{background:#245473}.counter{font-variant-numeric:tabular-nums;margin:0 6px}.modal{display:none;position:fixed;z-index:99;top:4vh;right:3vw;width:min(650px,55vw);max-height:82vh;overflow:auto;padding:25px;background:#eff5f9;color:#15273a;border-radius:16px;box-shadow:0 20px 70px #0009;line-height:1.6}.modal.open{display:block}.modal h2{margin:0 0 10px;font-size:22px}.modal a{color:#156a9f}.modal pre{white-space:pre-wrap}.metrics{display:flex;align-items:center;justify-content:center;gap:32px}.metric{background:var(--panel);border:1px solid var(--border);border-radius:18px;width:36%;padding:30px}.metric.major{background:#12464c;border-color:#39cfc5}.metric small,.metric span{display:block;color:#abc5d8;font-size:18px}.metric b{display:block;font-size:clamp(70px,8vw,125px);letter-spacing:-.08em;line-height:1.2}.arrow{font-size:40px;color:var(--gold)}.centertext{font-size:clamp(17px,1.6vw,25px);text-align:center;color:#c9e0ed;margin-top:12px}.process{display:flex;gap:14px;align-items:center}.process>div{background:var(--panel);border:1px solid var(--border);padding:27px 16px;border-radius:13px;flex:1;display:flex;flex-direction:column;gap:12px;min-height:165px}.process label,.node small,.steps small,.panel small,.comparison small,.metric small,.stage small,.discussions small{font-size:clamp(12px,1.1vw,17px);color:var(--accent)}.process strong{font-size:clamp(18px,1.65vw,25px)}.process small{color:#b5c6da;font-size:clamp(11px,1.0vw,15px)}.process i{font-style:normal;color:var(--gold);font-size:28px}.comparison{display:flex;gap:16px}.comparison>div{flex:1;padding:17px 22px;background:#13283e;border-radius:12px;display:flex;align-items:center;justify-content:space-between}.comparison b{font-size:48px;color:#efbd6c}.callline{font-size:clamp(15px,1.4vw,22px);color:#d1e4f0;margin:10px 0}.two-cols{display:flex;gap:16px}.panel{padding:25px;background:var(--panel);border:1px solid var(--border);border-radius:14px;flex:1}.panel.accent{background:#17484b;border-color:#49c7be}.bigcount{font-size:clamp(58px,7vw,110px);font-weight:800;letter-spacing:-.07em}.micro{font-size:20px;color:#b6cde0}.quadrant{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.quadrant>div{padding:16px;border-radius:11px;background:#112b40}.quadrant b{display:block;font-size:20px;color:#f0c887}.quadrant small{font-size:14px;color:#b5cbd9;display:block;margin-top:6px}.chain{display:flex;gap:13px;align-items:center}.node{flex:1;background:var(--panel);border:1px solid var(--border);padding:20px 13px;border-radius:12px;display:flex;flex-direction:column;gap:8px}.node strong{font-size:clamp(15px,1.5vw,23px)}.node b{font-size:30px;color:#f0c887}.node.special{border-color:#43d5c6;background:#124447}.chain>span{color:#efbd6c;font-size:30px}.arrowdown{text-align:center;color:#efbd6c;font-size:30px}.wide-node{border-radius:12px;background:#153248;padding:22px;text-align:center;font-size:23px}.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.steps>div{border-radius:15px;background:var(--panel);border:1px solid var(--border);padding:21px 14px;min-height:185px}.steps .last{background:#16494a;border-color:#39a4a6}.steps b,.steps span{display:block;margin-top:18px}.steps b{font-size:clamp(20px,2vw,32px);color:#edc177}.steps span{color:#afc7d6;font-size:15px;line-height:1.4}.formula{text-align:center;padding:30px 20px;background:#102c44;border-radius:15px;font-size:clamp(23px,2.3vw,37px);font-weight:700}.formula span{color:var(--accent);font-size:1.4em;padding:0 12px}.bars{display:flex;flex-direction:column;gap:15px}.barrow{display:flex;gap:18px;align-items:center;font-size:20px}.barrow strong{width:180px}.barbg{height:24px;border-radius:12px;background:#23334b;flex:1;overflow:hidden}.barfill{height:100%;background:#617f9b;border-radius:12px}.barfill.hi{background:#41d1bd}.num{width:70px;font-weight:700}.result{width:100%;border-collapse:collapse;font-size:clamp(17px,1.5vw,25px);text-align:left}.result th{background:#164459;color:#d7f6ed}.result th,.result td{padding:15px 22px;border-bottom:1px solid #31516b}.result td strong{color:#48e2cc}.stage{display:flex;gap:18px;align-items:center}.stage>div:not(.arrow){flex:1;background:var(--panel);border:1px solid var(--border);padding:25px;border-radius:14px}.stage b{display:block;font-size:clamp(28px,3.1vw,50px);margin:12px 0}.stage span{font-size:17px;color:#b9ccdc}.stacked{display:flex;height:55px;border-radius:12px;overflow:hidden;text-align:center;font-weight:700;font-size:18px;line-height:55px}.help{background:#247e7c;width:80%}.safe{background:#a67b3d;width:20%}.ratings{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.ratings>div{background:#16364e;padding:24px;border:1px solid #31536d;border-radius:16px}.ratings label{font-size:18px;color:#aec5d9}.ratings b{display:block;font-size:58px;margin-top:13px;color:#efbd6c}.caution{padding:19px;border-radius:12px;background:#102b40;font-size:21px;line-height:1.9}.caution b{color:#4bd5c7;margin-right:14px}.discussions{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}.discussions>div{padding:25px 24px;background:var(--panel);border-radius:16px;display:flex;flex-direction:column;gap:14px}.discussions b{color:#eac085;font-size:26px}.discussions span{font-size:20px;color:#c0d4e5}.discussions p{font-size:22px;margin:8px 0;color:#fff}.takeaway{display:grid;gap:17px}.takeaway>div{display:flex;align-items:center;gap:20px;background:#12354b;padding:19px;border-radius:13px;font-size:25px}.takeaway b{width:48px;height:48px;border-radius:50%;background:#31bdae;display:flex;align-items:center;justify-content:center;color:#082332}.quote{margin-top:10px;text-align:center;font-size:24px;color:#efc47b;font-weight:700}.slide.appendix .visual{overflow:auto;justify-content:flex-start}.references{font-size:14px}.references td{padding:5px 15px}.references a{color:#70decd}@media(max-width:950px){.slide{padding:3.5%}.slide h1{font-size:clamp(22px,4vw,35px)}.quadrant,.steps{gap:7px}.steps>div{padding:11px}.steps span{font-size:11px}.condition{font-size:11px}.subtitle{font-size:13px}.source{font-size:10px}.modal{width:92vw;right:4vw}.comparison b{font-size:33px}.process>div{min-height:100px;padding:10px}.barrow{font-size:13px}.barrow strong{width:110px}.ratings b{font-size:35px}.caution{font-size:13px}}
+
+/* BPB 개념 도입 슬라이드 */
+.bpb-illustration{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin-top:10px}
+.bpb-sample{background:#122a42;border:1px solid #2a4c66;border-radius:16px;padding:21px 24px}
+.bpb-sample h2{font-size:clamp(18px,1.8vw,27px);margin:0 0 14px;font-weight:760}
+.bpb-tokens{display:flex;gap:8px;align-items:center;margin-bottom:13px;flex-wrap:wrap}
+.bpb-token{background:#20506a;border:1px solid #4789a3;border-radius:9px;padding:9px 16px;font-size:clamp(19px,2.0vw,31px);font-weight:650;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+.bpb-sample:nth-child(2) .bpb-token{background:#4c392b;border-color:#aa8559}
+.bpb-count{color:#d5c198;font-weight:750;font-size:clamp(16px,1.4vw,22px)}
+.bpb-original{text-align:center;background:#17354a;border-radius:12px;padding:12px 20px;font-size:clamp(18px,1.5vw,24px);border:1px solid #2e5269}
+.bpb-explainer-formula{background:#104449;border:1px solid #399a9c;border-radius:15px;padding:18px 24px;text-align:center;font-size:clamp(18px,1.8vw,29px);font-weight:730}
+.bpb-explainer-formula strong{color:#78f5df}
+.bpb-explain-note{display:flex;justify-content:space-between;gap:16px;color:#d9e8f3;font-size:clamp(13px,1.2vw,19px)}
+.bpb-explain-note>div{flex:1;padding:11px 15px;border-radius:10px;background:#112a3b}
+@media(max-width:950px){.bpb-sample{padding:11px 13px}.bpb-token{padding:5px 9px}.bpb-illustration{gap:7px}.bpb-explain-note{font-size:12px;gap:7px}.bpb-explain-note>div{padding:7px}}
+
+/* Discussion and takeaway slide refinements (2026-11-13) */
+.decision-visual{gap:14px;margin:2.1% 0 1.5%;justify-content:center}
+.decision-block{display:grid;grid-template-columns:215px 1fr;gap:15px;align-items:stretch}
+.decision-head{background:#11424a;border:1px solid #2e827e;border-radius:14px;padding:21px 18px;display:flex;flex-direction:column;gap:7px}
+.decision-number{font-size:17px;font-weight:800;color:#66e4d2;letter-spacing:.1em}
+.decision-head b{font-size:clamp(18px,1.7vw,27px)}
+.decision-head small{font-size:clamp(12px,1vw,15px);color:#b5ccd7}
+.decision-cases{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
+.decision-case{background:#13283f;border:1px solid #274863;border-radius:14px;padding:17px 21px;display:flex;flex-direction:column;gap:8px}
+.decision-case strong{color:#f1c784;font-size:clamp(16px,1.5vw,22px)}
+.decision-case p{font-size:clamp(14px,1.3vw,20px);line-height:1.4;margin:0;color:#e4edf5}
+.decision-case span{font-size:clamp(12px,1.1vw,17px);color:#65ddd0;margin-top:auto}
+.decision-bottom{background:#173b4b;border:1px solid #3b687a;border-radius:13px;padding:14px 20px;text-align:center;font-size:clamp(15px,1.3vw,20px);color:#a6bed4}
+.decision-bottom strong{color:#fff}
+.conclusion-visual{gap:12px;margin:2% 0 1.3%}
+.three-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px}
+.paper-card{background:#122a42;border:1px solid #2c4a65;border-radius:16px;padding:22px 22px 18px;display:flex;flex-direction:column;gap:13px;min-width:0}
+.paper-card:nth-child(2){border-color:#368e8b;background:#153947}
+.paper-name{font-size:clamp(17px,1.6vw,24px);font-weight:800}
+.paper-amount{font-size:clamp(42px,4vw,64px);font-weight:850;letter-spacing:-.06em;color:#f1c783}
+.paper-amount small{font-size:clamp(13px,1.1vw,18px);color:#b6cadd;font-weight:500;letter-spacing:normal}
+.paper-method{font-size:clamp(13px,1.14vw,18px);line-height:1.55;min-height:56px;color:#d8edf0}
+.paper-result{background:#0c2135;border:1px solid #2a425b;border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.paper-result b{color:#62d8ce;font-size:clamp(12px,1.06vw,16px)}
+.paper-result span{font-size:clamp(14px,1.25vw,19px);line-height:1.45;color:#eef4fa}
+.conclusion-equation{display:flex;justify-content:center;align-items:center;gap:15px;background:#153a45;border:1px solid #316d71;border-radius:15px;padding:17px;line-height:1.4;flex-wrap:wrap;font-size:clamp(15px,1.5vw,23px)}
+.conclusion-equation span{color:#c0dce5}.conclusion-equation b{color:#e9bd72;font-size:27px}.conclusion-equation strong{color:#7de8d8}
+@media (max-width:1000px){.decision-block{grid-template-columns:160px 1fr;gap:8px}.decision-head,.decision-case{padding:12px}.decision-visual{gap:8px}.paper-card{padding:14px;gap:7px}.three-cards{gap:8px}.paper-method{min-height:unset}.paper-result{padding:10px}.conclusion-visual{gap:10px}}
+@media (max-height:680px){.decision-visual,.conclusion-visual{gap:8px;margin:1% 0}.decision-case{padding:10px}.decision-block{gap:8px}.decision-head{padding:10px}.paper-card{padding:11px}.paper-amount{font-size:36px}.paper-method{min-height:unset}.paper-result{padding:8px}.condition{padding:7px 11px}.source{margin-top:5px;padding-top:6px}}
+
+/* Source-grounded slide improvements — tokenizer, Figure 2, MiniCPM, Table 10 */
+.figure-flow-visual{margin:1.4% 0 1%;gap:12px}.fig2-flow{width:100%;max-height:370px;display:block;flex:1;min-height:0}.fig2-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}.fig2-metrics>div{padding:12px 15px;background:#102c42;border:1px solid #264b5d;border-radius:12px;display:flex;flex-direction:column;gap:6px}.fig2-metrics strong{color:#66e4d7;font-size:15px}.fig2-metrics span{font-size:clamp(12px,1.12vw,17px);color:#d7e9ef}.fig2-metrics b{color:#f1c982}
+.tokenizer-visual{gap:16px;margin:2% 0}.tok-line{display:flex;align-items:center;gap:10px;min-height:145px}.tok-box{background:#122d44;border:1px solid #33566b;border-radius:14px;padding:22px 12px;display:flex;flex:1;min-width:0;flex-direction:column;gap:11px;text-align:center}.tok-box span{font-size:clamp(12px,1.06vw,16px);color:#accbdd}.tok-box strong{font-size:clamp(24px,2.5vw,42px);color:#fff;white-space:nowrap}.tok-box.tok-hi{border-color:#50cfc3;background:#14514e}.tok-operator{font-size:clamp(23px,2.1vw,34px);color:#e9ba75;flex:0}.tok-why{display:grid;grid-template-columns:1fr 1fr;gap:15px}.tok-why>div{padding:22px;background:#102a40;border:1px solid #2b536a;border-radius:13px;display:flex;flex-direction:column;gap:9px}.tok-why strong{color:#5cdece;font-size:clamp(18px,1.6vw,25px)}.tok-why span{font-size:clamp(13px,1.3vw,20px);line-height:1.4}.tok-bpb{border:1px solid #2e5d69;border-radius:13px;padding:18px;background:#133b46;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:clamp(14px,1.3vw,20px)}.tok-bpb span,.tok-bpb small{color:#aacbd5}.tok-bpb>b{color:#efc47d}.tok-bpb .tok-strong{color:#77ebdd}
+.mini-visual{gap:18px;margin:2.2% 0}.mini-row{display:grid;grid-template-columns:230px 1fr;gap:15px;align-items:stretch}.mini-model{padding:18px 17px;background:#12344b;border:1px solid #28566a;border-radius:13px;display:flex;flex-direction:column;gap:11px;justify-content:center}.mini-model strong{font-size:clamp(19px,1.7vw,25px);color:#f2c784}.mini-model small{font-size:clamp(12px,1.2vw,17px);color:#bad0de}.mini-track{display:grid;grid-template-columns:1fr 35px 1fr;gap:9px;align-items:stretch}.mini-track.three{grid-template-columns:1fr 30px 1.25fr 30px 1fr}.mini-next{align-self:center;text-align:center;color:#f4c982;font-size:32px}.mini-node{border:1px solid #355269;border-radius:14px;padding:18px 15px;background:#102d44;display:flex;flex-direction:column;gap:9px;min-width:0}.mini-node small{font-size:clamp(12px,1.05vw,16px);color:#74dbcb}.mini-node b{font-size:clamp(16px,1.7vw,26px);line-height:1.15}.mini-node em{font-style:normal;font-size:clamp(12px,1.0vw,16px);color:#b9d2dc}.mini-node.mixed{background:#564126;border-color:#a97c45}.mini-node.mixed small{color:#ffdc96}.mini-node.sft{background:#174a49;border-color:#47c5bd}.mini-bottom{background:#15394a;border:1px solid #316c7a;border-radius:14px;padding:19px 23px;font-size:clamp(17px,1.45vw,23px);line-height:1.5}.mini-bottom b{color:#f1c982;margin-right:12px}.mini-bottom strong{color:#6ae9db}
+.agree-visual{gap:13px;margin:1.9% 0 1.3%}.agree-matrix{border-collapse:separate;border-spacing:4px;width:100%;text-align:center;font-size:clamp(16px,1.55vw,23px);table-layout:fixed}.agree-matrix th,.agree-matrix td{background:#183349;border-radius:8px;padding:14px 6px}.agree-matrix th{color:#b5d1dc;font-weight:750}.agree-matrix thead th{background:#155257;color:#e5ffff}.agree-matrix .diag{color:#8196a8;background:#112334}.agree-matrix .low{background:#61402d;color:#ffe0a9;font-weight:800}.agree-interpret{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.agree-interpret>div{padding:13px 15px;border-radius:11px;background:#0f2b40;display:flex;flex-direction:column;gap:7px}.agree-interpret b{color:#65dacc;font-size:clamp(13px,1.18vw,18px)}.agree-interpret span{line-height:1.38;font-size:clamp(12px,1.06vw,16px)}
+@media(max-width:980px){.tok-box{padding:10px 5px}.tok-line{gap:4px;min-height:80px}.tok-why>div{padding:10px}.tok-bpb{padding:9px}.mini-row{grid-template-columns:135px 1fr;gap:7px}.mini-model,.mini-node{padding:9px}.mini-track{gap:4px}.mini-track.three{grid-template-columns:1fr 16px 1.25fr 16px 1fr}.mini-next{font-size:20px}.mini-bottom{padding:10px}.agree-matrix th,.agree-matrix td{padding:7px 3px}.agree-interpret>div{padding:7px}.fig2-metrics>div{padding:5px 7px}}
+@media(max-height:710px){.figure-flow-visual,.tokenizer-visual,.mini-visual,.agree-visual{gap:8px;margin:1% 0}.fig2-flow{max-height:260px}.tok-line{min-height:90px}.tok-box{padding:10px}.tok-why>div,.mini-node,.mini-model{padding:9px}.tok-bpb{padding:8px}.mini-bottom{padding:8px}.agree-matrix th,.agree-matrix td{padding:7px}.agree-interpret>div{padding:7px}.fig2-metrics>div{padding:5px}}
+
+/* Constrain panels for 16:9 screens at 1280×720 */
+@media(max-height:750px){
+ .slide.bpb-explainer .visual{margin:1.2% 0 1%;gap:9px}
+ .slide.bpb-explainer .bpb-sample{padding:12px 15px}
+ .slide.bpb-explainer .bpb-sample h2{margin-bottom:8px}
+ .slide.bpb-explainer .bpb-explainer-formula{padding:10px 14px}
+ .slide.agreement-slide .visual{margin:1% 0;gap:7px}
+ .slide.agreement-slide .agree-matrix th,.slide.agreement-slide .agree-matrix td{padding:6px 3px}
+ .slide.agreement-slide .agree-interpret>div{padding:6px 8px}
+ .slide .conclusion-visual{gap:6px;margin:1% 0}
+ .slide .conclusion-visual .paper-card{gap:5px;padding:10px}
+ .slide .conclusion-visual .paper-result{gap:5px;padding:7px}
+ .slide .conclusion-visual .conclusion-equation{padding:10px}
+}
+
+/* W05 data-stage overview and hierarchical progress, Nov 13 */
+.journey{position:absolute;z-index:4;right:4.9%;top:12px;display:flex;justify-content:flex-end;align-items:center;gap:12px;white-space:nowrap;max-width:93%;font-size:clamp(9px,.78vw,12px)}
+.journey-here{color:#b1c8da;font-size:clamp(9px,.81vw,12px);padding-right:11px;border-right:1px solid #41566a;letter-spacing:.01em;font-weight:650}
+.journey-group{display:flex;align-items:center;gap:5px;opacity:.47}
+.journey-group.past{opacity:.68}.journey-group.current{opacity:1}
+.journey-name{color:#acbdd1;font-weight:750;letter-spacing:.015em}
+.journey-group.current .journey-name{color:#64ebd7}
+.journey-dots{display:flex;gap:4px;align-items:center}
+.journey-dot{width:6px;height:6px;border-radius:50%;border:1px solid #68879a;background:transparent}
+.journey-dot.done{background:#5d91a0;border-color:#5d91a0}
+.journey-dot.now{background:#56ebd5;border-color:#56ebd5;box-shadow:0 0 0 2px #1e635f}
+.opening-slide .visual{margin-top:2.25%;gap:14px}
+.study-phases{display:grid;grid-template-columns:minmax(0,1fr) 27px minmax(0,1fr) 27px minmax(0,1fr);gap:10px;align-items:center;width:100%;min-height:0}
+.study-card{background:#132940;border:1px solid #31506b;border-radius:17px;padding:20px 22px;min-height:280px;display:flex;flex-direction:column;justify-content:space-between;gap:9px}
+.study-card.focus{border-color:#2b998f;background:#153b47}
+.study-card.secondary{background:#142538;border-color:#39516a}
+.study-card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.study-num{font-size:clamp(12px,.95vw,15px);font-weight:850;color:#85a8bb;letter-spacing:.09em}
+.study-pill{display:inline-block;font-size:clamp(10px,.83vw,13px);color:#7af2de;background:#20635c;border-radius:15px;padding:4px 9px;font-weight:750}
+.study-pill.dim{color:#c9ced4;background:#384354}
+.study-name{font-size:clamp(21px,2.0vw,31px);font-weight:790;letter-spacing:-.04em}
+.study-value{font-size:clamp(45px,4.7vw,77px);line-height:1.04;font-weight:850;color:#ecf8ff;letter-spacing:-.07em}
+.study-value small{font-size:clamp(14px,1.3vw,20px);letter-spacing:0;color:#accbd1;font-weight:600}
+.study-value.undisclosed{font-size:clamp(26px,2.6vw,43px);color:#eacb94;letter-spacing:-.05em}
+.study-detail{font-size:clamp(13px,1.15vw,18px);line-height:1.6;color:#b9cfdb}
+.study-disclosure{font-size:clamp(11px,.96vw,15px);font-weight:750;color:#67ddce;border-top:1px solid #306572;padding-top:10px}
+.study-disclosure.dim{color:#b4bbca;border-color:#445265}
+.study-phase-arrow{font-size:clamp(21px,2.1vw,32px);color:#dfbc7b;text-align:center}
+.study-transition{border:1px solid #335c70;background:#102a3d;border-radius:11px;text-align:center;padding:15px 17px;color:#c5dce8;font-size:clamp(14px,1.2vw,19px)}
+.study-transition b{color:#e7bc76;margin-right:13px}.study-transition strong{color:#6ce2d1}
+@media(max-width:1100px){.journey{top:10px;gap:8px}.journey-here{font-size:9px}.journey-name{font-size:9px}.journey-dot{width:5px;height:5px}.study-card{padding:12px 13px;min-height:220px}.study-transition{padding:8px}}
+@media(max-width:800px){.journey-here{display:none}.journey{gap:5px}.journey-group{gap:3px}.journey-dots{gap:2px}.study-card{min-height:190px}.study-detail{font-size:11px}}
+
+/* 67B dataset pipeline deep-dive slides */
+.pipeline-detail .visual{margin-top:2.1%;margin-bottom:1%;gap:12px}
+.pipeline-detail .subtitle{font-size:clamp(13px,1.27vw,18px)}
+.pipeline-detail .condition{font-size:clamp(10px,.94vw,13px);padding:10px 14px}
+.pipeline-detail .source{margin-top:4px;padding-top:7px}
+.dump-demo{display:grid;grid-template-columns:1fr .85fr 1fr;gap:18px;align-items:center}
+.dump-set{background:#132d42;border:1px solid #2e5f78;border-radius:13px;padding:17px;display:grid;gap:8px}
+.dump-name{font-size:19px;color:#80f3de;font-weight:780;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.dump-name small{font-size:11px;color:#acbfd1;font-weight:450}
+.doc-box{background:#234056;border:1px solid #39637d;border-radius:7px;padding:9px 13px;font-size:clamp(13px,1.2vw,18px);display:flex;justify-content:space-between;gap:8px}
+.doc-box.dup{background:#614b2e;border-color:#e3ab59;color:#ffebc6}
+.doc-box b{font-size:11px;background:#b9753a;color:#fff;padding:2px 5px;border-radius:4px}
+.dedup-middle{text-align:center;display:flex;flex-direction:column;gap:11px;align-items:center}
+.dedup-algo{font-size:clamp(18px,1.85vw,27px);font-weight:850;color:#6ce5d5;border:1px solid #4f9f9a;background:#124249;padding:13px;border-radius:11px;width:100%}
+.dedup-label{font-size:clamp(12px,1.1vw,16px);color:#d8e4ee;line-height:1.4}
+.dedup-label small{color:#a4bdd1}
+.dedup-arrow{color:#e2b867;font-size:25px}
+.dedup-bottom{display:flex;gap:14px;align-items:center}
+.metric-small{min-width:170px;background:#142c42;padding:13px 20px;border-radius:13px;border:1px solid #2b5066}
+.metric-small small{display:block;color:#aac7d7;font-size:13px}.metric-small strong{display:block;color:#f1d093;font-size:clamp(27px,3vw,46px)}
+.metric-small.highlighted{border-color:#48baa9;background:#164449}.dedup-versus{font-size:23px;color:#e1bb75}.detail-takeaway{font-size:clamp(13px,1.2vw,18px);color:#deedf4;line-height:1.5;flex:1;padding:10px}.detail-takeaway b{color:#79f0db}
+.filter-layout{gap:9px!important}.filter-input{text-align:center;background:#173147;padding:11px;border-radius:10px;border:1px solid #40677c;font-weight:760;font-size:20px}.filter-input small{font-size:12px;color:#b3cddd;margin-left:10px;font-weight:500}
+.filter-stream{text-align:center;color:#e8be7c;font-size:15px;font-weight:600}
+.filter-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.filter-card{background:#173247;border:1px solid #365773;border-radius:13px;padding:21px 24px;min-height:185px}
+.filter-head{display:flex;gap:13px;align-items:center;font-size:clamp(19px,1.8vw,27px)}.filter-head span{font-size:13px;color:#77e8d8;border-radius:50%;width:28px;height:28px;text-align:center;line-height:27px;background:#215660}
+.filter-caption{color:#e6c98e;font-weight:680;font-size:17px;margin:9px 0}
+.filter-card p{margin:0 0 12px;color:#e1ebf4;font-size:clamp(14px,1.18vw,18px);line-height:1.35}
+.filter-card small{color:#a4bacf;font-size:12px}
+.filter-output{display:flex;gap:18px;justify-content:center;align-items:center;color:#e3bf7a}.filter-output>div{background:#164f4d;border:1px solid #4ac4b1;text-align:center;padding:10px 25px;border-radius:10px;min-width:60%}.filter-output strong{display:block;font-size:18px;color:#d6fff6}.filter-output small{font-size:13px;color:#b9e1df}
+.remix-layout{gap:20px!important}.remix-rows{display:grid;grid-template-columns:1fr 85px 1fr;gap:12px;align-items:center}
+.remix-side{background:#122e46;border-radius:13px;border:1px solid #315b77;padding:23px 21px;min-width:0}
+.remix-side strong{display:block;font-size:clamp(18px,1.7vw,25px);margin-bottom:24px}.remix-side strong small{font-size:12px;color:#dfbf8b;margin-left:5px}
+.remix-stack{display:flex;width:100%;height:52px;overflow:hidden;border-radius:9px;line-height:52px;color:#fff;text-align:center;font-weight:750;white-space:nowrap;font-size:clamp(10px,1vw,16px)}
+.remix-common{background:#2c7495}.remix-special{background:#ab8646;overflow:hidden}.remix-side>small{color:#aec3d7;display:block;margin-top:19px;font-size:15px}
+.remix-center{text-align:center;color:#e7bd80;font-size:34px;font-weight:750}.remix-center small{display:block;font-size:14px;color:#bacfda;margin-top:8px}
+.remix-benefits{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.remix-benefits>div{background:#17364a;border-left:3px solid #41b7a5;border-radius:10px;padding:14px 18px}.remix-benefits b{display:block;color:#76e5d3;margin-bottom:5px}.remix-benefits span{color:#d0e0e9;font-size:14px}
+.remix-message{font-size:clamp(15px,1.35vw,21px);color:#e8ebf1;text-align:center}.remix-message b{color:#76f0dc}
+@media(max-width:1000px){.dump-demo{gap:7px}.dump-set{padding:8px}.dump-name{font-size:14px}.dump-name small{font-size:9px}.doc-box{padding:6px;font-size:11px}.metric-small{min-width:100px;padding:7px}.metric-small small{font-size:10px}.filter-card{min-height:125px;padding:11px}.remix-side{padding:10px}.remix-side strong{margin-bottom:10px}.remix-stack{height:35px;line-height:35px}.remix-side>small{margin-top:9px;font-size:11px}.remix-layout{gap:10px!important}}
+
+/* Deduplication: MinHash / LSH visual-first */
+.pipeline-detail .minhash-figure{margin:1.7% 0 1%;gap:12px;justify-content:flex-start}
+.minhash-columns{display:grid;grid-template-columns:1fr 1fr;gap:18px;min-height:0;flex:1}
+.mh-panel{background:#122e44;border:1px solid #315f76;border-radius:14px;padding:17px 21px;display:flex;flex-direction:column;gap:9px;min-width:0}
+.mh-head{display:flex;gap:11px;align-items:center;margin-bottom:4px}.mh-bubble{background:#36bbad;color:#092232;width:35px;height:35px;line-height:35px;border-radius:50%;text-align:center;font-weight:850;font-size:18px;flex-shrink:0}.mh-head b{display:block;font-size:clamp(20px,1.9vw,29px);color:#effaf8}.mh-head small{font-size:clamp(10px,.94vw,14px);color:#aac6d9}.mh-raw{display:flex;gap:11px;background:#203c50;border-radius:8px;padding:10px 11px;align-items:center;font-size:clamp(12px,1.05vw,16px)}.mh-tag{color:#86dfd5;white-space:nowrap;font-weight:780}.mh-sentence{color:#edf2fa}.mh-down,.lsh-down{font-size:22px;color:#e9bb74;text-align:center;line-height:1.12;font-weight:700}.mh-down span,.lsh-down span{font-size:clamp(11px,.95vw,14px);color:#a6c7d7;vertical-align:middle}.mh-signatures{display:flex;flex-direction:column;gap:9px}.mh-sig-row{display:flex;align-items:center;gap:10px}.mh-sig-row>b{width:65px;color:#acc8d8;font-size:13px}.mh-cells{display:flex;gap:7px;flex:1}.mh-cells span{background:#27465e;color:#d6e3ef;border:1px solid #42627b;padding:6px 0;flex:1;text-align:center;border-radius:5px;font-size:clamp(12px,1.15vw,17px);font-family:ui-monospace,monospace}.mh-cells .mh-hit{background:#17675f;color:#aaffef;border:1px solid #45bbac}.mh-mini{text-align:center;color:#8be2d4;font-size:clamp(11px,.98vw,15px);margin-top:auto}.lsh-band-label{color:#d7c088;text-align:center;font-size:15px;font-weight:700;padding-top:9px}.lsh-bands{display:flex;gap:10px}.lsh-band{flex:1;text-align:center;background:#173d51;padding:10px;border-radius:8px;border:1px solid #386580}.lsh-band span{display:block;color:#adc7d7;font-size:12px}.lsh-band b{display:block;font-family:ui-monospace,monospace;color:#a1f3e6;font-size:clamp(15px,1.4vw,21px);margin-top:6px}.lsh-bucket{background:#175247;border:2px solid #47bf9f;border-radius:11px;padding:14px;text-align:center;display:flex;flex-direction:column;gap:3px}.lsh-bucket span{color:#95e6ca;font-size:13px}.lsh-bucket strong{font-size:clamp(16px,1.6vw,22px)}.lsh-bucket small{font-size:13px;color:#c4e9dd}.mh-bottom{display:flex;gap:12px;align-items:center;justify-content:space-between;background:#0f293d;border-radius:12px;padding:10px 17px;border:1px solid #315169}.mh-bottom>div{display:flex;align-items:center;gap:12px;white-space:nowrap}.mh-bottom small{color:#bad0dc;font-size:clamp(11px,.96vw,15px)}.mh-bottom strong{color:#e9c58a;font-size:clamp(24px,2.5vw,37px)}.mh-bottom-arrow{color:#dcae68;font-size:22px}.mh-bottom p{border-left:1px solid #305c72;padding-left:15px;color:#c4d8e8;margin:0;font-size:clamp(12px,1.0vw,15px);line-height:1.4}.mh-bottom p b{color:#8aeadf}
+@media(max-width:1000px){.mh-panel{padding:10px;gap:5px}.mh-raw{padding:5px 7px}.mh-head{margin-bottom:0}.mh-bubble{width:23px;height:23px;font-size:14px;line-height:23px}.mh-head b{font-size:18px}.mh-signatures{gap:3px}.mh-cells{gap:4px}.mh-cells span{padding:3px 0}.lsh-band-label{padding-top:0}.lsh-band{padding:6px}.lsh-bucket{padding:7px}.mh-bottom{padding:6px 9px}.mh-bottom p{font-size:10px}}
+
+/* SFT & Alignment: two dedicated source-grounded slides */
+.align-sft-visual{display:flex;flex-direction:column;gap:17px;justify-content:center;margin-top:2.2%;margin-bottom:1.6%}
+.align-total{display:flex;gap:18px;align-items:center;justify-content:space-between;padding:15px 23px;border:1px solid #315d70;background:#132f45;border-radius:14px}
+.align-total .big{font-size:clamp(29px,3.5vw,54px);font-weight:850;color:#7be8dc;letter-spacing:-.045em;line-height:1.15}
+.align-total .big small{font-size:clamp(12px,1vw,16px);color:#bdccdc;font-weight:600;letter-spacing:normal}
+.align-total .description{color:#c5d9e8;font-size:clamp(13px,1.12vw,17px);text-align:right;line-height:1.4}
+.align-bar{display:flex;height:45px;overflow:hidden;border-radius:10px;font-weight:780;text-align:center;font-size:clamp(12px,1.3vw,19px);line-height:45px}
+.align-bar .helpful{background:#197c79;flex:4;color:#e4fffa}
+.align-bar .safety{background:#96713a;flex:1;color:#fff4de}
+.align-domain{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.align-domain>div{border:1px solid #36566d;background:#183147;border-radius:12px;padding:14px 15px}
+.align-domain .label{font-size:clamp(13px,1.10vw,17px);color:#d5e6ef}
+.align-domain .value{display:block;font-size:clamp(25px,2.9vw,45px);color:#f4c47e;font-weight:800;margin:7px 0 3px}
+.align-domain .minibar{height:7px;background:#253b51;border-radius:4px;overflow:hidden}
+.align-domain .minibar i{display:block;background:#47d4c2;height:100%}
+.align-footnote{background:#103d48;border-left:4px solid #44d5bd;border-radius:10px;padding:12px 19px;display:flex;align-items:center;gap:14px;color:#dcecf1;font-size:clamp(13px,1.04vw,16px)}
+.align-footnote b{color:#77e8d8;white-space:nowrap}
+.v2-sft-visual{display:flex;flex-direction:column;gap:16px;justify-content:center;margin-top:2.3%;margin-bottom:1.8%}
+.v2-sft-compare{display:grid;grid-template-columns:1fr 42px 1fr;gap:16px;align-items:stretch}
+.v2-sft-card{padding:20px 23px;border-radius:14px;background:#132f45;border:1px solid #315e72;display:flex;flex-direction:column;gap:12px}
+.v2-sft-card.highlight{background:#134444;border-color:#3fbab2}
+.v2-sft-card .meta{font-size:clamp(13px,1.03vw,16px);color:#a4c5d1;font-weight:720}
+.v2-sft-card strong{font-size:clamp(24px,2.7vw,40px);letter-spacing:-.025em}
+.v2-sft-card p{color:#d2e4e9;font-size:clamp(13px,1.1vw,18px);margin:0;line-height:1.5}
+.v2-sft-card .split{display:flex;gap:8px;font-size:clamp(12px,1vw,16px);color:#d9eae8}
+.v2-sft-arrow{align-self:center;text-align:center;color:#e5bc7e;font-size:34px}
+.v2-sft-improve{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.v2-sft-improve>div{background:#183749;border:1px solid #356277;border-radius:12px;padding:16px 20px;display:flex;align-items:center;gap:15px}
+.v2-sft-improve .marker{font-size:26px;color:#60e5cf;font-weight:850}
+.v2-sft-improve strong{display:block;color:#edfaf5;font-size:clamp(16px,1.4vw,22px)}
+.v2-sft-improve small{display:block;color:#b4cfde;font-size:clamp(12px,.99vw,15px);margin-top:5px}
+.v2-sft-pretrain{padding:13px 18px;border:1px solid #38617a;border-radius:10px;color:#dce6ef;background:#10283d;font-size:clamp(13px,1.08vw,16px)}
+.v2-sft-pretrain b{color:#e7bf7d}
+@media(max-width:1000px){.align-sft-visual,.v2-sft-visual{gap:7px;margin-top:1%}.align-total{padding:8px 12px}.align-domain{gap:7px}.align-domain>div{padding:9px}.align-footnote{padding:7px 10px}.v2-sft-card{padding:9px 12px;gap:6px}.v2-sft-compare{gap:6px;grid-template-columns:1fr 24px 1fr}.v2-sft-improve{gap:6px}.v2-sft-improve>div{padding:8px}.v2-sft-pretrain{padding:8px}}
+
+/* Nov 13 fixes: dedicated tokenizer→BPB pedagogy, conclusion safe spacing */
+.tokenizer-slide .tok-next{font-size:clamp(12px,1.15vw,17px);padding:13px 18px;display:flex;justify-content:space-between;align-items:center;gap:16px}
+.tokenizer-slide .tok-next span{color:#d5e8ec}
+.tokenizer-slide .tok-next span b{color:#70e9dd}
+.conclusion-slide .subtitle{flex-shrink:0;position:relative;z-index:2;line-height:1.38;margin-bottom:10px}
+.conclusion-slide .conclusion-visual{flex:1 1 0;min-height:0;justify-content:center;margin:0 0 1%;gap:10px}
+.conclusion-slide .three-cards{flex:0 1 auto;min-height:0;gap:12px}
+.conclusion-slide .paper-card{gap:7px;padding:13px 15px 12px;min-height:0}
+.conclusion-slide .paper-name{font-size:clamp(16px,1.4vw,22px);line-height:1.22}
+.conclusion-slide .paper-amount{font-size:clamp(34px,3.5vw,49px);line-height:1.15}
+.conclusion-slide .paper-method{min-height:0;font-size:clamp(12px,1.07vw,17px);line-height:1.42}
+.conclusion-slide .paper-result{flex:0 1 auto;min-height:0;padding:9px 11px;gap:4px}
+.conclusion-slide .paper-result b{font-size:clamp(12px,1.05vw,15px);line-height:1.2}
+.conclusion-slide .paper-result span{font-size:clamp(12px,1.09vw,16px);line-height:1.37}
+.conclusion-slide .conclusion-equation{flex:0 0 auto;padding:10px 12px;font-size:clamp(13px,1.3vw,20px);gap:10px}
+.conclusion-slide .condition,.conclusion-slide .source{flex-shrink:0}
+@media(max-height:750px){.conclusion-slide .subtitle{margin-bottom:6px}.conclusion-slide .conclusion-visual{gap:7px;margin:0 0 .7%}.conclusion-slide .paper-card{padding:9px 11px;gap:5px}.conclusion-slide .paper-amount{font-size:clamp(32px,3.2vw,43px)}.conclusion-slide .paper-result{padding:6px 8px}.conclusion-slide .conclusion-equation{padding:7px 9px}}
+@media(max-width:1100px){.tokenizer-slide .tok-next{padding:7px;gap:7px;font-size:12px}.conclusion-slide .paper-card{padding:8px;gap:4px}.conclusion-slide .paper-amount{font-size:31px}.conclusion-slide .paper-result span{font-size:12px}}
+
+/* Base evaluation shows Pile BPB after BPB explanation, without extra slide */
+.eval-foot{display:flex;flex-direction:column;gap:7px;margin-top:5px}
+.eval-bpb{display:flex;align-items:center;gap:16px;flex-wrap:wrap;background:#153e4a;border:1px solid #2c6576;border-radius:10px;padding:8px 15px;font-size:clamp(12px,1.1vw,16px)}
+.eval-bpb>b{font-size:clamp(15px,1.4vw,20px);color:#f0c27d}
+.eval-bpb>b.better{color:#66e3d5}
+.eval-bpb span{color:#b9cedc}
+.eval-caution{font-size:clamp(12px,1.12vw,16px);color:#c5dbeb;padding-left:4px}
+@media(max-height:750px){.eval-foot{gap:4px;margin-top:2px}.eval-bpb{padding:5px 12px}.eval-caution{font-size:12px}}
+
+/* Focused page 9: tokenizer facts for data evaluation only; no tokenization mechanics */
+.tokenizer-slide .tok-compare-visual{margin:1.4% 0 1.5%;gap:14px;justify-content:center}
+.tok-shared-header{background:linear-gradient(100deg,#153b4a,#145453);border:1px solid #37aaa8;border-radius:14px;padding:14px 22px;display:flex;align-items:center;gap:20px;justify-content:center;min-height:64px}
+.tok-shared-eyebrow{font-size:clamp(12px,1.05vw,16px);color:#cde4e8;letter-spacing:.07em}
+.tok-shared-header strong{font-size:clamp(21px,2.15vw,32px);color:#86ece2}
+.tok-shared-caption{font-size:clamp(12px,1vw,16px);color:#c1d9e0}
+.tok-compare-row{display:grid;grid-template-columns:minmax(0,1fr) 55px minmax(0,1fr);align-items:center;gap:10px}
+.tok-model-card{background:#122e43;border:1px solid #335a70;border-radius:15px;padding:16px 20px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.tok-model-card.main{background:#134a49;border-color:#4acdc3}
+.tok-model-name{font-size:clamp(15px,1.32vw,20px);color:#c9dbe6}
+.tok-model-card strong{font-size:clamp(37px,4.4vw,66px);line-height:1.16;color:#fff}
+.tok-model-unit{font-size:clamp(12px,1.03vw,15px);color:#96becb}
+.tok-link-icon{font-size:38px;color:#e9bb73;text-align:center}
+.tok-compact-details{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tok-compact-details>div{background:#10283a;border:1px solid #2f4d66;border-radius:11px;display:flex;justify-content:center;align-items:baseline;gap:13px;padding:13px}
+.tok-compact-details span{font-size:clamp(12px,1.05vw,16px);color:#bcd0e0}
+.tok-compact-details b{font-size:clamp(23px,2vw,31px);color:#f8fcff}
+.tok-compact-details small{font-size:clamp(11px,.95vw,14px);color:#85afc0}
+.tok-compact-bottom{display:flex;align-items:center;justify-content:space-between;background:#183a47;border:1px solid #2f6269;border-radius:11px;padding:11px 17px;gap:10px}
+.tok-compact-bottom b{font-size:clamp(13px,1.17vw,18px);color:#fff}
+.tok-compact-bottom span{font-size:clamp(12px,1.08vw,16px);color:#74e7d9}
+@media(max-width:1100px){.tokenizer-slide .tok-compare-visual{gap:8px}.tok-shared-header{min-height:45px;padding:9px;gap:10px}.tok-model-card{padding:9px}.tok-model-card strong{font-size:43px}.tok-compact-details>div{padding:8px;gap:8px}.tok-compact-details b{font-size:23px}.tok-compact-bottom{padding:8px 12px}}
+@media(max-height:650px){.tok-shared-header{padding:7px 12px}.tok-model-card{padding:7px}.tok-model-card strong{font-size:37px}.tok-compact-details>div{padding:6px}.tok-compact-bottom{padding:7px}.tokenizer-slide .tok-compare-visual{gap:6px}}
+
+/* BPB: distinguish tokenization from language-model prediction */
+.bpb-explainer .visual{gap:10px;margin:2.3% 0 1.2%}
+.bpb-explainer .bpb-illustration{gap:14px;margin-top:0}
+.bpb-explainer .bpb-sample{padding:15px 18px}
+.bpb-explainer .bpb-sample h2{font-size:clamp(17px,1.55vw,23px);margin-bottom:8px}
+.bpb-step-arrow{color:#74d4cf;padding:0 5px}
+.bpb-explainer .bpb-tokens{margin-bottom:12px}
+.bpb-explainer .bpb-token{padding:7px 11px;font-size:clamp(16px,1.6vw,22px)}
+.bpb-meta{border-top:1px solid #33506b;padding-top:9px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:clamp(12px,1.12vw,16px);color:#c3d9e8}
+.bpb-meta strong{color:#f1d19e}
+.bpb-llm-loss{color:#b7e9e6}
+.bpb-explainer .bpb-explainer-formula{padding:12px 18px;font-size:clamp(16px,1.6vw,22px)}
+.bpb-explainer .bpb-explain-note{gap:12px;font-size:clamp(12px,1.2vw,16px)}
+.bpb-explainer .bpb-explain-note>div{padding:10px 14px;display:flex;flex-direction:column;gap:3px}
+.bpb-result-label{color:#b6cada;font-weight:650}
+.bpb-result-val{color:#fff;font-weight:750;font-size:clamp(14px,1.35vw,19px)}
+.bpb-compare-result small{font-size:clamp(11px,.98vw,14px);color:#d8b97e}
+.bpb-result-focus{border:1px solid #288881}
+@media(max-width:1000px){
+ .bpb-explainer .bpb-sample{padding:10px 12px}
+ .bpb-explainer .bpb-token{padding:5px 8px}
+ .bpb-explainer .bpb-explain-note>div{padding:7px 10px}
+ .bpb-explainer .bpb-meta{font-size:11px}
+ .bpb-explainer .visual{gap:7px}
+}
+</style></head><body><section class="slide opening-slide" data-claims="C05,C19,C20,C31,C32" data-index="0"><div aria-label="발표 진행: 3단계 데이터 개요" class="journey"><div class="journey-here">3단계 데이터 개요</div><div class="journey-group current" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot now" title="3단계 데이터 개요"></span></span></div><div class="journey-group future" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot pending" title="67B 파이프라인 개요"></span><span class="journey-dot pending" title="Deduplication · Common Crawl"></span><span class="journey-dot pending" title="Filtering · 품질 선별"></span><span class="journey-dot pending" title="Remixing · 분포 조정"></span><span class="journey-dot pending" title="V2 데이터 개선"></span><span class="journey-dot pending" title="수학 데이터 수집"></span><span class="journey-dot pending" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">W05 / DATA &amp; SYNTHESIS · OVERVIEW</div>
+<h1>DeepSeek-V2의 <em>3단계 학습과 데이터 공개 범위</em></h1>
+<div class="subtitle">Pre-training과 SFT는 데이터 규모·구성을 설명하지만, RL은 데이터 유형만 일부 공개합니다.</div>
+<div class="visual">
+<div class="study-phases">
+<div class="study-card focus">
+<div class="study-card-top"><span class="study-num">01</span><span class="study-pill">이번 발표</span></div>
+<div class="study-name">Pre-training</div>
+<div class="study-value">8.1T <small>tokens</small></div>
+<div class="study-detail">영어·중국어 중심의 사전학습<br/>데이터 복구 · 정제 · 필터링</div>
+<div class="study-disclosure">데이터 규모·구축 방식 공개</div>
+</div>
+<div aria-hidden="true" class="study-phase-arrow">→</div>
+<div class="study-card focus">
+<div class="study-card-top"><span class="study-num">02</span><span class="study-pill">이번 발표</span></div>
+<div class="study-name">SFT</div>
+<div class="study-value">1.5M <small>examples</small></div>
+<div class="study-detail">Helpfulness 1.2M<br/>Safety 0.3M</div>
+<div class="study-disclosure">데이터 규모·구성 공개</div>
+</div>
+<div aria-hidden="true" class="study-phase-arrow">→</div>
+<div class="study-card secondary">
+<div class="study-card-top"><span class="study-num">03</span><span class="study-pill dim">개요만</span></div>
+<div class="study-name">RL</div>
+<div class="study-value undisclosed">규모 미공개</div>
+<div class="study-detail">수학·코드 추론 및 인간 선호 정렬<br/>GRPO 기반 강화학습</div>
+<div class="study-disclosure dim">종류 일부 공개 · 샘플 수·비율 미공개</div>
+</div>
+</div>
+<div class="study-transition"><b>오늘의 설명 순서</b>  먼저 <strong>Pre-training 데이터 구축</strong>부터 살펴보고, 이어 <strong>SFT 데이터 구성</strong>으로 넘어갑니다.</div>
+</div>
+<div class="source">원문:
+    <a href="https://arxiv.org/html/2405.04434v5#S3.SS1.SSS1" rel="noopener" target="_blank">V2 §3.1.1</a>
+<a href="https://arxiv.org/html/2405.04434v5#S4.SS1" rel="noopener" target="_blank">V2 §4.1</a>
+<a href="https://arxiv.org/html/2405.04434v5#S4.SS2" rel="noopener" target="_blank">V2 §4.2</a>
+</div>
+</section><section class="slide" data-claims="C01,C02,C03" data-index="1"><div aria-label="발표 진행: 67B 파이프라인 개요" class="journey"><div class="journey-here">67B 파이프라인 개요</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot now" title="67B 파이프라인 개요"></span><span class="journey-dot pending" title="Deduplication · Common Crawl"></span><span class="journey-dot pending" title="Filtering · 품질 선별"></span><span class="journey-dot pending" title="Remixing · 분포 조정"></span><span class="journey-dot pending" title="V2 데이터 개선"></span><span class="journey-dot pending" title="수학 데이터 수집"></span><span class="journey-dot pending" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div><div class="kicker">RQ1 / DEEPSEEK LLM §2.1</div><h1>67B 데이터 파이프라인은 세 가지 서로 다른 문제를 해결한다</h1><div class="subtitle">중복 → 정보 밀도 → 분포를 각각 조정</div><div class="visual"><div class="process"><div><label>1 · Deduplication</label><strong>같은 정보 반복 제거</strong><small>덤프 내부 + 덤프 간</small></div><i>→</i><div><label>2 · Filtering</label><strong>학습 가치 선별</strong><small>언어적·의미적 품질</small></div><i>→</i><div><label>3 · Remixing</label><strong>도메인 균형 조정</strong><small>과소대표 도메인 강화</small></div></div><p class="callline">이 세 단계의 실제 사용 기술과 데이터 변화를 각각 살펴보겠습니다.</p></div><div class="condition">67B 논문은 각 단계의 목적을 설명하며, 공식 README에는 MinHashLSH 및 규칙·모델 기반 필터링이 추가로 공개되어 있습니다.</div><div class="source">원문: <a href="https://arxiv.org/html/2401.02954#S2.SS1" rel="noopener" target="_blank">LLM-data</a> · <a href="https://github.com/deepseek-ai/DeepSeek-LLM#4-pre-training-details" rel="noopener" target="_blank">DeepSeek 공식 README</a></div></section><section class="slide pipeline-detail" data-claims="C01,C33,C34" data-index="2"><div aria-label="발표 진행: Deduplication · Common Crawl" class="journey"><div class="journey-here">Deduplication · Common Crawl</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot now" title="Deduplication · Common Crawl"></span><span class="journey-dot pending" title="Filtering · 품질 선별"></span><span class="journey-dot pending" title="Remixing · 분포 조정"></span><span class="journey-dot pending" title="V2 데이터 개선"></span><span class="journey-dot pending" title="수학 데이터 수집"></span><span class="journey-dot pending" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">PRE-TRAINING / 01 · DEDUPLICATION</div>
+<h1>MinHash로 <em>유사도를 요약</em>하고 LSH로 <em>후보를 찾는다</em></h1>
+<div class="subtitle">서로 다른 Common Crawl Dump에 수집된 유사 문서를 효율적으로 탐색하는 방법</div>
+<div class="visual minhash-figure">
+<div class="minhash-columns">
+<div class="mh-panel">
+<div class="mh-head"><span class="mh-bubble">1</span><div><b>MinHash</b><small>텍스트 조각 → 고정 길이 해시 서명</small></div></div>
+<div class="mh-raw"><span class="mh-tag">Dump A</span><span class="mh-sentence">AI 기술이 빠르게 발전한다</span></div>
+<div class="mh-raw"><span class="mh-tag">Dump B</span><span class="mh-sentence">AI 기술이 빠르게 성장한다</span></div>
+<div class="mh-down">↓ <span>Shingle 분할 + MinHash</span></div>
+<div class="mh-signatures">
+<div class="mh-sig-row"><b>A 서명</b><div class="mh-cells"><span class="mh-hit">12</span><span class="mh-hit">07</span><span>34</span><span>19</span></div></div>
+<div class="mh-sig-row"><b>B 서명</b><div class="mh-cells"><span class="mh-hit">12</span><span class="mh-hit">07</span><span>49</span><span>21</span></div></div>
+</div>
+<div class="mh-mini">서명의 일치 비율로 Jaccard 유사도를 근사</div>
+</div>
+<div class="mh-panel lsh">
+<div class="mh-head"><span class="mh-bubble">2</span><div><b>LSH</b><small>서명 구간(Band)을 해시해 후보 탐색</small></div></div>
+<div class="lsh-band-label">Band 1 · 첫 두 해시값</div>
+<div class="lsh-bands"><div class="lsh-band"><span>Dump A</span><b>[12, 07]</b></div><div class="lsh-band"><span>Dump B</span><b>[12, 07]</b></div></div>
+<div class="lsh-down">↓ <span>동일 Band → 동일 버킷</span></div>
+<div class="lsh-bucket"><span>Bucket #42</span><strong>문서 A + 문서 B</strong><small>중복 가능성 높은 후보</small></div>
+<div class="mh-mini">전체 문서 쌍을 직접 비교하지 않음</div>
+</div>
+</div>
+<div class="mh-bottom">
+<div><small>Common Crawl · 1 Dump</small><strong>22.2%</strong></div>
+<span class="mh-bottom-arrow">→</span>
+<div><small>Common Crawl · 91 Dumps</small><strong>89.8%</strong></div>
+<p>여러 수집 시점에 걸친 중복 제거로 <b>반복 문서의 탐지 범위 확대</b></p>
+</div>
+</div>
+<div class="condition">해시값·Bucket #42는 MinHashLSH 원리를 설명하기 위한 가상 예시입니다. DeepSeek의 Shingle 크기, Band 수, 판정 임계값 등은 공개되지 않았습니다.</div>
+<div class="source">근거: <a href="https://arxiv.org/html/2401.02954#S2.SS1" rel="noopener" target="_blank">DeepSeek LLM §2.1 · Table 1</a><a href="https://github.com/deepseek-ai/DeepSeek-LLM#4-pre-training-details" rel="noopener" target="_blank">DeepSeek 공식 README</a></div>
+</section><section class="slide pipeline-detail" data-claims="C02,C35" data-index="3"><div aria-label="발표 진행: Filtering · 품질 선별" class="journey"><div class="journey-here">Filtering · 품질 선별</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot now" title="Filtering · 품질 선별"></span><span class="journey-dot pending" title="Remixing · 분포 조정"></span><span class="journey-dot pending" title="V2 데이터 개선"></span><span class="journey-dot pending" title="수학 데이터 수집"></span><span class="journey-dot pending" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">PRE-TRAINING / 02 · FILTERING</div>
+<h1>규칙과 모델로 <em>학습 가치가 낮은 문서</em>를 거른다</h1>
+<div class="subtitle">논문은 언어적·의미적 평가를 설명하고, 공식 README는 Heuristic Rules + Models 사용을 명시합니다.</div>
+<div class="visual filter-layout">
+<div class="filter-input">Common Crawl 등 원본 웹 문서 <small>학습 후보</small></div>
+<div class="filter-stream">↓ 선별 기준 적용 ↓</div>
+<div class="filter-two">
+<div class="filter-card"><div class="filter-head"><span>01</span><b>Heuristic Rules</b></div>
+<div class="filter-caption">규칙 기반 검사</div>
+<p>문서 형식, 반복 패턴 등 정형적인 품질 신호를 활용할 수 있습니다.</p>
+<small>예시 기준은 개념 설명용이며 DeepSeek의 실제 규칙 목록은 미공개</small></div>
+<div class="filter-card"><div class="filter-head"><span>02</span><b>Models</b></div>
+<div class="filter-caption">모델 기반 품질 판단</div>
+<p>언어적·의미적 정보를 활용해 학습 가치가 낮은 문서를 판별합니다.</p>
+<small>모델 계열·이름·점수 임계값·결합 순서는 미공개</small></div>
+</div>
+<div class="filter-output"><span>↓</span><div><strong>고품질 데이터 비중 확대</strong><small>학습에 유용한 정보를 유지하면서 저품질·유해 콘텐츠 감소</small></div></div>
+</div>
+<div class="condition">“Models”는 사용했다고 공개되어 있지만 LLM Judge라고 특정할 수 없습니다. 두 상자는 실제 실행 순서가 아닌 적용 기준의 개념도입니다.</div>
+<div class="source">근거: <a href="https://arxiv.org/html/2401.02954#S2.SS1" rel="noopener" target="_blank">DeepSeek LLM §2.1</a><a href="https://github.com/deepseek-ai/DeepSeek-LLM#4-pre-training-details" rel="noopener" target="_blank">DeepSeek 공식 README</a></div>
+</section><section class="slide pipeline-detail" data-claims="C03,C36" data-index="4"><div aria-label="발표 진행: Remixing · 분포 조정" class="journey"><div class="journey-here">Remixing · 분포 조정</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot now" title="Remixing · 분포 조정"></span><span class="journey-dot pending" title="V2 데이터 개선"></span><span class="journey-dot pending" title="수학 데이터 수집"></span><span class="journey-dot pending" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">PRE-TRAINING / 03 · REMIXING</div>
+<h1>필터링 후, <em>도메인별 비중을 조정</em>한다</h1>
+<div class="subtitle">Remixing은 새 문서를 생성하는 것이 아니라, 과소대표된 도메인이 학습 데이터에서 더 많이 나타나도록 구성하는 단계입니다.</div>
+<div class="visual remix-layout">
+<div class="remix-rows">
+<div class="remix-side"><strong>조정 전 <small>가상 예시</small></strong><div class="remix-stack"><span class="remix-common" style="width:80%">일반 웹 80%</span><span class="remix-special" style="width:20%">20%</span></div><small>특정 도메인에 편중</small></div>
+<div class="remix-center">→ <small>리믹싱</small></div>
+<div class="remix-side"><strong>조정 후 <small>가상 예시</small></strong><div class="remix-stack"><span class="remix-common" style="width:60%">일반 웹 60%</span><span class="remix-special" style="width:40%">전문 도메인 40%</span></div><small>적게 포함된 분야의 비중 강화</small></div>
+</div>
+<div class="remix-benefits"><div><b>기존 편중 문제</b><span>많이 수집된 웹 도메인이 학습에서 과대표현될 수 있음</span></div><div><b>DeepSeek 접근</b><span>과소대표 도메인의 출현 비중을 높여 데이터 다양성을 개선</span></div></div>
+<div class="remix-message">데이터의 <b>양</b>뿐 아니라, 학습 데이터 안에서 <b>어떤 분야를 얼마나 볼지</b> 조절하는 과정</div>
+</div>
+<div class="condition">80:20 → 60:40은 이해를 위한 가상 수치입니다. 논문은 실제 도메인별 비율, 샘플링 가중치, 조정 알고리즘을 공개하지 않습니다.</div>
+<div class="source">근거: <a href="https://arxiv.org/html/2401.02954#S2.SS1" rel="noopener" target="_blank">DeepSeek LLM §2.1</a></div>
+</section><section class="slide" data-claims="C04,C05,C06,C07" data-index="5"><div aria-label="발표 진행: V2 데이터 개선" class="journey"><div class="journey-here">V2 데이터 개선</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot now" title="V2 데이터 개선"></span><span class="journey-dot pending" title="수학 데이터 수집"></span><span class="journey-dot pending" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div><div class="kicker">RQ2 / DEEPSEEK-V2 §3.1.1</div><h1>V2는 세 단계를 유지한 채 데이터 범위와 정제를 개선했다</h1><div class="subtitle">2T → 8.1T, 기존 방식의 연속성과 변경점을 동시에 설명</div><div class="visual"><div class="two-cols"><div class="panel mute"><small>DeepSeek LLM 67B</small><div class="bigcount">2T</div><div class="micro">Dedup · Filter · Remix</div></div><div class="panel accent"><small>DeepSeek-V2</small><div class="bigcount">8.1T</div><div class="micro">동일 단계 · 데이터와 품질 개선</div></div></div><div class="quadrant"><div><b>복구</b><small>과거에 잘못 제거된 데이터</small></div><div><b>언어 확대</b><small>중국어 인터넷 데이터</small></div><div><b>품질 관리</b><small>고품질 추가·필터 개선</small></div><div><b>Debiasing</b><small>문화적으로 논쟁적인 콘텐츠 필터</small></div></div><div class="centertext">중국어 토큰 수는 영어 토큰 수보다 <strong>약 12% 많다</strong></div></div><div class="condition">12%는 전체 언어 비율이 아니며 V2 필터의 구체적 분류기/컷오프는 논문에 공개되지 않았습니다.</div><div class="source">원문: <a href="https://arxiv.org/html/2405.04434v5#S3.SS1.SSS1" rel="noopener" target="_blank">V2-data</a></div></section><section class="slide" data-claims="C08,C09,C14" data-index="6"><div aria-label="발표 진행: 수학 데이터 수집" class="journey"><div class="journey-here">수학 데이터 수집</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot now" title="수학 데이터 수집"></span><span class="journey-dot pending" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div><div class="kicker">RQ3 / DEEPSEEKMATH §2.1</div><h1>고품질 시드가 Common Crawl에서 찾을 문서를 결정한다</h1><div class="subtitle">DeepSeekMath: 분류기 기반 수학 데이터 수집 — V2와 별도 사례</div><div class="visual"><div class="chain"><div class="node"><small>Positive</small><strong>OpenWebMath</strong><b>500K</b></div><span>+</span><div class="node"><small>Negative</small><strong>Common Crawl</strong><b>500K</b></div><span>→</span><div class="node special"><small>Binary classifier</small><strong>fastText</strong><b>Math score</b></div></div><div class="arrowdown">↓</div><div class="wide-node">중복 제거된 Common Crawl 후보 약 <strong>400억 HTML 페이지</strong> → 수학 점수 기반 랭킹</div><div class="centertext">Seed를 무엇으로 정의하느냐에 따라 회수할 데이터 유형이 달라진다.</div></div><div class="condition">DeepSeekMath의 분류기 점수는 수학 문서 관련성에 가깝습니다. 문서의 수학적 정답성까지 별도로 보증하는 품질 점수는 아닙니다.</div><div class="source">원문: <a href="https://arxiv.org/html/2402.03300#S2.SS1" rel="noopener" target="_blank">Math-data</a></div></section><section class="slide" data-claims="C10,C11,C12,C13,C28" data-index="7"><div aria-label="발표 진행: 수학 데이터 반복 수집" class="journey"><div class="journey-here">수학 데이터 반복 수집</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot now" title="수학 데이터 반복 수집"></span><span class="journey-dot pending" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">RQ3 / DEEPSEEKMATH §2.1 · FIGURE 2</div>
+<h1>Figure 2 · <em>놓친 수학 데이터를 다시 찾는</em> 반복 수집</h1>
+<div class="subtitle">fastText 분류 → 수학 웹페이지 검색 → 도메인·URL 검토 → 시드 확장 → 재학습</div>
+<div class="visual figure-flow-visual">
+<svg aria-label="DeepSeekMath Figure 2 순환 파이프라인: Math Seed, fastText 학습, Common Crawl에서 수학 페이지 검색, 수학 코퍼스, 관련 도메인 발견, URL 경로 수동 주석, 시드 확장" class="fig2-flow" role="img" viewbox="0 0 1180 380" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<marker id="a2" markerheight="8" markerwidth="8" orient="auto" refx="6" refy="4"><path d="M0 0 L8 4 L0 8 Z" fill="#E9BC76"></path></marker>
+<lineargradient id="g1" x1="0" x2="1" y1="0" y2="1"><stop offset="0" stop-color="#145b63"></stop><stop offset="1" stop-color="#183b57"></stop></lineargradient>
+</defs>
+<path d="M230 108 H280" marker-end="url(#a2)" stroke="#E9BC76" stroke-width="4"></path>
+<path d="M535 108 H590" marker-end="url(#a2)" stroke="#E9BC76" stroke-width="4"></path>
+<path d="M860 108 H920 V177" fill="none" marker-end="url(#a2)" stroke="#E9BC76" stroke-width="4"></path>
+<path d="M1030 246 V326 H862" fill="none" marker-end="url(#a2)" stroke="#E9BC76" stroke-width="4"></path>
+<path d="M631 326 H564" marker-end="url(#a2)" stroke="#E9BC76" stroke-width="4"></path>
+<path d="M320 326 H135 V167" fill="none" marker-end="url(#a2)" stroke="#E9BC76" stroke-width="4"></path>
+<rect fill="#124d53" height="114" rx="17" stroke="#58d1c4" stroke-width="2" width="210" x="20" y="53"></rect>
+<text fill="#d9fff8" font-size="28" font-weight="800" text-anchor="middle" x="125" y="96">Math Seed</text>
+<text fill="#aed9dc" font-size="20" text-anchor="middle" x="125" y="128">OpenWebMath</text>
+<rect fill="#173048" height="114" rx="17" stroke="#3e708b" stroke-width="2" width="255" x="280" y="53"></rect>
+<text fill="#72eee0" font-size="18" font-weight="700" text-anchor="middle" x="407" y="91">STEP 1</text>
+<text fill="white" font-size="25" font-weight="750" text-anchor="middle" x="407" y="125">Train fastText</text>
+<rect fill="#173048" height="114" rx="17" stroke="#3e708b" stroke-width="2" width="270" x="590" y="53"></rect>
+<text fill="#72eee0" font-size="18" font-weight="700" text-anchor="middle" x="725" y="91">STEP 2</text>
+<text fill="white" font-size="23" font-weight="750" text-anchor="middle" x="725" y="123">Recall Math Pages</text>
+<text fill="#afc9d7" font-size="17" text-anchor="middle" x="725" y="150">from Common Crawl</text>
+<rect fill="url(#g1)" height="69" rx="16" stroke="#66c8bb" stroke-width="2" width="240" x="915" y="177"></rect>
+<text fill="#edfbff" font-size="24" font-weight="750" text-anchor="middle" x="1035" y="204">Math Corpus</text>
+<text fill="#f8d78f" font-size="19" text-anchor="middle" x="1035" y="228">120B tokens</text>
+<rect fill="#173048" height="99" rx="16" stroke="#3e708b" stroke-width="2" width="260" x="632" y="275"></rect>
+<text fill="#72eee0" font-size="18" font-weight="700" text-anchor="middle" x="762" y="305">STEP 3</text>
+<text fill="white" font-size="22" font-weight="750" text-anchor="middle" x="762" y="333">Discover Domains</text>
+<text fill="#afc9d7" font-size="17" text-anchor="middle" x="762" y="356">선택률 10% 초과 후보</text>
+<rect fill="#173048" height="99" rx="16" stroke="#3e708b" stroke-width="2" width="244" x="320" y="275"></rect>
+<text fill="#72eee0" font-size="18" font-weight="700" text-anchor="middle" x="442" y="305">STEP 4</text>
+<text fill="white" font-size="22" font-weight="750" text-anchor="middle" x="442" y="333">Annotate URLs</text>
+<text fill="#afc9d7" font-size="17" text-anchor="middle" x="442" y="356">사람이 URL 경로 확인</text>
+<rect fill="#0e283a" height="52" rx="10" stroke="#325367" stroke-dasharray="8 6" width="514" x="295" y="194"></rect>
+<text fill="#d0e9e8" font-size="18" text-anchor="middle" x="552" y="226">Common Crawl: URL · 유사 중복 제거 후 약 400억 HTML 페이지</text>
+</svg>
+<div class="fig2-metrics">
+<div><strong>첫 회</strong><span>40 / 80 / 120 / 160B 실험 → 상위 <b>40B</b> 채택</span></div>
+<div><strong>4회 반복</strong><span><b>3,550만</b> 페이지 · 최종 <b>120B</b> 토큰</span></div>
+<div><strong>오염 제거</strong><span>평가 데이터와 <b>10-gram 정확 일치</b> 검사</span></div>
+</div>
+</div>
+<div class="condition">Figure 2의 순환 관계를 발표용으로 재도식화했습니다. DeepSeekMath는 V2와 별도 연구입니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/html/2402.03300#S2.SS1" rel="noopener" target="_blank">DeepSeekMath §2.1</a> <a href="https://arxiv.org/pdf/2402.03300#page=5" rel="noopener" target="_blank">논문 원본 Figure 2 (PDF p.5)</a></div>
+</section><section class="slide tokenizer-slide" data-claims="C15,C16" data-index="8"><div aria-label="발표 진행: Tokenizer · BBPE" class="journey"><div class="journey-here">Tokenizer · BBPE</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot now" title="Tokenizer · BBPE"></span><span class="journey-dot pending" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">PRE-TRAINING / DATA COMPARISON · LLM §2.1 · V2 §3.1.1</div>
+<h1>67B와 V2는 <em>같은 100K BBPE</em>를 사용한다</h1>
+<div class="subtitle">동일한 Tokenizer를 사용하므로 학습 데이터의 토큰 수를 같은 기준으로 비교할 수 있다.</div>
+
+<div class="visual tok-compare-visual">
+<div class="tok-shared-header"><span class="tok-shared-eyebrow">공통 적용</span><strong>100K BBPE Tokenizer</strong><span class="tok-shared-caption">DeepSeek LLM 67B와 DeepSeek-V2</span></div>
+<div class="tok-compare-row">
+<div class="tok-model-card"><span class="tok-model-name">DeepSeek LLM 67B</span><strong>2T</strong><span class="tok-model-unit">Pre-training Tokens</span></div>
+<div class="tok-link-icon">↔</div>
+<div class="tok-model-card main"><span class="tok-model-name">DeepSeek-V2</span><strong>8.1T</strong><span class="tok-model-unit">Pre-training Tokens</span></div>
+</div>
+<div class="tok-compact-details">
+<div><span>실제 어휘 수</span><b>100,015</b><small>100,000 일반 + 15 특수</small></div>
+<div><span>모델 학습 시 어휘 크기</span><b>102,400</b><small>학습 설정값</small></div>
+</div>
+<div class="tok-compact-bottom"><b>다른 Tokenizer 모델과 비교한다면?</b><span>다음 페이지: Pile-test의 BPB 평가 지표</span></div>
+</div>
+
+<div class="condition">같은 Tokenizer를 사용한다는 사실은 토큰 수 비교의 기준이며, 두 모델의 성능이 토큰 수만으로 결정된다는 의미는 아닙니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/html/2401.02954#S2.SS1" rel="noopener" target="_blank">DeepSeek LLM §2.1</a> <a href="https://arxiv.org/html/2405.04434v5#S3.SS2" rel="noopener" target="_blank">DeepSeek-V2 §3.1.1·§3.2.1</a></div>
+</section><section class="slide bpb-explainer" data-claims="C16" data-index="9"><div aria-label="발표 진행: BPB 개념" class="journey"><div class="journey-here">BPB 개념</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot now" title="BPB 개념"></span><span class="journey-dot pending" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">RQ4 / BPB · DEEPSEEK-V2 §3.2.1</div>
+<h1>왜 토큰당 손실 대신 <em>BPB</em>를 볼까?</h1>
+<div class="subtitle">Tokenizer는 텍스트를 나누고, 각 Tokenizer를 사용하는 LLM은 토큰을 예측해 손실을 계산한다.</div>
+<div class="visual">
+<div class="bpb-original">동일한 평가 텍스트: <strong>DeepSeek</strong> <span style="color:#93b4c8;font-size:.8em">(ASCII · 8 Byte)</span></div>
+<div class="bpb-illustration">
+<div class="bpb-sample">
+<h2>Tokenizer A <span class="bpb-step-arrow">→</span> LLM A</h2>
+<div class="bpb-tokens"><span class="bpb-token">Deep</span><span class="bpb-token">Seek</span></div>
+<div class="bpb-meta"><span>Tokenizer A · <strong>2 tokens</strong></span><span class="bpb-llm-loss">LLM A · 예측 손실 <strong>4 bits</strong></span></div>
+</div>
+<div class="bpb-sample">
+<h2>Tokenizer B <span class="bpb-step-arrow">→</span> LLM B</h2>
+<div class="bpb-tokens"><span class="bpb-token">De</span><span class="bpb-token">ep</span><span class="bpb-token">Se</span><span class="bpb-token">ek</span></div>
+<div class="bpb-meta"><span>Tokenizer B · <strong>4 tokens</strong></span><span class="bpb-llm-loss">LLM B · 예측 손실 <strong>6 bits</strong></span></div>
+</div>
+</div>
+<div class="bpb-explainer-formula">BPB = <strong>LLM의 전체 예측 손실 (bit)</strong> ÷ 원본 텍스트 크기 (Byte)</div>
+<div class="bpb-explain-note bpb-compare-result">
+<div><span class="bpb-result-label">토큰당 평균 손실</span><span class="bpb-result-val">A: 2.0 · B: 1.5 bits/token</span><small>→ B가 더 좋아 보임</small></div>
+<div class="bpb-result-focus"><span class="bpb-result-label">BPB · 동일한 8 Byte 기준</span><span class="bpb-result-val">A: 0.50 · B: 0.75</span><small>→ A의 예측 손실이 더 낮음</small></div>
+</div>
+</div>
+<div class="condition">Tokenizer는 분할만 수행하고, 예측 손실은 각 언어 모델이 계산합니다. 모든 토큰 분할과 수치는 설명용 가상 예시입니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/html/2405.04434v5#S3.SS2" rel="noopener" target="_blank">DeepSeek-V2 §3.2.1</a> · 다음 장에서 실제 Base 모델 평가를 확인합니다.</div>
+</section><section class="slide" data-claims="C17,C18" data-index="10"><div aria-label="발표 진행: Pre-training 평가" class="journey"><div class="journey-here">Pre-training 평가</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group current" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot done" title="BPB 개념"></span><span class="journey-dot now" title="Pre-training 평가"></span></span></div><div class="journey-group future" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot pending" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div><div class="kicker">RQ4 / DEEPSEEK-V2 §3.2.2 · TABLE 2</div><h1>V2 Base는 21B 활성 파라미터로 67B를 여러 평가에서 앞섰다</h1><div class="subtitle">성능 차이 자체는 관찰 가능하지만 데이터 개선만의 인과 효과는 아니다</div><div class="visual"><table class="result"><thead><tr><th>Benchmark</th><th>67B Base</th><th>V2 Base</th><th>차이</th></tr></thead><tbody><tr><td>MMLU ↑</td><td>71.3</td><td><strong>78.5</strong></td><td>+7.2</td></tr><tr><td>GSM8K ↑</td><td>63.4</td><td><strong>79.2</strong></td><td>+15.8</td></tr><tr><td>MATH ↑</td><td>18.7</td><td><strong>43.6</strong></td><td>+24.9</td></tr><tr><td>CMMLU ↑</td><td>70.8</td><td><strong>84.0</strong></td><td>+13.2</td></tr></tbody></table><div class="eval-foot"><div class="eval-bpb"><span>Pile-test · BPB ↓</span><b>67B 0.642</b><span>→</span><b class="better">V2 0.606</b><span>(LLaMA 3 70B: 0.602)</span></div><div class="eval-caution">동시에 <strong>학습 토큰 수 · 모델 구조 · 활성 파라미터</strong>가 달라졌다.</div></div></div><div class="condition">데이터 효과만 분리한 ablation이 아닙니다. Table 2의 각 벤치마크 설정과 Base 모델 비교를 유지합니다.</div><div class="source">원문: <a href="https://arxiv.org/html/2405.04434v5#S3.SS2" rel="noopener" target="_blank">V2-eval</a></div></section><section class="slide alignment-llm-slide" data-claims="C37,C38" data-index="11"><div aria-label="발표 진행: 67B Alignment 데이터" class="journey"><div class="journey-here">67B Alignment 데이터</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group past" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot done" title="BPB 개념"></span><span class="journey-dot done" title="Pre-training 평가"></span></span></div><div class="journey-group current" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot now" title="67B Alignment 데이터"></span><span class="journey-dot pending" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">RQ5 / DEEPSEEK LLM §4 ALIGNMENT</div>
+<h1>DeepSeek LLM 67B의 <em>Alignment 데이터 구성</em></h1>
+<div class="subtitle">영어·중국어 Instruction 데이터 150만 건 · Helpfulness와 Safety로 구성</div>
+<div class="visual align-sft-visual">
+<div class="align-total"><div class="big">1.5M <small>instruction examples</small></div><div class="description">Helpfulness 1.2M · Safety 0.3M<br/>67B Chat 정렬 데이터</div></div>
+<div class="align-bar"><div class="helpful">Helpfulness · 80% (1.2M)</div><div class="safety">Safety · 20% (0.3M)</div></div>
+<div style="font-size:clamp(13px,1.15vw,18px);font-weight:770;color:#d0e6ed">Helpfulness 120만 건 내부의 작업별 구성</div>
+<div class="align-domain">
+<div><span class="label">일반 언어 작업</span><span class="value">31.2%</span><div class="minibar"><i style="width:31.2%"></i></div></div>
+<div><span class="label">수학 문제</span><span class="value">46.6%</span><div class="minibar"><i style="width:46.6%"></i></div></div>
+<div><span class="label">코딩 문제</span><span class="value">22.2%</span><div class="minibar"><i style="width:22.2%"></i></div></div>
+</div>
+<div class="align-footnote"><b>정렬 흐름</b><span>SFT (67B: 2 epochs) → DPO (Helpfulness·Harmlessness 선호도 데이터; 규모 미공개)</span></div>
+</div>
+<div class="condition">31.2 / 46.6 / 22.2%는 전체 150만 건이 아닌 Helpfulness 120만 건 내부의 비율입니다. DPO 선호도 데이터는 SFT 150만 건과 별개의 구성으로 이해해야 합니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/pdf/2401.02954#page=12" rel="noopener" target="_blank">DeepSeek LLM §4 Alignment · p.12–13</a></div>
+</section><section class="slide alignment-v2-slide" data-claims="C19,C20,C39" data-index="12"><div aria-label="발표 진행: V2 SFT 데이터 구성" class="journey"><div class="journey-here">V2 SFT 데이터 구성</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group past" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot done" title="BPB 개념"></span><span class="journey-dot done" title="Pre-training 평가"></span></span></div><div class="journey-group current" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot done" title="67B Alignment 데이터"></span><span class="journey-dot now" title="V2 SFT 데이터 구성"></span><span class="journey-dot pending" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">RQ5 / DEEPSEEK-V2 §4.1 SUPERVISED FINE-TUNING</div>
+<h1>V2 SFT: <em>150만 건 규모를 유지</em>하면서 품질을 개선했다</h1>
+<div class="subtitle">67B와 데이터 수는 동일하지만, V2는 환각성 응답 완화와 글쓰기 능력 향상을 목표로 품질을 개선</div>
+<div class="visual v2-sft-visual">
+<div class="v2-sft-compare">
+<div class="v2-sft-card"><span class="meta">DeepSeek LLM 67B</span><strong>1.5M examples</strong><div class="split"><span>Helpfulness 1.2M</span><span>· Safety 0.3M</span></div><p>영어·중국어 · Helpfulness 작업별 비율 공개</p></div>
+<div class="v2-sft-arrow">→</div>
+<div class="v2-sft-card highlight"><span class="meta">DeepSeek-V2</span><strong>1.5M examples</strong><div class="split"><span>Helpfulness 1.2M</span><span>· Safety 0.3M</span></div><p>동일한 데이터 규모 · 데이터 품질 개선</p></div>
+</div>
+<div class="v2-sft-improve">
+<div><span class="marker">01</span><div><strong>환각성 응답 완화</strong><small>Mitigate hallucinatory responses</small></div></div>
+<div><span class="marker">02</span><div><strong>글쓰기 능력 향상</strong><small>Enhance writing proficiency</small></div></div>
+</div>
+<div class="v2-sft-pretrain"><b>학습 단계 구분:</b> V2 Pre-training 8.1T 토큰에는 SFT 데이터가 포함되지 않았고, 이후 SFT 1.5M 건으로 Chat 모델을 학습 (2 epochs).</div>
+</div>
+<div class="condition">V2 §4.1에는 세부 소스·언어 비율·작업별 구성 및 개선 알고리즘을 공개하지 않습니다. 67B의 31.2/46.6/22.2%가 V2에도 유지됐다고 단정하면 안 됩니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/pdf/2405.04434#page=16" rel="noopener" target="_blank">DeepSeek-V2 §4.1 · p.16</a> <a href="https://arxiv.org/pdf/2405.04434#page=16" rel="noopener" target="_blank">§3.2.2 마지막 문단</a></div>
+</section><section class="slide minicpm-slide" data-claims="C19,C20,C29" data-index="13"><div aria-label="발표 진행: MiniCPM 비교" class="journey"><div class="journey-here">MiniCPM 비교</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group past" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot done" title="BPB 개념"></span><span class="journey-dot done" title="Pre-training 평가"></span></span></div><div class="journey-group current" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot done" title="67B Alignment 데이터"></span><span class="journey-dot done" title="V2 SFT 데이터 구성"></span><span class="journey-dot now" title="MiniCPM 비교"></span></span></div><div class="journey-group future" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot pending" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">RQ5 / PRE-TRAINING DATA · MINI CPM 비교</div>
+<h1>사전학습에 <em>SFT 데이터를 넣는 모델도</em> 있다</h1>
+<div class="subtitle">DeepSeek-V2는 사전학습과 SFT를 분리한 반면, MiniCPM은 사전학습 후반 Decay 단계에서 혼합</div>
+<div class="visual mini-visual">
+<div class="mini-row"><div class="mini-model"><strong>DeepSeek-V2</strong><small>사전학습과 SFT 분리</small></div><div class="mini-track"><div class="mini-node pretrain"><small>Pre-training</small><b>8.1T tokens</b><em>SFT 데이터 미포함</em></div><div class="mini-next">→</div><div class="mini-node sft"><small>별도 SFT</small><b>1.5M examples</b><em>Helpfulness + Safety</em></div></div></div>
+<div class="mini-row"><div class="mini-model"><strong>MiniCPM</strong><small>WSD · Decay 혼합</small></div><div class="mini-track three"><div class="mini-node pretrain"><small>Stable</small><b>사전학습 데이터</b></div><div class="mini-next">→</div><div class="mini-node mixed"><small>Decay · annealing</small><b>Pre-training + SFT</b><em>고품질 데이터 혼합</em></div><div class="mini-next">→</div><div class="mini-node sft"><small>별도 SFT</small><b>SFT 추가 수행</b></div></div></div>
+<div class="mini-bottom"><b>왜 비교하나?</b> DeepSeek-V2는 MiniCPM 같은 선행연구와 달리, <strong>Base 평가 이전 Pre-training에 SFT 데이터를 의도적으로 섞지 않았다</strong>는 사실을 밝힘.</div>
+</div>
+<div class="condition">구성 비교일 뿐, 성능 차이가 SFT 혼합 여부 때문에 발생했다는 의미는 아닙니다. MiniCPM은 작은 모델을 대상으로 한 별도 연구입니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/html/2405.04434v5#S3.SS2" rel="noopener" target="_blank">DeepSeek-V2 §3.2.2</a> <a href="https://arxiv.org/html/2404.06395#S5" rel="noopener" target="_blank">MiniCPM §5·§6.2</a></div>
+</section><section class="slide agreement-slide" data-claims="C22,C23,C30,C24,C25" data-index="14"><div aria-label="발표 진행: Debiasing · Table 10" class="journey"><div class="journey-here">Debiasing · Table 10</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group past" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot done" title="BPB 개념"></span><span class="journey-dot done" title="Pre-training 평가"></span></span></div><div class="journey-group past" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot done" title="67B Alignment 데이터"></span><span class="journey-dot done" title="V2 SFT 데이터 구성"></span><span class="journey-dot done" title="MiniCPM 비교"></span></span></div><div class="journey-group current" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot now" title="Debiasing · Table 10"></span><span class="journey-dot pending" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">RQ6 / APPENDIX E · TABLE 10</div>
+<h1>정답과 평가자 사이에도 <em>의견이 다르다</em></h1>
+<div class="subtitle">MMLU Humanity-Moral · 420개 도덕적 시나리오 · 세 명의 독립 평가자</div>
+<div class="visual agree-visual">
+<table class="agree-matrix"><thead><tr><th>일치율</th><th>정답 레이블</th><th>평가자 1</th><th>평가자 2</th><th>평가자 3</th></tr></thead><tbody>
+<tr><th>정답 레이블</th><td class="diag">100.0%</td><td>66.7%</td><td>59.8%</td><td class="low">42.1%</td></tr>
+<tr><th>평가자 1</th><td>66.7%</td><td class="diag">100.0%</td><td>57.9%</td><td>69.0%</td></tr>
+<tr><th>평가자 2</th><td>59.8%</td><td>57.9%</td><td class="diag">100.0%</td><td>65.5%</td></tr>
+<tr><th>평가자 3</th><td class="low">42.1%</td><td>69.0%</td><td>65.5%</td><td class="diag">100.0%</td></tr>
+</tbody></table>
+<div class="agree-interpret"><div><b>관찰</b><span>정답과 사람 간 42.1~66.7% · 사람 간 57.9~69.0%</span></div><div><b>저자 해석</b><span>문화적 가치관 필터링이 Humanity-Moral 성능에 영향을 줬을 가능성</span></div><div><b>미입증</b><span>필터링 전후의 통제된 Ablation은 아님</span></div></div>
+</div>
+<div class="condition">이 수치들은 평가자 간 레이블 일치율이지 모델의 정답률이 아닙니다. 문화 민감성에 관한 논의이며 보편적 도덕성의 증명이 아닙니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/html/2405.04434v5#A5" rel="noopener" target="_blank">DeepSeek-V2 Appendix E · Table 10</a> <a href="https://arxiv.org/pdf/2405.04434#page=33" rel="noopener" target="_blank">원본 표 PDF p.33</a></div>
+</section><section class="slide" data-claims="C26,C08,C22,C27" data-index="15"><div aria-label="발표 진행: 데이터 선별 기준" class="journey"><div class="journey-here">데이터 선별 기준</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group past" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot done" title="BPB 개념"></span><span class="journey-dot done" title="Pre-training 평가"></span></span></div><div class="journey-group past" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot done" title="67B Alignment 데이터"></span><span class="journey-dot done" title="V2 SFT 데이터 구성"></span><span class="journey-dot done" title="MiniCPM 비교"></span></span></div><div class="journey-group current" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot done" title="Debiasing · Table 10"></span><span class="journey-dot now" title="데이터 선별 기준"></span><span class="journey-dot pending" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">DISCUSSION / DATA SELECTION</div>
+<h1>데이터를 선택하는 <em>기준</em>이 다르면, 남는 데이터도 달라진다</h1>
+<div class="subtitle">사전학습 데이터를 만들 때 두 가지를 결정한다: <b>무엇을 수집할까?</b> 그리고 <b>무엇을 제외할까?</b></div>
+<div class="visual decision-visual">
+<div class="decision-block">
+<div class="decision-head"><span class="decision-number">01</span><b>무엇을 수집할까?</b><small>양성 시드 / 선별 기준</small></div>
+<div class="decision-cases">
+<div class="decision-case"><strong>LLaMA 1</strong><p>Wikipedia가 인용한 웹페이지를 품질 기준으로 활용</p><span>→ 일반적인 웹 문서 품질 선별</span></div>
+<div class="decision-case"><strong>DeepSeekMath</strong><p>OpenWebMath를 시드로 수학 문서 분류기 학습</p><span>→ 수학 관련 웹페이지 집중 수집</span></div>
+</div>
+</div>
+<div class="decision-block">
+<div class="decision-head"><span class="decision-number">02</span><b>무엇을 제외할까?</b><small>필터링 정책</small></div>
+<div class="decision-cases">
+<div class="decision-case"><strong>DeepSeek-V2</strong><p>지역 문화의 가치관과 관련된 논쟁적 콘텐츠 필터링</p><span>→ 주관적 편향 완화 추구</span></div>
+<div class="decision-case"><strong>Llama 2</strong><p>독성 콘텐츠의 과도한 추가 제거를 자제</p><span>→ 일반화와 집단 대표성 보존 추구</span></div>
+</div>
+</div>
+<div class="decision-bottom">결론: <strong>‘좋은 데이터’의 기준은 하나가 아니라, 학습 목적과 선별 정책에 따라 달라진다.</strong></div>
+</div>
+<div class="condition">주의: 논쟁적 콘텐츠와 독성 콘텐츠는 다른 개념이며, 위 모델들은 동일 조건에서 선별 정책을 직접 비교한 실험이 아닙니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/html/2302.13971#S2.SS1" rel="noopener" target="_blank">LLaMA 1 §2.1</a> <a href="https://arxiv.org/html/2402.03300#S2.SS1" rel="noopener" target="_blank">DeepSeekMath §2.1</a> <a href="https://arxiv.org/html/2405.04434v5#A5" rel="noopener" target="_blank">V2 Appendix E</a> <a href="https://arxiv.org/html/2307.09288#S4.SS1" rel="noopener" target="_blank">Llama 2 §4.1</a></div>
+</section><section class="slide conclusion-slide" data-claims="C01,C04,C05,C08,C14" data-index="16"><div aria-label="발표 진행: 결론" class="journey"><div class="journey-here">결론</div><div class="journey-group past" title="개요: 3단계 데이터 개요"><span class="journey-name">개요</span><span class="journey-dots"><span class="journey-dot done" title="3단계 데이터 개요"></span></span></div><div class="journey-group past" title="Pre-train: 67B 파이프라인 개요, Deduplication · Common Crawl, Filtering · 품질 선별, Remixing · 분포 조정, V2 데이터 개선, 수학 데이터 수집, 수학 데이터 반복 수집, Tokenizer · BBPE, BPB 개념, Pre-training 평가"><span class="journey-name">Pre-train</span><span class="journey-dots"><span class="journey-dot done" title="67B 파이프라인 개요"></span><span class="journey-dot done" title="Deduplication · Common Crawl"></span><span class="journey-dot done" title="Filtering · 품질 선별"></span><span class="journey-dot done" title="Remixing · 분포 조정"></span><span class="journey-dot done" title="V2 데이터 개선"></span><span class="journey-dot done" title="수학 데이터 수집"></span><span class="journey-dot done" title="수학 데이터 반복 수집"></span><span class="journey-dot done" title="Tokenizer · BBPE"></span><span class="journey-dot done" title="BPB 개념"></span><span class="journey-dot done" title="Pre-training 평가"></span></span></div><div class="journey-group past" title="SFT: 67B Alignment 데이터, V2 SFT 데이터 구성, MiniCPM 비교"><span class="journey-name">SFT</span><span class="journey-dots"><span class="journey-dot done" title="67B Alignment 데이터"></span><span class="journey-dot done" title="V2 SFT 데이터 구성"></span><span class="journey-dot done" title="MiniCPM 비교"></span></span></div><div class="journey-group current" title="토론: Debiasing · Table 10, 데이터 선별 기준, 결론"><span class="journey-name">토론</span><span class="journey-dots"><span class="journey-dot done" title="Debiasing · Table 10"></span><span class="journey-dot done" title="데이터 선별 기준"></span><span class="journey-dot now" title="결론"></span></span></div><div class="journey-group future" title="부록: 원문 및 근거"><span class="journey-name">부록</span><span class="journey-dots"><span class="journey-dot pending" title="원문 및 근거"></span></span></div></div>
+<div class="kicker">TAKEAWAY / THREE PAPERS</div>
+<h1>데이터 구축은 <em>양과 구성</em>을 함께 결정하는 과정이다</h1>
+<div class="subtitle">세 논문에서 확인되는 데이터 처리 선택과 확보된 데이터의 특징</div>
+<div class="visual conclusion-visual">
+<div class="three-cards">
+<div class="paper-card"><div class="paper-name">DeepSeek LLM (67B)</div><div class="paper-amount">2T <small>토큰</small></div><div class="paper-method">중복 제거 · 품질 필터링 · 리믹싱</div><div class="paper-result"><b>어떤 차이가 있나?</b><span>반복 문서를 줄이고, 적게 포함된 도메인의 비중을 높임</span></div></div>
+<div class="paper-card"><div class="paper-name">DeepSeek-V2</div><div class="paper-amount">8.1T <small>토큰</small></div><div class="paper-method">삭제 데이터 복구 · 중국어 확대 · 필터 개선</div><div class="paper-result"><b>어떤 차이가 있나?</b><span>데이터 규모와 언어·품질 구성을 함께 조정</span></div></div>
+<div class="paper-card"><div class="paper-name">DeepSeekMath</div><div class="paper-amount">120B <small>토큰</small></div><div class="paper-method">OpenWebMath 시드 · fastText · 반복 수집</div><div class="paper-result"><b>어떤 차이가 있나?</b><span>수학 관련 웹페이지를 집중적으로 확보</span></div></div>
+</div>
+<div class="conclusion-equation"><span>얼마나 모으는가</span><b>+</b><span>무엇을 남기는가</span><b>→</b><strong>최종 학습 데이터의 구성</strong></div>
+</div>
+<div class="condition">세 논문의 토큰 수는 서로 다른 목적의 코퍼스 규모입니다. DeepSeekMath의 수집법이 V2에 적용됐다고 단정할 수 없습니다.</div>
+<div class="source">원문: <a href="https://arxiv.org/html/2401.02954#S2.SS1" rel="noopener" target="_blank">DeepSeek LLM §2.1</a> <a href="https://arxiv.org/html/2405.04434v5#S3.SS1.SSS1" rel="noopener" target="_blank">DeepSeek-V2 §3.1.1</a> <a href="https://arxiv.org/html/2402.03300#S2.SS1" rel="noopener" target="_blank">DeepSeekMath §2.1</a></div>
+</section><div class="controls"><button aria-label="이전 슬라이드" id="prev">←</button><span class="counter" id="counter">1 / 17</span><button aria-label="다음 슬라이드" id="next">→</button><button id="full">F 전체</button></div><script>
+let cur=0;
+const nodes=[...document.querySelectorAll('.slide')];
+function render(){
+  nodes.forEach((node,i)=>node.classList.toggle('active',i===cur));
+  document.getElementById('counter').textContent=(cur+1)+' / '+nodes.length;
+  window.location.hash='s'+(cur+1);
+}
+function go(n){cur=Math.min(Math.max(n,0),nodes.length-1);render();}
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.getElementById('next').onclick=()=>go(cur+1);
+document.getElementById('full').onclick=()=>{
+  if(!document.fullscreenElement) document.documentElement.requestFullscreen?.();
+  else document.exitFullscreen?.();
+};
+document.addEventListener('keydown',ev=>{
+  if(ev.key==='ArrowLeft')go(cur-1);
+  if(ev.key==='ArrowRight'||ev.key===' '){ev.preventDefault();go(cur+1);}
+  if(ev.key.toLowerCase()==='f')document.getElementById('full').click();
+});
+const hash=location.hash.match(/s(\d+)/);
+if(hash)cur=Math.min(nodes.length-1,Math.max(0,Number(hash[1])-1));
+render();
+</script></body></html>
