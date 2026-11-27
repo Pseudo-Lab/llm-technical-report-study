@@ -27,8 +27,12 @@
 
 ## 발표자료
 
-- Post-training · 송용우: [슬라이드](slides/qwen25-qwen3-post-training.html) — 받은 원본 그대로입니다.
-- Background · 김민선: [Qwen2.5 · Qwen3의 Long Context Extension](slides/week04-long-context.html) — 받은 원본 그대로입니다.
+- 파트별 원본(`slides/`, 받은 그대로):
+  - Architecture & Pre-training · 임수민: 받는 중
+  - Data & Synthesis · 김대규: [슬라이드](slides/w04-data-synthesis.html)
+  - Post-training · 송용우: [슬라이드](slides/qwen25-qwen3-post-training.html)
+  - Alignment & RL · 민제: [슬라이드](slides/qwen25-qwen3-rl.html)
+  - Background · 김민선: [Qwen2.5 · Qwen3의 Long Context Extension](slides/week04-long-context.html)
 
 ## 팀별 분석
 
