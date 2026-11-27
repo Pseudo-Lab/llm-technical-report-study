@@ -25,6 +25,15 @@
   - **함께 읽을 자료와 범위:** [DeepSeekMoE](https://arxiv.org/pdf/2401.06066v1) §2–§3.3을 먼저 읽고, [DeepSeek-V2](https://arxiv.org/pdf/2405.04434v5) §2.2.1–§2.2.3에서 V2의 device-level·communication balance까지 확인한다. W06에서는 이 auxiliary-loss 계열을 loss-free bias update로 바꾼다는 점만 비교한다.
   - **원문에서 읽을 부분:** [DeepSeek-V2 §2.2.1–§2.2.3, Fig. 4, 식 (20)–(31) — DeepSeekMoE](https://arxiv.org/pdf/2405.04434v5)
 
+## 발표자료
+
+- 파트별 원본(`slides/`, 받은 그대로):
+  - Architecture & Pre-training · 우성현: [슬라이드](slides/deepseek-v2-architecture-pretraining.html)
+  - Data & Synthesis · 정호찬: [슬라이드](slides/deepseek-v2-data-synthesis.html)
+  - Post-training · 임병극: 받는 중
+  - Alignment & RL · 강민우: [GRPO와 DeepSeek-V2 RL](slides/deepseek-v2-alignment-rl.html)
+  - Background · 이정민: [MoE 학습: 쏠림과 통신](slides/moe-training-background.html)
+
 ## 팀별 분석
 
 ### Architecture & Pre-training
