@@ -25,6 +25,15 @@
   - **함께 읽을 자료와 범위:** [FP8 Formats](https://arxiv.org/pdf/2209.05433v2) §2–§3.2로 format/range를 확인한 뒤, V3가 직접 인용한 [FP8-LM §2.1–§2.2, Appendix A.2](https://arxiv.org/pdf/2310.18313v2)와 V3 §3.3.1–§3.3.3을 읽는다.
   - **원문에서 읽을 부분:** [DeepSeek-V3 §3.3.1–§3.3.3, Fig. 6–7, Appendix B.1 — FP8 Training](https://arxiv.org/pdf/2412.19437v2)
 
+## 발표자료
+
+- 파트별 원본(`slides/`, 받은 그대로):
+  - Architecture & Pre-training · 경민: 받는 중
+  - Data & Synthesis · 대규: 받는 중
+  - Post-training · 용우: 받는 중
+  - Alignment & RL · 민제: 받는 중
+  - Background · 민서: 받는 중
+
 ## 팀별 분석
 
 ### Architecture & Pre-training
