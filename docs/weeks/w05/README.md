@@ -31,7 +31,7 @@
   - Architecture & Pre-training · 우성현: [슬라이드](slides/deepseek-v2-architecture-pretraining.html)
   - Data & Synthesis · 정호찬: [슬라이드](slides/deepseek-v2-data-synthesis.html)
   - Post-training · 임병극: 받는 중
-  - Alignment & RL · 강민우: 받는 중
+  - Alignment & RL · 강민우: [GRPO와 DeepSeek-V2 RL](slides/deepseek-v2-alignment-rl.html)
   - Background · 이정민: [MoE 학습: 쏠림과 통신](slides/moe-training-background.html)
 
 ## 팀별 분석
